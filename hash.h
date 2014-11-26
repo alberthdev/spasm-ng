@@ -14,7 +14,7 @@ unsigned int
 #endif
 	murmur_hash (const void *data, int len, unsigned int seed = 0xdeadbeef);
 
-#if 0
+#if 1
 #pragma warning(disable : 4200)
 
 typedef struct _mh_hash_table {
