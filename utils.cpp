@@ -30,7 +30,7 @@ char *mystrpbrk (const char * string, const char * control) {
 
 	while (*ctrl)
 	{
-		map[*ctrl++] = TRUE;
+		map[*ctrl++] = true;
 	}
 
 	/* 1st char in control map stops search */
