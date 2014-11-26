@@ -21,6 +21,6 @@ spasm: $(OBJ) Makefile
 		$(CC) -o spasm $(OBJ_FILES) $(LDFLAGS)
 	 
 clean:
-		rm $(OBJ)
+		rm -f $(OBJ) spasm
 	 
 install: spasm /usr/bin/spasm
