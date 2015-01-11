@@ -23,4 +23,5 @@ spasm: $(OBJ) Makefile
 clean:
 		rm -f $(OBJ) spasm
 	 
-install: spasm /usr/bin/spasm
+install:
+	cp spasm /usr/bin/spasm
