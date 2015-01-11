@@ -27,3 +27,9 @@
 *.i*86
 *.x86_64
 *.hex
+
+# SPASM executable
+spasm
+
+# Debian packages
+*.deb
