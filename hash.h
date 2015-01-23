@@ -48,8 +48,7 @@ typedef struct
 	typedef std::unordered_map<const char *, void*, mystringhash, myequalto> maptype;
 	 maptype *table;
 	void (*remove_callback)(void *);
-	//list_t *list;
-	void *single_element;
+	list_t *list;
 }
 hash_t;
 

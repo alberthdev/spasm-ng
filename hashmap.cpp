@@ -127,10 +127,10 @@ static list_t *list_find(list_t *list, const char *name)
 
 hash_t *hash_init (size_t size, void remove_callback(void *)) {
 	hash_t *hashtable = new hash_t();
-	//hashtable->list = NULL;
+	hashtable->list = NULL;
 	hashtable->single_element = NULL;
 
-	if (false) { //size <= 1) {
+	if (false) { //size <= 16) {
 		hashtable->table = NULL;	
 	} else	{
 		hashtable->table = new hash_t::maptype();
@@ -148,8 +148,7 @@ void *hash_insert (hash_t *ht, void *store) {
 	if (ht->table != NULL) {
 		(*ht->table)[((store_t *) store)->name] = store;
 	} else {
-		ht->single_element = store;
-		//ht->list = list_prepend(ht->list, store);
+		list_t *item = list_find(ht->list, ((store_t *) store)->name);
 	}
 	return store;
 }
@@ -161,102 +160,50 @@ void *hash_insert (hash_t *ht, void *store) {
  */
 
 void *hash_lookup (hash_t *ht, const char *name) {
-	if (ht->table != NULL) {
-		auto it = ht->table->find(name);
-		if (it == ht->table->end()) {
-			return NULL;
-		}
-		return it->second;
-	} else {
-		return ht->single_element;
-		//list_t *item = list_find(ht->list, name);
-		//if (item != NULL) {
-		//	return item->data;
-		//}
-		//return NULL;
+	auto it = ht->table->find(name);
+	if (it == ht->table->end()) {
+		return NULL;
 	}
+	return it->second;
 }
 
 
 /*
  * Removes a hash from a hash table
- *   return 1 if the item was removed, 0 if otherwise
  */
 
 int hash_remove (hash_t *ht, const char *name) {
-	if (ht->table != NULL) {
-		auto it = ht->table->find(name);
-		if (it != ht->table->end()) {
-			auto store = it->second;
-			ht->table->erase(it);
-			ht->remove_callback(store);
-			return 1;
-		}
-		return 0;
-	} else {
-		//list_t *item = list_find(ht->list, name);
-		//if (item != NULL) {
-		//	ht->list = list_remove(ht->list, item);
-		//	return 1;
-		//}
-		if (ht->single_element != NULL) {
-			ht->remove_callback(ht->single_element);
-			ht->single_element = NULL;
-			return 1;
-		}
-		return 0;
+	auto it = ht->table->find(name);
+	if (it != ht->table->end()) {
+		auto store = it->second;
+		ht->table->erase(it);
+		ht->remove_callback(store);
+		return 1;
 	}
+	return 0;
 }
 
 void hash_enum (hash_t *ht, void enum_callback(void *, void *), void *arg) {
-	if (ht->table != NULL) {
-		for (auto it = ht->table->cbegin(); it != ht->table->cend(); it++)
-		{
-			enum_callback(it->second, arg);
-		}
-	} else {
-		//list_t *item = ht->list;
-		//while (item != NULL) {
-		//	enum_callback(item->data, arg);
-		//	item = item->next;
-		//}
-		if (ht->single_element != NULL) {
-			enum_callback(ht->single_element, arg);
-		}
+	for (auto it = ht->table->cbegin(); it != ht->table->cend(); it++)
+	{
+		enum_callback(it->second, arg);
 	}
 }
 
 int hash_count (hash_t *ht) {
-	if (ht->table != NULL) {
-		return ht->table->size();
-	} else {
-		//int size = 0;
-		//list_t *item = ht->list;
-		//while (item != NULL) {
-		//	size++;
-		//	item = item->next;
-		//}
-		//return size;
-		return ht->single_element != NULL ? 1 : 0;
-	}
+	return ht->table->size();
 }
 
 /*
  * Free a hash table, removing elements
  */
 void hash_free (hash_t *ht) {
-	if (ht->table != NULL)
+	for (auto it = ht->table->cbegin(); it != ht->table->cend(); it++)
 	{
-		for (auto it = ht->table->cbegin(); it != ht->table->cend(); it++)
-		{
-			ht->remove_callback(it->second);
-		}
+		ht->remove_callback(it->second);
+	}
+	if (ht->table != NULL) {
 		delete ht->table;
-	} else {
-		//list_free(ht->list, true, ht->remove_callback); 
-		if (ht->single_element != NULL) {
-			ht->remove_callback(ht->single_element);
-		}
 	}
 	delete ht;
 }
