@@ -8,8 +8,9 @@ Requirements
 On Windows, you will need the following to build SPASM-ng:
 
   * Visual Studio with C++ support
-    Visual Studio 2012 is recommended, but it may be possible to
-    downgrade. See http://stackoverflow.com/a/16196505 for more
+    
+    Visual Studio 2012 or newer is recommended, but it may be possible
+    to downgrade. See http://stackoverflow.com/a/16196505 for more
     info.
 
 On Linux, Mac OS X, and other *nix, you will need the following to
@@ -30,7 +31,8 @@ Suggested packages for Ubuntu/Debian:
   * libssl-dev
   * zlib1g-dev
   * libgmp-dev
-  * checkinstall (optional, only if you want to build Debian packages - .deb files)
+  * checkinstall (optional, only if you want to build Debian packages -
+    .deb files)
 
 Building
 --------
@@ -46,7 +48,29 @@ On Linux, Mac OS X, and other *nix, simply build by running:
 For Debian systems, you can run the following to create a Debian
 package:
 
+    # You should "make clean" before running this!
+    make clean
+    
+    # Create a Debian package (builds opt target):
     make debian
+
+Other Makefile commands:
+
+    # You should "make clean" before running any of this!
+    make clean
+    
+    # Build with -static (static linking, bigger binary due to
+    # including libraries):
+    make static
+    
+    # Build with -O3 optimization:
+    make opt
+    
+    # Build with both -static and -O3 optimization:
+    make opt-static
+    
+    # Create tarball of spasm-ng binary (builds opt-static target):
+    make tar
 
 Documentation
 -------------
@@ -80,12 +104,14 @@ https://github.com/alberthdev/spasm-ng/issues
 Copyright/License
 -----------------
 SPASM-ng was originally from the SPASM project, and was forked to fix a
-few bugs. It was originally written by Spencer Putt and Don Straney.
+few bugs. It was originally written by Spencer Putt and Don Straney,
+with additional development by Chris Shappell and James Montelongo.
 
 License:
 
     SPASM-ng - a z80 assembler with extra features to support dev for TI calcs!
-    Copyright (C) 2015 Spencer Putt, Don Straney, Chris Shappell, and James Montelongo
+    Copyright (C) 2015 Spencer Putt and Don Straney
+    Copyright (C) 2015 Chris Shappell and James Montelongo
     Copyright (C) 2015 Albert Huang (fixes to SPASM)
 
     This program is free software; you can redistribute it and/or modify
