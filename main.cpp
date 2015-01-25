@@ -206,7 +206,7 @@ int run_assembly()
 	return exit_code;
 }
 
-#ifdef _WIN32
+#if 0
 int CALLBACK WinMain(HINSTANCE hInst, HINSTANCE  hPrev, LPSTR lpCommandLine, int nCmdShow)
 {
 	return _AtlModule.WinMain(SW_HIDE);
