@@ -13,6 +13,7 @@ typedef enum {
 	MODE_STATS = 8,
 	MODE_LIST = 16,
 	MODE_COMMANDLINE = 32,
+	MODE_EZ80 = 64,
 } ASM_MODE;
 
 typedef enum {
