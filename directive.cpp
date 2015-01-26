@@ -440,19 +440,21 @@ addinstr_fail:
 		}
 		case 17: //ASSUME
 		{
+			char args[256];
+			read_expr(&ptr, args, "");
+
 			char word[256];
-			char value_str[256];
-			read_expr(&ptr, word, "=");
+			char *value_str = args;
+			read_expr(&value_str, word, "=");
 
 			int value = 1;
-			if (*ptr == '=') {
-				ptr++;
-				read_expr(&ptr, value_str, "");
-				parse_num(value_str, &value);
+			bool success = true;
+			if (*value_str == '=') {
+				success = parse_num(value_str+1, &value);
 			}
 
-			if (!(mode & MODE_EZ80) || strcasecmp(word, "adl")) {
-				SetLastSPASMError(SPASM_ERR_INVALID_OPTION, word);
+			if (!(mode & MODE_EZ80) || strcasecmp(word, "adl") || !success) {
+				SetLastSPASMError(SPASM_ERR_INVALID_OPTION, args);
 				return (char *)ptr;
 			}
 
