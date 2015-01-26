@@ -19,7 +19,7 @@
 
 char *handle_directive (const char *ptr) {
 	static const char *dirs[] = {"db", "dw", "end", "org", "byte", "word", "fill", "block", "addinstr",
-		"echo", "error", "list", "nolist", "equ", "show", "option", "seek", NULL};
+		"echo", "error", "list", "nolist", "equ", "show", "option", "seek", "assume", NULL};
 	const char *name_end;
 	char name_buf[32];
 	char *name;
@@ -436,6 +436,27 @@ addinstr_fail:
 			out_ptr += value - ((int) program_counter);
 			//printf("base: %p; ptr: %p\n", output_contents, out_ptr);
 			program_counter = value;
+			break;
+		}
+		case 17: //ASSUME
+		{
+			char word[256];
+			char value_str[256];
+			read_expr(&ptr, word, "=");
+
+			int value = 1;
+			if (*ptr == '=') {
+				ptr++;
+				read_expr(&ptr, value_str, "");
+				parse_num(value_str, &value);
+			}
+
+			if (!(mode & MODE_EZ80) || strcasecmp(word, "adl")) {
+				SetLastSPASMError(SPASM_ERR_INVALID_OPTION, word);
+				return (char *)ptr;
+			}
+
+			adl_mode = (value != 0);
 			break;
 		}
 	}
