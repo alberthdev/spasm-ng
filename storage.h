@@ -10,8 +10,8 @@
 #endif
 
 #define MAX_ARGS 16	//max number of args macros can have
-#define MAX_LABELS 14011 //prime number for hash table
-#define MAX_DEFINES 14011 //prime number for hash table
+#define MAX_LABELS 65535 //prime number for hash table
+#define MAX_DEFINES 65535 //prime number for hash table
 
 //used for defines and macros
 typedef struct define {
