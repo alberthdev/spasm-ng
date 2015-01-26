@@ -266,6 +266,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="modp_ascii.cpp" />
     <ClCompile Include="opcodes.cpp" />
+    <ClCompile Include="opcodes_ez80.cpp" />
     <ClCompile Include="parser.cpp" />
     <ClCompile Include="pass_one.cpp" />
     <ClCompile Include="pass_two.cpp" />
