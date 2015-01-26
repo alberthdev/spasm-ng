@@ -4,6 +4,7 @@
 
 #include "pass_one.h"
 #include "pass_two.h"
+#include "opcodes.h"
 #include "storage.h"
 #include "spasm.h"
 #include "utils.h"
@@ -279,6 +280,7 @@ int main (int argc, char **argv)
 				break;
 			case 'E':
 				mode |= MODE_EZ80;
+				all_opcodes = opcode_list_ez80;
 				break;
 			//handle no-colors flag
 			case 'N':
