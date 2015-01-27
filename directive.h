@@ -4,6 +4,7 @@
 typedef enum _ES_TYPE {
 	ES_BYTE,
 	ES_WORD,
+	ES_LONG,
 	ES_ECHO,
 	ES_FCREATE,
 	ES_NONE,
