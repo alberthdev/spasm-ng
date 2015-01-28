@@ -19,7 +19,7 @@
 
 char *handle_directive (const char *ptr) {
 	static const char *dirs[] = {"db", "dw", "end", "org", "byte", "word", "fill", "block", "addinstr",
-		"echo", "error", "list", "nolist", "equ", "show", "option", "seek", NULL};
+		"echo", "error", "list", "nolist", "equ", "show", "option", "seek", "assume", "dl", "long", NULL};
 	const char *name_end;
 	char name_buf[32];
 	char *name;
@@ -56,6 +56,12 @@ char *handle_directive (const char *ptr) {
 		case 5: //WORD
 		{
 			ptr = parse_emit_string (ptr, ES_WORD, NULL);
+			break;
+		}
+		case 18: //DL
+		case 19: //LONG
+		{
+			ptr = parse_emit_string (ptr, ES_LONG, NULL);
 			break;
 		}
 		case 3: //ORG
@@ -438,6 +444,29 @@ addinstr_fail:
 			program_counter = value;
 			break;
 		}
+		case 17: //ASSUME
+		{
+			char args[256];
+			read_expr(&ptr, args, "");
+
+			char word[256];
+			char *value_str = args;
+			read_expr(&value_str, word, "=");
+
+			int value = 1;
+			bool success = true;
+			if (*value_str == '=') {
+				success = parse_num(value_str+1, &value);
+			}
+
+			if (!(mode & MODE_EZ80) || strcasecmp(word, "adl") || !success) {
+				SetLastSPASMError(SPASM_ERR_INVALID_OPTION, args);
+				return (char *)ptr;
+			}
+
+			adl_mode = (value != 0);
+			break;
+		}
 	}
 
 	return (char *) ptr;
@@ -565,6 +594,13 @@ char *parse_emit_string (const char *ptr, ES_TYPE type, void *echo_target) {
 		                stats_datasize+=2;
 		                program_counter+=2;
 		                break;
+					}
+					case ES_LONG:
+					{
+						write_arg(value, ARG_NUM_24, 0);
+						stats_datasize+=3;
+						program_counter+=3;
+						break;
 					}
 				}
 

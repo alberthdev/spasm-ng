@@ -4,6 +4,7 @@
 typedef enum {
 	ARG_NUM_8,
 	ARG_NUM_16,
+	ARG_NUM_24,
 	ARG_ADDR_OFFSET,
 	ARG_IX_IY_OFFSET,
 	ARG_BIT_NUM,

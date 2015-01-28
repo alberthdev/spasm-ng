@@ -4,6 +4,7 @@
 
 #include "pass_one.h"
 #include "pass_two.h"
+#include "opcodes.h"
 #include "storage.h"
 #include "spasm.h"
 #include "utils.h"
@@ -230,7 +231,7 @@ int main (int argc, char **argv)
 		puts ("64-bit Version");
 #endif
 		puts ("\n\nspasm [options] <input file> <output file>\n");
-		puts ("Options:\n-T = Generate code listing\n-C = Code counter mode\n-L = Symbol table mode\n-S = Stats mode\n-O = Don't write to output file");
+		puts ("Options:\n-E = Assemble eZ80 code\n-T = Generate code listing\n-C = Code counter mode\n-L = Symbol table mode\n-S = Stats mode\n-O = Don't write to output file");
 		puts ("-I [directory] = Add include directory\n-A = Labels are cAse-sensitive\n-D<name>[=value] = Create a define 'name' [with 'value']");
 		puts ("-N = Don't use colors for messages");
 		puts ("-V <Expression> = Pipe expression directly into assembly");
@@ -276,6 +277,10 @@ int main (int argc, char **argv)
 				break;
 			case 'S':
 				mode |= MODE_STATS;
+				break;
+			case 'E':
+				mode |= MODE_EZ80;
+				all_opcodes = opcode_list_ez80;
 				break;
 			//handle no-colors flag
 			case 'N':

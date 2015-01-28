@@ -10,6 +10,7 @@ typedef struct _instr {
 	bool has_end_data;
 	unsigned char end_data;
 	int size;
+	int adl_exectime_penalty;
 } instr;
 
 typedef struct _opcode {
@@ -23,5 +24,6 @@ typedef struct _opcode {
 
 extern opcode *all_opcodes;
 extern opcode opcode_list[];
+extern opcode opcode_list_ez80[];
 
 #endif

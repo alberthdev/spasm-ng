@@ -292,13 +292,30 @@ void write_arg (int value, arg_type type, int or_value) {
 		}
 		case ARG_NUM_16:
 			//no range checking for 16 bits, as higher bits of labels are used to store page info
+			//however, eZ80 code does not carry page information, so 16-bit arguments should be 16-bit
+			if (mode & MODE_EZ80 && (value < -32768 || value > 65535))
+			{
+				SetLastSPASMWarning(SPASM_WARN_TRUNCATING_16);
+			}
 			write_out (value & 0xFF);
 			write_out ((value >> 8) & 0xFF);
 			break;
+		case ARG_NUM_24:
+			write_out (value & 0xFF);
+			write_out ((value >> 8) & 0xFF);
+			write_out ((value >> 16) & 0xFF);
+			break;
 		case ARG_ADDR_OFFSET:
-			value &= 0xFFFF;
-			value -= ((program_counter & 0xFFFF)+ 2);
-			
+			if (mode & MODE_EZ80) {
+				value &= 0xFFFFFF;
+				value -= ((program_counter & 0xFFFFFF) + 2);
+			}
+			else
+			{
+				value &= 0xFFFF;
+				value -= ((program_counter & 0xFFFF) + 2);
+			}
+
 			if (value < -128 || value > 127)
 			{
 				SetLastSPASMError(SPASM_ERR_JUMP_EXCEEDED, value);

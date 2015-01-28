@@ -22,9 +22,11 @@ static expand_buf_t* fcreate_bufs[MAX_BUFFERS];
 char *run_first_pass_line (char *ptr);
 char *run_first_pass_line_sec (char *ptr);
 char *handle_opcode_or_macro (char *ptr);
+int parse_suffix (char **opcode_end);
 char *match_opcode_args (char *ptr, char **arg_ptrs, char **arg_end_ptrs, opcode *curr_opcode, instr **curr_instr);
-void write_instruction_data (instr *curr_instr, char **arg_ptrs, char **arg_end_ptrs);
+int write_instruction_data (instr *curr_instr, char **arg_ptrs, char **arg_end_ptrs, int suffix);
 
+bool adl_mode;
 int listing_width;
 const char *last_banner = NULL;
 const char *built_in_fcreate = "Built-in fcreate";
@@ -114,6 +116,9 @@ void do_listing_for_line (char *ptr) {
 void run_first_pass (char *ptr) {
 	line_num = 1;
 	pass_one = true;
+	if (mode & MODE_EZ80) {
+		adl_mode = true;
+	}
 
 	while (!error_occurred && *ptr != '\0') {
 
@@ -277,15 +282,19 @@ char *handle_opcode_or_macro (char *ptr) {
 	name_end = skip_to_name_end (ptr);
 	ptr = name_end;
 
+	//parse the suffix if possible
+	char *opcode_end = name_end;
+	int suffix = -1;
+	if (mode & MODE_EZ80)
+		suffix = parse_suffix(&opcode_end);
+
 	//try to match it against opcodes first
 	curr_opcode = all_opcodes;
 	while (curr_opcode && curr_opcode->name) {
-		if (!strncasecmp (name_start, curr_opcode->name, max(strlen(curr_opcode->name), name_end - name_start)))
+		if (!strncasecmp (name_start, curr_opcode->name, max(strlen(curr_opcode->name), opcode_end - name_start)))
 			break;
 		curr_opcode = curr_opcode->next;
 	}
-
-	
 
 	//if it was found, then find the right instruction
 	if (curr_opcode && curr_opcode->name) {
@@ -300,13 +309,21 @@ char *handle_opcode_or_macro (char *ptr) {
 		if (curr_instr != NULL)
 		{
 			//if that worked, write data + args
-			write_instruction_data (curr_instr, arg_ptrs, arg_end_ptrs);
+			int size = write_instruction_data (curr_instr, arg_ptrs, arg_end_ptrs, suffix);
 
 			//increment program counter and stats
-			program_counter += curr_instr->size;
-			stats_codesize += curr_instr->size;
+			program_counter += size;
+			stats_codesize += size;
 			stats_mintime += curr_instr->min_exectime;
 			stats_maxtime += curr_instr->max_exectime;
+			if (MODE_EZ80) {
+				//increment stats further based on suffix and mode
+				int penalty = (suffix >= 0 ? 1 : 0);
+				if ((suffix < 0 && adl_mode) || suffix > 0)
+					penalty += curr_instr->adl_exectime_penalty;
+				stats_mintime += penalty;
+				stats_maxtime += penalty;
+			}
 		}
 
 	} else {
@@ -508,6 +525,38 @@ char *handle_opcode_or_macro (char *ptr) {
 	return ptr;
 }
 
+/*
+ * Attempts to parse a suffix at the end of an
+ * eZ80 opcode. Returns -1 if no suffix found,
+ * or a bitmask corresponding to the proper
+ * suffix. If a suffix is found, the opcode_end
+ * argument is set to the end of the main opcode.
+ */
+
+int parse_suffix(char **opcode_end) {
+	char *suffix_ptr = *opcode_end;
+	char last1 = tolower(*--suffix_ptr);
+	if (last1 == 's' || last1 == 'l') {
+		char last2 = tolower(*--suffix_ptr);
+		if (last2 == '.') {
+			*opcode_end = suffix_ptr;
+			return (last1 == 'l' ? SUFFIX_L : 0) | (adl_mode ? SUFFIX_IL : 0);
+		}
+		if (last2 == 'i') {
+			last2 = tolower(*--suffix_ptr);
+			if (last2 == '.') {
+				*opcode_end = suffix_ptr;
+				return (adl_mode ? SUFFIX_L : 0) | (last1 == 'l' ? SUFFIX_IL : 0);
+			}
+			if (*--suffix_ptr == '.' && (last2 == 's' || last2 == 'l')) {
+				*opcode_end = suffix_ptr;
+				return (last2 == 'l' ? SUFFIX_L : 0) | (last1 == 'l' ? SUFFIX_IL : 0);
+			}
+		}
+	}
+	return -1;
+}
+
 
 /*
  * Tries to match instruction
@@ -586,12 +635,25 @@ char *match_opcode_args (char *ptr, char **arg_ptrs, char **arg_end_ptrs, opcode
  * Writes the instruction data and arguments
  * for curr_instr, with argument text start
  * and end points in arg_ptrs and arg_end_ptrs
+ *
+ * Suffix is relevant for eZ80 instructions
+ * and may change the instruction's size,
+ * so the final size is returned.
  */
 
-void write_instruction_data (instr *curr_instr, char **arg_ptrs, char **arg_end_ptrs) {
+int write_instruction_data (instr *curr_instr, char **arg_ptrs, char **arg_end_ptrs, int suffix) {
 	char *bit_arg_text = NULL;
 	bool has_bit_arg = false;
 	int i, curr_arg_num = 0;
+	int size = curr_instr->size;
+
+	if (suffix >= 0) {
+		write_out (0x40 + suffix * 9);
+		size++;
+	}
+	else if (mode & MODE_EZ80) {
+		suffix = adl_mode ? (SUFFIX_L | SUFFIX_IL) : 0;
+	}
 
 	//write the actual instruction data first
 	if (mode & MODE_NORMAL || mode & MODE_LIST) {
@@ -631,7 +693,13 @@ void write_instruction_data (instr *curr_instr, char **arg_ptrs, char **arg_end_
 
 			switch (curr_instr->args[i]) {
 				case '*': //16-bit number
-					add_pass_two_expr (arg_text, ARG_NUM_16, 0);
+					if (suffix >= 0 && suffix & SUFFIX_IL) {
+						size++;
+						add_pass_two_expr (arg_text, ARG_NUM_24, 0);
+					}
+					else {
+						add_pass_two_expr (arg_text, ARG_NUM_16, 0);
+					}
 					free (arg_text);
 					break;
 				case '&': //8-bit number
@@ -668,6 +736,8 @@ void write_instruction_data (instr *curr_instr, char **arg_ptrs, char **arg_end_
 
 	if (bit_arg_text)
 		free (bit_arg_text);
+
+	return size;
 }
 
 

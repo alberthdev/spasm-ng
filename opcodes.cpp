@@ -4,7 +4,22 @@
 
 #define NumElm(array) (sizeof (array) / sizeof ((array)[0]))
 
-instr cp_instrs[] = {
+static instr cp_instrs[] = {
+	{ "A,IXH", { 0xBC, 0xDD }, 2, 8, 8, false, 0x00, 2 },
+	{ "A,IYH", { 0xBC, 0xFD }, 2, 8, 8, false, 0x00, 2 },
+	{ "A,IXL", { 0xBD, 0xDD }, 2, 8, 8, false, 0x00, 2 },
+	{ "A,IYL", { 0xBD, 0xFD }, 2, 8, 8, false, 0x00, 2 },
+	{ "A,(IX@)", { 0xBE, 0xDD }, 2, 19, 19, false, 0x00, 3 },
+	{ "A,(IY@)", { 0xBE, 0xFD }, 2, 19, 19, false, 0x00, 3 },
+	{ "A,B", { 0xB8 }, 1, 4, 4, false, 0x00, 1 },
+	{ "A,C", { 0xB9 }, 1, 4, 4, false, 0x00, 1 },
+	{ "A,D", { 0xBA }, 1, 4, 4, false, 0x00, 1 },
+	{ "A,E", { 0xBB }, 1, 4, 4, false, 0x00, 1 },
+	{ "A,H", { 0xBC }, 1, 4, 4, false, 0x00, 1 },
+	{ "A,L", { 0xBD }, 1, 4, 4, false, 0x00, 1 },
+	{ "A,(HL)", { 0xBE }, 1, 7, 7, false, 0x00, 1 },
+	{ "A,A", { 0xBF }, 1, 4, 4, false, 0x00, 1 },
+	{ "A,&", { 0xFE }, 1, 7, 7, false, 0x00, 2 },
 	{"IXH", {0xBC, 0xDD}, 2, 8, 8, false, 0x00, 2},
 	{"IYH", {0xBC, 0xFD}, 2, 8, 8, false, 0x00, 2},
 	{"IXL", {0xBD, 0xDD}, 2, 8, 8, false, 0x00, 2},
@@ -21,25 +36,25 @@ instr cp_instrs[] = {
 	{"A", {0xBF}, 1, 4, 4, false, 0x00, 1},
 	{"&", {0xFE}, 1, 7, 7, false, 0x00, 2}};
 
-instr di_instrs[] = {
+static instr di_instrs[] = {
 	{"", {0xF3}, 1, 4, 4, false, 0x00, 1}};
 
-instr ei_instrs[] = {
+static instr ei_instrs[] = {
 	{"", {0xFB}, 1, 4, 4, false, 0x00, 1}};
 
-instr ex_instrs[] = {
+static instr ex_instrs[] = {
 	{"(SP),IX", {0xE3, 0xDD}, 2, 23, 23, false, 0x00, 2},
 	{"(SP),IY", {0xE3, 0xFD}, 2, 23, 23, false, 0x00, 2},
 	{"AF,AF'", {0x08}, 1, 4, 4, false, 0x00, 1},
 	{"(SP),HL", {0xE3}, 1, 19, 19, false, 0x00, 1},
 	{"DE,HL", {0xEB}, 1, 4, 4, false, 0x00, 1}};
 
-instr im_instrs[] = {
+static instr im_instrs[] = {
 	{"0", {0x46, 0xED}, 2, 8, 8, false, 0x00, 2},
 	{"1", {0x56, 0xED}, 2, 8, 8, false, 0x00, 2},
 	{"2", {0x5E, 0xED}, 2, 8, 8, false, 0x00, 2}};
 
-instr in_instrs[] = {
+static instr in_instrs[] = {
 	{"A,(C)", {0x78, 0xED}, 2, 12, 12, false, 0x00, 2},
 	{"A,(&)", {0xDB}, 1, 11, 11, false, 0x00, 2},
 	{"B,(C)", {0x40, 0xED}, 2, 12, 12, false, 0x00, 2},
@@ -50,7 +65,7 @@ instr in_instrs[] = {
 	{"L,(C)", {0x68, 0xED}, 2, 12, 12, false, 0x00, 2},
 	{"F,(C)", {0x70, 0xED}, 2, 12, 12, false, 0x00, 2}};
 
-instr jp_instrs[] = {
+static instr jp_instrs[] = {
 	{"(IX)", {0xE9, 0xDD}, 2, 8, 8, false, 0x00, 2},
 	{"(IY)", {0xE9, 0xFD}, 2, 8, 8, false, 0x00, 2},
 	{"NZ,*", {0xC2}, 1, 10, 10, false, 0x00, 3},
@@ -64,14 +79,14 @@ instr jp_instrs[] = {
 	{"M,*", {0xFA}, 1, 10, 10, false, 0x00, 3},
 	{"*", {0xC3}, 1, 10, 10, false, 0x00, 3}};
 
-instr jr_instrs[] = {
+static instr jr_instrs[] = {
 	{"NZ,%", {0x20}, 1, 7, 12, false, 0x00, 2},
 	{"Z,%", {0x28}, 1, 7, 12, false, 0x00, 2},
 	{"NC,%", {0x30}, 1, 7, 12, false, 0x00, 2},
 	{"C,%", {0x38}, 1, 7, 12, false, 0x00, 2},
 	{"%", {0x18}, 1, 12, 12, false, 0x00, 2}};
 
-instr ld_instrs[] = {
+static instr ld_instrs[] = {
 	{"SP,HL", {0xF9}, 1, 6, 6, false, 0x00, 1},
 	{"A,I", {0x57, 0xED}, 2, 9, 9, false, 0x00, 2},
 	{"A,R", {0x5F, 0xED}, 2, 9, 9, false, 0x00, 2},
@@ -261,7 +276,22 @@ instr ld_instrs[] = {
 	
 };
 
-instr or_instrs[] = {
+static instr or_instrs[] = {
+	{ "A,IXH", { 0xB4, 0xDD }, 2, 8, 8, false, 0x00, 2 },
+	{ "A,IYH", { 0xB4, 0xFD }, 2, 8, 8, false, 0x00, 2 },
+	{ "A,IXL", { 0xB5, 0xDD }, 2, 8, 8, false, 0x00, 2 },
+	{ "A,IYL", { 0xB5, 0xFD }, 2, 8, 8, false, 0x00, 2 },
+	{ "A,(IX@)", { 0xB6, 0xDD }, 2, 19, 19, false, 0x00, 3 },
+	{ "A,(IY@)", { 0xB6, 0xFD }, 2, 19, 19, false, 0x00, 3 },
+	{ "A,B", { 0xB0 }, 1, 4, 4, false, 0x00, 1 },
+	{ "A,C", { 0xB1 }, 1, 4, 4, false, 0x00, 1 },
+	{ "A,D", { 0xB2 }, 1, 4, 4, false, 0x00, 1 },
+	{ "A,E", { 0xB3 }, 1, 4, 4, false, 0x00, 1 },
+	{ "A,H", { 0xB4 }, 1, 4, 4, false, 0x00, 1 },
+	{ "A,L", { 0xB5 }, 1, 4, 4, false, 0x00, 1 },
+	{ "A,(HL)", { 0xB6 }, 1, 7, 7, false, 0x00, 1 },
+	{ "A,A", { 0xB7 }, 1, 4, 4, false, 0x00, 1 },
+	{ "A,&", { 0xF6 }, 1, 7, 7, false, 0x00, 2 },
 	{"IXH", {0xB4, 0xDD}, 2, 8, 8, false, 0x00, 2},
 	{"IYH", {0xB4, 0xFD}, 2, 8, 8, false, 0x00, 2},
 	{"IXL", {0xB5, 0xDD}, 2, 8, 8, false, 0x00, 2},
@@ -278,7 +308,7 @@ instr or_instrs[] = {
 	{"A", {0xB7}, 1, 4, 4, false, 0x00, 1},
 	{"&", {0xF6}, 1, 7, 7, false, 0x00, 2}};
 
-instr rl_instrs[] = {
+static instr rl_instrs[] = {
 	{"B,(IX@)", {0xCB, 0xDD}, 2, 23, 23, true, 0x10, 4},
 	{"B,(IY@)", {0xCB, 0xFD}, 2, 23, 23, true, 0x10, 4},
 	{"C,(IX@)", {0xCB, 0xDD}, 2, 23, 23, true, 0x11, 4},
@@ -304,7 +334,7 @@ instr rl_instrs[] = {
 	{"(HL)", {0x16, 0xCB}, 2, 15, 15, false, 0x00, 2},
 	{"A", {0x17, 0xCB}, 2, 8, 8, false, 0x00, 2}};
 
-instr rr_instrs[] = {
+static instr rr_instrs[] = {
 	{"B,(IX@)", {0xCB, 0xDD}, 2, 23, 23, true, 0x18, 4},
 	{"B,(IY@)", {0xCB, 0xFD}, 2, 23, 23, true, 0x18, 4},
 	{"C,(IX@)", {0xCB, 0xDD}, 2, 23, 23, true, 0x19, 4},
@@ -330,7 +360,7 @@ instr rr_instrs[] = {
 	{"(HL)", {0x1E, 0xCB}, 2, 15, 15, false, 0x00, 2},
 	{"A", {0x1F, 0xCB}, 2, 8, 8, false, 0x00, 2}};
 
-instr adc_instrs[] = {
+static instr adc_instrs[] = {
 	{"A,IXH", {0x8C, 0xDD}, 2, 8, 8, false, 0x00, 2},
 	{"A,IYH", {0x8C, 0xFD}, 2, 8, 8, false, 0x00, 2},
 	{"A,IXL", {0x8D, 0xDD}, 2, 8, 8, false, 0x00, 2},
@@ -351,7 +381,7 @@ instr adc_instrs[] = {
 	{"HL,HL", {0x6A, 0xED}, 2, 15, 15, false, 0x00, 2},
 	{"HL,SP", {0x7A, 0xED}, 2, 15, 15, false, 0x00, 2}};
 
-instr add_instrs[] = {
+static instr add_instrs[] = {
 	{"IX,BC", {0x09, 0xDD}, 2, 15, 15, false, 0x00, 2},
 	{"IY,BC", {0x09, 0xFD}, 2, 15, 15, false, 0x00, 2},
 	{"IX,DE", {0x19, 0xDD}, 2, 15, 15, false, 0x00, 2},
@@ -380,7 +410,22 @@ instr add_instrs[] = {
 	{"HL,SP", {0x39}, 1, 11, 11, false, 0x00, 1},
 	{"A,&", {0xC6}, 1, 7, 7, false, 0x00, 2}};
 
-instr and_instrs[] = {
+static instr and_instrs[] = {
+	{ "A,IXH", { 0xA4, 0xDD }, 2, 8, 8, false, 0x00, 2 },
+	{ "A,IYH", { 0xA4, 0xFD }, 2, 8, 8, false, 0x00, 2 },
+	{ "A,IXL", { 0xA5, 0xDD }, 2, 8, 8, false, 0x00, 2 },
+	{ "A,IYL", { 0xA5, 0xFD }, 2, 8, 8, false, 0x00, 2 },
+	{ "A,(IX@)", { 0xA6, 0xDD }, 2, 19, 19, false, 0x00, 3 },
+	{ "A,(IY@)", { 0xA6, 0xFD }, 2, 19, 19, false, 0x00, 3 },
+	{ "A,B", { 0xA0 }, 1, 4, 4, false, 0x00, 1 },
+	{ "A,C", { 0xA1 }, 1, 4, 4, false, 0x00, 1 },
+	{ "A,D", { 0xA2 }, 1, 4, 4, false, 0x00, 1 },
+	{ "A,E", { 0xA3 }, 1, 4, 4, false, 0x00, 1 },
+	{ "A,H", { 0xA4 }, 1, 4, 4, false, 0x00, 1 },
+	{ "A,L", { 0xA5 }, 1, 4, 4, false, 0x00, 1 },
+	{ "A,(HL)", { 0xA6 }, 1, 7, 7, false, 0x00, 1 },
+	{ "A,A", { 0xA7 }, 1, 4, 4, false, 0x00, 1 },
+	{ "A,&", { 0xE6 }, 1, 7, 7, false, 0x00, 2 },
 	{"IXH", {0xA4, 0xDD}, 2, 8, 8, false, 0x00, 2},
 	{"IYH", {0xA4, 0xFD}, 2, 8, 8, false, 0x00, 2},
 	{"IXL", {0xA5, 0xDD}, 2, 8, 8, false, 0x00, 2},
@@ -397,7 +442,7 @@ instr and_instrs[] = {
 	{"A", {0xA7}, 1, 4, 4, false, 0x00, 1},
 	{"&", {0xE6}, 1, 7, 7, false, 0x00, 2}};
 
-instr bit_instrs[] = {
+static instr bit_instrs[] = {
 	{"^,(IX@)", {0xCB, 0xDD}, 2, 23, 23, true, 0x46, 4},
 	{"^,(IY@)", {0xCB, 0xFD}, 2, 23, 23, true, 0x46, 4},
 	{"^,B", {0xCB}, 1, 8, 8, true, 0x40, 2},
@@ -409,22 +454,22 @@ instr bit_instrs[] = {
 	{"^,(HL)", {0xCB}, 1, 12, 12, true, 0x46, 2},
 	{"^,A", {0xCB}, 1, 8, 8, true, 0x47, 2}};
 
-instr ccf_instrs[] = {
+static instr ccf_instrs[] = {
 	{"", {0x3F}, 1, 4, 4, false, 0x00, 1}};
 
-instr cpd_instrs[] = {
+static instr cpd_instrs[] = {
 	{"", {0xA9, 0xED}, 2, 16, 16, false, 0x00, 2}};
 
-instr cpi_instrs[] = {
+static instr cpi_instrs[] = {
 	{"", {0xA1, 0xED}, 2, 16, 16, false, 0x00, 2}};
 
-instr cpl_instrs[] = {
+static instr cpl_instrs[] = {
 	{"", {0x2F}, 1, 4, 4, false, 0x00, 1}};
 
-instr daa_instrs[] = {
+static instr daa_instrs[] = {
 	{"", {0x27}, 1, 4, 4, false, 0x00, 1}};
 
-instr dec_instrs[] = {
+static instr dec_instrs[] = {
 	{"IXH", {0x25, 0xDD}, 2, 8, 8, false, 0x00, 2},
 	{"IYH", {0x25, 0xFD}, 2, 8, 8, false, 0x00, 2},
 	{"IX", {0x2B, 0xDD}, 2, 10, 10, false, 0x00, 2},
@@ -446,10 +491,10 @@ instr dec_instrs[] = {
 	{"SP", {0x3B}, 1, 6, 6, false, 0x00, 1},
 	{"A", {0x3D}, 1, 4, 4, false, 0x00, 1}};
 
-instr exx_instrs[] = {
+static instr exx_instrs[] = {
 	{"", {0xD9}, 1, 4, 4, false, 0x00, 1}};
 
-instr inc_instrs[] = {
+static instr inc_instrs[] = {
 	{"IX", {0x23, 0xDD}, 2, 10, 10, false, 0x00, 2},
 	{"IY", {0x23, 0xFD}, 2, 10, 10, false, 0x00, 2},
 	{"IXH", {0x24, 0xDD}, 2, 8, 8, false, 0x00, 2},
@@ -471,25 +516,25 @@ instr inc_instrs[] = {
 	{"(HL)", {0x34}, 1, 11, 11, false, 0x00, 1},
 	{"A", {0x3C}, 1, 4, 4, false, 0x00, 1}};
 
-instr ind_instrs[] = {
+static instr ind_instrs[] = {
 	{"", {0xAA, 0xED}, 2, 16, 16, false, 0x00, 2}};
 
-instr ini_instrs[] = {
+static instr ini_instrs[] = {
 	{"", {0xA2, 0xED}, 2, 16, 16, false, 0x00, 2}};
 
-instr ldd_instrs[] = {
+static instr ldd_instrs[] = {
 	{"", {0xA8, 0xED}, 2, 16, 16, false, 0x00, 2}};
 
-instr ldi_instrs[] = {
+static instr ldi_instrs[] = {
 	{"", {0xA0, 0xED}, 2, 16, 16, false, 0x00, 2}};
 
-instr neg_instrs[] = {
+static instr neg_instrs[] = {
 	{"", {0x44, 0xED}, 2, 8, 8, false, 0x00, 2}};
 
-instr nop_instrs[] = {
+static instr nop_instrs[] = {
 	{"", {0x00}, 1, 4, 4, false, 0x00, 1}};
 
-instr out_instrs[] = {
+static instr out_instrs[] = {
 	{"(C),A", {0x79, 0xED}, 2, 12, 12, false, 0x00, 2},
 	{"(&),A", {0xD3}, 1, 11, 11, false, 0x00, 2},
 	{"(C),B", {0x41, 0xED}, 2, 12, 12, false, 0x00, 2},
@@ -500,7 +545,7 @@ instr out_instrs[] = {
 	{"(C),L", {0x69, 0xED}, 2, 12, 12, false, 0x00, 2},
 	{"(C),0", {0x71, 0xED}, 2, 12, 12, false, 0x00, 2}};
 
-instr pop_instrs[] = {
+static instr pop_instrs[] = {
 	{"IX", {0xE1, 0xDD}, 2, 14, 14, false, 0x00, 2},
 	{"IY", {0xE1, 0xFD}, 2, 14, 14, false, 0x00, 2},
 	{"BC", {0xC1}, 1, 10, 10, false, 0x00, 1},
@@ -508,7 +553,7 @@ instr pop_instrs[] = {
 	{"HL", {0xE1}, 1, 10, 10, false, 0x00, 1},
 	{"AF", {0xF1}, 1, 10, 10, false, 0x00, 1}};
 
-instr res_instrs[] = {
+static instr res_instrs[] = {
 	{"B,^,(IX@)", {0xCB, 0xDD}, 2, 23, 23, true, 0x80, 4},
 	{"B,^,(IY@)", {0xCB, 0xFD}, 2, 23, 23, true, 0x80, 4},
 	{"C,^,(IX@)", {0xCB, 0xDD}, 2, 23, 23, true, 0x81, 4},
@@ -534,7 +579,7 @@ instr res_instrs[] = {
 	{"^,(HL)", {0xCB}, 1, 15, 15, true, 0x86, 2},
 	{"^,A", {0xCB}, 1, 8, 8, true, 0x87, 2}};
 
-instr ret_instrs[] = {
+static instr ret_instrs[] = {
 	{"", {0xC9}, 1, 10, 10, false, 0x00, 1},
 	{"NZ", {0xC0}, 1, 5, 11, false, 0x00, 1},
 	{"Z", {0xC8}, 1, 5, 11, false, 0x00, 1},
@@ -545,10 +590,10 @@ instr ret_instrs[] = {
 	{"P", {0xF0}, 1, 5, 11, false, 0x00, 1},
 	{"M", {0xF8}, 1, 5, 11, false, 0x00, 1}};
 
-instr rla_instrs[] = {
+static instr rla_instrs[] = {
 	{"", {0x17}, 1, 4, 4, false, 0x00, 1}};
 
-instr rlc_instrs[] = {
+static instr rlc_instrs[] = {
 	{"B,(IX@)", {0xCB, 0xDD}, 2, 23, 23, true, 0x00, 4},
 	{"B,(IY@)", {0xCB, 0xFD}, 2, 23, 23, true, 0x00, 4},
 	{"C,(IX@)", {0xCB, 0xDD}, 2, 23, 23, true, 0x01, 4},
@@ -574,13 +619,13 @@ instr rlc_instrs[] = {
 	{"(HL)", {0x06, 0xCB}, 2, 15, 15, false, 0x00, 2},
 	{"A", {0x07, 0xCB}, 2, 8, 8, false, 0x00, 2}};
 
-instr rld_instrs[] = {
+static instr rld_instrs[] = {
 	{"", {0x6F, 0xED}, 2, 18, 18, false, 0x00, 2}};
 
-instr rra_instrs[] = {
+static instr rra_instrs[] = {
 	{"", {0x1F}, 1, 4, 4, false, 0x00, 1}};
 
-instr rrc_instrs[] = {
+static instr rrc_instrs[] = {
 	{"B,(IX@)", {0xCB, 0xDD}, 2, 23, 23, true, 0x08, 4},
 	{"B,(IY@)", {0xCB, 0xFD}, 2, 23, 23, true, 0x08, 4},
 	{"C,(IX@)", {0xCB, 0xDD}, 2, 23, 23, true, 0x09, 4},
@@ -606,10 +651,10 @@ instr rrc_instrs[] = {
 	{"(HL)", {0x0E, 0xCB}, 2, 15, 15, false, 0x00, 2},
 	{"A", {0x0F, 0xCB}, 2, 8, 8, false, 0x00, 2}};
 
-instr rrd_instrs[] = {
+static instr rrd_instrs[] = {
 	{"", {0x67, 0xED}, 2, 18, 18, false, 0x00, 2}};
 
-instr rst_instrs[] = {
+static instr rst_instrs[] = {
 	{"00H", {0xC7}, 1, 11, 11, false, 0x00, 1},
 	{"08H", {0xCF}, 1, 11, 11, false, 0x00, 1},
 	{"10H", {0xD7}, 1, 11, 11, false, 0x00, 1},
@@ -620,7 +665,7 @@ instr rst_instrs[] = {
 	{"38H", {0xFF}, 1, 11, 11, false, 0x00, 1},
 	{"#",   {0xFF}, 0, 11, 11, false, 0x00, 1}};
 
-instr sbc_instrs[] = {
+static instr sbc_instrs[] = {
 	{"A,IXH", {0x9C, 0xDD}, 2, 8, 8, false, 0x00, 2},
 	{"A,IYH", {0x9C, 0xFD}, 2, 8, 8, false, 0x00, 2},
 	{"A,IXL", {0x9D, 0xDD}, 2, 8, 8, false, 0x00, 2},
@@ -641,10 +686,10 @@ instr sbc_instrs[] = {
 	{"HL,HL", {0x62, 0xED}, 2, 15, 15, false, 0x00, 2},
 	{"HL,SP", {0x72, 0xED}, 2, 15, 15, false, 0x00, 2}};
 
-instr scf_instrs[] = {
+static instr scf_instrs[] = {
 	{"", {0x37}, 1, 4, 4, false, 0x00, 1}};
 
-instr set_instrs[] = {
+static instr set_instrs[] = {
 	{"B,^,(IX@)", {0xCB, 0xDD}, 2, 0, 0, true, 0xC0, 4},
 	{"B,^,(IY@)", {0xCB, 0xFD}, 2, 0, 0, true, 0xC0, 4},
 	{"C,^,(IX@)", {0xCB, 0xDD}, 2, 0, 0, true, 0xC1, 4},
@@ -670,7 +715,7 @@ instr set_instrs[] = {
 	{"^,(HL)", {0xCB}, 1, 15, 15, true, 0xC6, 2},
 	{"^,A", {0xCB}, 1, 8, 8, true, 0xC7, 2}};
 
-instr sl1_instrs[] = {
+static instr sl1_instrs[] = {
 	{"B,(IX@)", {0xCB, 0xDD}, 2, 0, 0, true, 0x30, 4},
 	{"B,(IY@)", {0xCB, 0xFD}, 2, 0, 0, true, 0x30, 4},
 	{"C,(IX@)", {0xCB, 0xDD}, 2, 0, 0, true, 0x31, 4},
@@ -696,7 +741,7 @@ instr sl1_instrs[] = {
 	{"(HL)", {0x36, 0xCB}, 2, 0, 0, false, 0x00, 2},
 	{"A", {0x37, 0xCB}, 2, 0, 0, false, 0x00, 2}};
 
-instr sla_instrs[] = {
+static instr sla_instrs[] = {
 	{"B,(IX@)", {0xCB, 0xDD}, 2, 0, 0, true, 0x20, 4},
 	{"B,(IY@)", {0xCB, 0xFD}, 2, 0, 0, true, 0x20, 4},
 	{"C,(IX@)", {0xCB, 0xDD}, 2, 0, 0, true, 0x21, 4},
@@ -722,7 +767,7 @@ instr sla_instrs[] = {
 	{"(HL)", {0x26, 0xCB}, 2, 15, 15, false, 0x00, 2},
 	{"A", {0x27, 0xCB}, 2, 8, 8, false, 0x00, 2}};
 
-instr sll_instrs[] = {
+static instr sll_instrs[] = {
 	{"B,(IX@)", {0xCB, 0xDD}, 2, 0, 0, true, 0x30, 4},
 	{"B,(IY@)", {0xCB, 0xFD}, 2, 0, 0, true, 0x30, 4},
 	{"C,(IX@)", {0xCB, 0xDD}, 2, 0, 0, true, 0x31, 4},
@@ -748,7 +793,7 @@ instr sll_instrs[] = {
 	{"(HL)", {0x36, 0xCB}, 2, 0, 0, false, 0x00, 2},
 	{"A", {0x37, 0xCB}, 2, 0, 0, false, 0x00, 2}};
 
-instr sra_instrs[] = {
+static instr sra_instrs[] = {
 	{"B,(IX@)", {0xCB, 0xDD}, 2, 0, 0, true, 0x28, 4},
 	{"B,(IY@)", {0xCB, 0xFD}, 2, 0, 0, true, 0x28, 4},
 	{"C,(IX@)", {0xCB, 0xDD}, 2, 0, 0, true, 0x29, 4},
@@ -774,7 +819,7 @@ instr sra_instrs[] = {
 	{"(HL)", {0x2E, 0xCB}, 2, 15, 15, false, 0x00, 2},
 	{"A", {0x2F, 0xCB}, 2, 8, 8, false, 0x00, 2}};
 
-instr srl_instrs[] = {
+static instr srl_instrs[] = {
 	{"B,(IX@)", {0xCB, 0xDD}, 2, 0, 0, true, 0x38, 4},
 	{"B,(IY@)", {0xCB, 0xFD}, 2, 0, 0, true, 0x38, 4},
 	{"C,(IX@)", {0xCB, 0xDD}, 2, 0, 0, true, 0x39, 4},
@@ -800,7 +845,22 @@ instr srl_instrs[] = {
 	{"(HL)", {0x3E, 0xCB}, 2, 15, 15, false, 0x00, 2},
 	{"A", {0x3F, 0xCB}, 2, 8, 8, false, 0x00, 2}};
 
-instr sub_instrs[] = {
+static instr sub_instrs[] = {
+	{ "A,IXH", { 0x94, 0xDD }, 2, 0, 0, false, 0x00, 2 },
+	{ "A,IYH", { 0x94, 0xFD }, 2, 0, 0, false, 0x00, 2 },
+	{ "A,IXL", { 0x95, 0xDD }, 2, 0, 0, false, 0x00, 2 },
+	{ "A,IYL", { 0x95, 0xFD }, 2, 0, 0, false, 0x00, 2 },
+	{ "A,(IX@)", { 0x96, 0xDD }, 2, 19, 19, false, 0x00, 3 },
+	{ "A,(IY@)", { 0x96, 0xFD }, 2, 19, 19, false, 0x00, 3 },
+	{ "A,B", { 0x90 }, 1, 4, 4, false, 0x00, 1 },
+	{ "A,C", { 0x91 }, 1, 4, 4, false, 0x00, 1 },
+	{ "A,D", { 0x92 }, 1, 4, 4, false, 0x00, 1 },
+	{ "A,E", { 0x93 }, 1, 4, 4, false, 0x00, 1 },
+	{ "A,H", { 0x94 }, 1, 4, 4, false, 0x00, 1 },
+	{ "A,L", { 0x95 }, 1, 4, 4, false, 0x00, 1 },
+	{ "A,(HL)", { 0x96 }, 1, 7, 7, false, 0x00, 1 },
+	{ "A,A", { 0x97 }, 1, 4, 4, false, 0x00, 1 },
+	{ "A,&", { 0xD6 }, 1, 7, 7, false, 0x00, 2 },
 	{"IXH", {0x94, 0xDD}, 2, 0, 0, false, 0x00, 2},
 	{"IYH", {0x94, 0xFD}, 2, 0, 0, false, 0x00, 2},
 	{"IXL", {0x95, 0xDD}, 2, 0, 0, false, 0x00, 2},
@@ -817,7 +877,22 @@ instr sub_instrs[] = {
 	{"A", {0x97}, 1, 4, 4, false, 0x00, 1},
 	{"&", {0xD6}, 1, 7, 7, false, 0x00, 2}};
 
-instr xor_instrs[] = {
+static instr xor_instrs[] = {
+	{ "A,IXH", { 0xAC, 0xDD }, 2, 0, 0, false, 0x00, 2 },
+	{ "A,IYH", { 0xAC, 0xFD }, 2, 0, 0, false, 0x00, 2 },
+	{ "A,IXL", { 0xAD, 0xDD }, 2, 0, 0, false, 0x00, 2 },
+	{ "A,IYL", { 0xAD, 0xFD }, 2, 0, 0, false, 0x00, 2 },
+	{ "A,(IX@)", { 0xAE, 0xDD }, 2, 19, 19, false, 0x00, 3 },
+	{ "A,(IY@)", { 0xAE, 0xFD }, 2, 19, 19, false, 0x00, 3 },
+	{ "A,A", { 0xAF }, 1, 4, 4, false, 0x00, 1 },
+	{ "A,B", { 0xA8 }, 1, 4, 4, false, 0x00, 1 },
+	{ "A,C", { 0xA9 }, 1, 4, 4, false, 0x00, 1 },
+	{ "A,D", { 0xAA }, 1, 4, 4, false, 0x00, 1 },
+	{ "A,E", { 0xAB }, 1, 4, 4, false, 0x00, 1 },
+	{ "A,H", { 0xAC }, 1, 4, 4, false, 0x00, 1 },
+	{ "A,L", { 0xAD }, 1, 4, 4, false, 0x00, 1 },
+	{ "A,(HL)", { 0xAE }, 1, 7, 7, false, 0x00, 1 },
+	{ "A,&", { 0xEE }, 1, 7, 7, false, 0x00, 2 },
 	{"IXH", {0xAC, 0xDD}, 2, 0, 0, false, 0x00, 2},
 	{"IYH", {0xAC, 0xFD}, 2, 0, 0, false, 0x00, 2},
 	{"IXL", {0xAD, 0xDD}, 2, 0, 0, false, 0x00, 2},
@@ -834,7 +909,7 @@ instr xor_instrs[] = {
 	{"(HL)", {0xAE}, 1, 7, 7, false, 0x00, 1},
 	{"&", {0xEE}, 1, 7, 7, false, 0x00, 2}};
 
-instr call_instrs[] = {
+static instr call_instrs[] = {
 	{"NZ,*", {0xC4}, 1, 10, 17, false, 0x00, 3},
 	{"Z,*", {0xCC}, 1, 10, 17, false, 0x00, 3},
 	{"NC,*", {0xD4}, 1, 10, 17, false, 0x00, 3},
@@ -845,43 +920,43 @@ instr call_instrs[] = {
 	{"M,*", {0xFC}, 1, 10, 17, false, 0x00, 3},
 	{"*", {0xCD}, 1, 17, 17, false, 0x00, 3}};
 
-instr cpdr_instrs[] = {
+static instr cpdr_instrs[] = {
 	{"", {0xB9, 0xED}, 2, 16, 21, false, 0x00, 2}};
 
-instr cpir_instrs[] = {
+static instr cpir_instrs[] = {
 	{"", {0xB1, 0xED}, 2, 16, 21, false, 0x00, 2}};
 
-instr djnz_instrs[] = {
+static instr djnz_instrs[] = {
 	{"%", {0x10}, 1, 8, 13, false, 0x00, 2}};
 
-instr halt_instrs[] = {
+static instr halt_instrs[] = {
 	{"", {0x76}, 1, 4, 4, false, 0x00, 1}};
 
-instr indr_instrs[] = {
+static instr indr_instrs[] = {
 	{"", {0xBA, 0xED}, 2, 16, 21, false, 0x00, 2}};
 
-instr inir_instrs[] = {
+static instr inir_instrs[] = {
 	{"", {0xB2, 0xED}, 2, 16, 21, false, 0x00, 2}};
 
-instr lddr_instrs[] = {
+static instr lddr_instrs[] = {
 	{"", {0xB8, 0xED}, 2, 16, 21, false, 0x00, 2}};
 
-instr ldir_instrs[] = {
+static instr ldir_instrs[] = {
 	{"", {0xB0, 0xED}, 2, 16, 21, false, 0x00, 2}};
 
-instr otdr_instrs[] = {
+static instr otdr_instrs[] = {
 	{"", {0xBB, 0xED}, 2, 16, 21, false, 0x00, 2}};
 
-instr otir_instrs[] = {
+static instr otir_instrs[] = {
 	{"", {0xB3, 0xED}, 2, 16, 21, false, 0x00, 2}};
 
-instr outd_instrs[] = {
+static instr outd_instrs[] = {
 	{"", {0xAB, 0xED}, 2, 16, 16, false, 0x00, 2}};
 
-instr outi_instrs[] = {
+static instr outi_instrs[] = {
 	{"", {0xA3, 0xED}, 2, 16, 16, false, 0x00, 2}};
 
-instr push_instrs[] = {
+static instr push_instrs[] = {
 	{"IX", {0xE5, 0xDD}, 2, 15, 15, false, 0x00, 2},
 	{"IY", {0xE5, 0xFD}, 2, 15, 15, false, 0x00, 2},
 	{"BC", {0xC5}, 1, 11, 11, false, 0x00, 1},
@@ -889,16 +964,16 @@ instr push_instrs[] = {
 	{"HL", {0xE5}, 1, 11, 11, false, 0x00, 1},
 	{"AF", {0xF5}, 1, 11, 11, false, 0x00, 1}};
 
-instr reti_instrs[] = {
+static instr reti_instrs[] = {
 	{"", {0x4D, 0xED}, 2, 14, 14, false, 0x00, 2}};
 
-instr retn_instrs[] = {
+static instr retn_instrs[] = {
 	{"", {0x45, 0xED}, 2, 14, 14, false, 0x00, 2}};
 
-instr rlca_instrs[] = {
+static instr rlca_instrs[] = {
 	{"", {0x07}, 1, 4, 4, false, 0x00, 1}};
 
-instr rrca_instrs[] = {
+static instr rrca_instrs[] = {
 	{"", {0x0F}, 1, 4, 4, false, 0x00, 1}};
 
 opcode opcode_list[] = {
