@@ -5,6 +5,7 @@
 
 #include "stdafx.h"
 
+#include "spasm.h"
 #include "utils.h"
 #include "errors.h"
 
@@ -527,8 +528,14 @@ void makeprgm (const unsigned char *output_contents, int size, FILE *outfile, co
 	chksum += fputc(size>>8,outfile);
 	
 	/* check for BB 6D on 83+ */
-	if ((calc == 3) && !((((unsigned char) output_contents[0]) == 0xBB) && (((unsigned char) output_contents[1]) == 0x6D))) {
-		show_warning ("83+ program does not begin with bytes BB 6D.");
+	if (calc == 3) {
+		unsigned short header = ((unsigned char)output_contents[0])*256 + ((unsigned char)output_contents[1]);
+		if (!(mode & MODE_EZ80) && header != 0xBB6D && header != 0xEF69) {
+			show_warning("83+/84+ program does not begin with bytes BB 6D or EF 69.");
+		}
+		if ((mode & MODE_EZ80) && header != 0xEF7B) {
+			show_warning("84+CE program does not begin with bytes EF 7B.");
+		}
 	}
 	if (calc == 5) {
 	   chksum += fputc (0x8E, outfile);
