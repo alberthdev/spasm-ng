@@ -74,7 +74,7 @@ Other Makefile commands:
 
 Documentation
 -------------
-The program accepts standard Z80 assembly.
+The program accepts standard Z80 assembly and eZ80 assembly.
 
 SPASM command line help shown below:
 
@@ -84,6 +84,7 @@ SPASM command line help shown below:
     spasm [options] <input file> <output file>
     
     Options:
+    -E = Assemble eZ80 code
     -T = Generate code listing
     -C = Code counter mode
     -L = Symbol table mode
@@ -94,6 +95,11 @@ SPASM command line help shown below:
     -D<name>[=value] = Create a define 'name' [with 'value']
     -N = Don't use colors for messages
     -V <Expression> = Pipe expression directly into assembly
+
+Added features for eZ80 code include:
+  * The .ASSUME ADL={0 or 1} directive for specifying 16-bit or 24-bit code (24-bit is the default).
+  * The .DL and .LONG directives for including 24-bit data.
+  * Mode-change suffixes available for all instructions, as seen in the eZ80 manual.
 
 Issues/Bugs
 -----------
@@ -113,6 +119,7 @@ License:
     Copyright (C) 2015 Spencer Putt and Don Straney
     Copyright (C) 2015 Chris Shappell and James Montelongo
     Copyright (C) 2015 Albert Huang (fixes to SPASM)
+    Copyright (C) 2015 Brendan Fletcher (eZ80 support)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
