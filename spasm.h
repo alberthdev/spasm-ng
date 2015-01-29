@@ -5,6 +5,7 @@
 #include "storage.h"
 #include "list.h"
 #include "expand_buf.h"
+#include "version.h"
 
 typedef enum {
 	MODE_NORMAL = 1,
