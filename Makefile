@@ -2,7 +2,10 @@ CC = $(CROSS_COMPILE)g++
 LD = $(CROSS_COMPILE)ld
 CXXFLAGS+=  -I.  -DUSE_REUSABLES -DUSE_GMP -DUNIXVER -DUSE_BUILTIN_FCREATE
 LDFLAGS+= -lc -lgmp -lm -lcrypto
-	 
+
+export CXXFLAGS
+export LDFLAGS
+
 # Suffix Rules
 .SUFFIXES: .cpp
 	 
@@ -21,15 +24,15 @@ spasm: $(OBJ) Makefile
 		$(CC) -o spasm $(OBJ_FILES) $(LDFLAGS)
 
 prep-special-build:
-		make clean
+		$(MAKE) clean
 		touch prep-special-build
 
-opt: prep-special-build
-		CXXFLAGS="-O3" make $(OBJ)
+opt: CXXFLAGS+= -O3
+opt: prep-special-build $(OBJ)
 		touch opt
 
-static:
-		LDFLAGS="-static" make spasm
+static: LDFLAGS+= -static
+static: spasm
 		touch static
 
 opt-static: opt static
@@ -42,7 +45,7 @@ tar: opt-static
 debian: opt
 		echo "SPASM-ng is a z80 assembler with extra features to support development for TI calculators." > description-pak
 		checkinstall --requires "zlib1g, libssl1.0.0, libgmp10" \
-			--pkgname="spasm-ng" --pkgversion="1.0.0" --pkgrelease="1" \
+			--pkgname="spasm-ng" --pkgversion="0.5-beta.1" --pkgrelease="1" \
 			--maintainer="alberthdev@users.noreply.github.com" \
 			--backup=no --deldoc=yes --deldesc=yes --delspec=yes \
 			--install=no --default
