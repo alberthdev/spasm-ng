@@ -1,7 +1,5 @@
 #include "stdafx.h"
 
-#define MAX_REUSABLES 512
-
 #include "spasm.h"
 #include "storage.h"
 #include "utils.h"
