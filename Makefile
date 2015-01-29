@@ -42,7 +42,7 @@ tar: opt-static
 
 # This is a fake Debian package builder - it uses checkinstall
 # to make this work.	 
-debian: opt
+debian: opt spasm
 		echo "SPASM-ng is a z80 assembler with extra features to support development for TI calculators." > description-pak
 		checkinstall --requires "zlib1g, libssl1.0.0, libgmp10" \
 			--pkgname="spasm-ng" --pkgversion="0.5-beta.1" --pkgrelease="1" \
