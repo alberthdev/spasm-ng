@@ -78,7 +78,7 @@ The program accepts standard Z80 assembly and eZ80 assembly.
 
 SPASM command line help shown below:
 
-    SPASM Z80 Assembler by Spencer Putt and Don Straney
+    SPASM-ng Z80 Assembler by Spencer Putt and Don Straney
     
     
     spasm [options] <input file> <output file>

@@ -226,7 +226,7 @@ int main (int argc, char **argv)
 
 	//if there aren't enough args, show info
 	if (argc < 2) {
-		puts ("SPASM Z80 Assembler by Spencer Putt and Don Straney");
+		puts ("SPASM-ng Z80 Assembler by Spencer Putt and Don Straney");
 #ifdef _M_X64
 		puts ("64-bit Version");
 #endif

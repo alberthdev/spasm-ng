@@ -9,7 +9,12 @@
  * Austin Appleby (murmurhash.googlepages.com)
  */
 
-unsigned int murmur_hash (const void * key, int len, unsigned int seed) {
+#ifdef _WIN64
+size_t
+#else
+unsigned int 
+#endif
+murmur_hash (const void * key, int len, unsigned int seed) {
 #ifdef _WIN64
 	typedef unsigned long long uint64_t ;
 	const uint64_t m = 0xc6a4a7935bd1e995;
