@@ -29,6 +29,8 @@ WORD save_console_attributes () {
 	CONSOLE_SCREEN_BUFFER_INFO csbiScreenBufferInfo;
 	GetConsoleScreenBufferInfo (GetStdHandle (STD_OUTPUT_HANDLE), &csbiScreenBufferInfo);
 	return csbiScreenBufferInfo.wAttributes;
+#else
+    return 0;
 #endif
 }
 
