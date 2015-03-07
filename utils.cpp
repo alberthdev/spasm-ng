@@ -50,7 +50,7 @@ char *mystrpbrk (const char * string, const char * control) {
  */
 bool is_end_of_code_line (const char *ptr) {
 	if (ptr == NULL)
-		return NULL;
+		return false;
 
 	return (*ptr == '\0' || *ptr == '\n' || *ptr == '\r' || *ptr == ';' || *ptr == '\\');
 }

@@ -52,7 +52,7 @@ void write_labels (char *filename) {
 	}
 
 	// Create a header node with an impossible label name
-	hdr_node.name = "#header";
+	hdr_node.name = strdup("#header");
 	
 	label_list.data = &hdr_node;
 	label_list.next = NULL;

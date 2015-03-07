@@ -481,7 +481,7 @@ map_done:
 			add_label(strdup(base_name), bmp_num - 1);
 		}
 
-		set_define(img_map, "0", -1, NULL);
+		set_define(img_map, "0", -1, false);
 	}
 	if (base_name)
 		free(base_name);
