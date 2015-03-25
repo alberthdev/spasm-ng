@@ -42,8 +42,12 @@
  * </PRE>
  */
 #include "stdafx.h"
-typedef char uint8_t;
-typedef int uint32_t;
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
+	typedef unsigned char uint8_t;
+	typedef unsigned int uint32_t;
+#else
+	#include <stdint.h>
+#endif
 #include "modp_ascii.h"
 
 static const unsigned char gsToUpperMap[256] = {

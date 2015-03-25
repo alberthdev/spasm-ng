@@ -260,8 +260,8 @@ addinstr_fail:
 					strncpy(temp_filename, skip_whitespace (filename), sizeof (temp_filename));
 				} else {
 					strncpy(temp_filename, temp_path, sizeof (temp_filename));
-					strncat(temp_filename, "/", sizeof (temp_filename));
-					strncat(temp_filename, skip_whitespace (filename), sizeof (temp_filename));
+					strncat(temp_filename, "/", sizeof (temp_filename) - 1);
+					strncat(temp_filename, skip_whitespace (filename), sizeof (temp_filename) - 1);
 				}
 				echo_target = fopen (fix_filename (temp_filename), target_format);
 				if (echo_target == NULL) {
@@ -540,7 +540,7 @@ char *parse_emit_string (const char *ptr, ES_TYPE type, void *echo_target) {
 			{
 				if (echo_target != NULL)
 				{
-					fprintf ((FILE *) echo_target, word);
+					fprintf ((FILE *) echo_target, "%s", word);
 				}
 			}
 			else if (type == ES_FCREATE) {

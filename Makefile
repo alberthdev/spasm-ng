@@ -38,7 +38,7 @@ static: spasm
 opt-static: opt static
 
 tar: opt-static
-		tar czvf spasm-ng_1.0.0_binary.tar.gz spasm README.md LICENSE
+		tar czvf spasm-ng_0.5-beta.1_binary.tar.gz spasm README.md LICENSE
 
 # This is a fake Debian package builder - it uses checkinstall
 # to make this work.	 
