@@ -67,6 +67,7 @@ const char typearray[] = {
 	'8','2','*',0x0B,
 	'8','3','*',0x0B,
 	'8','3','F',0x0D,
+	'8','3','F',0x0D,
 	'8','5','*',0x00,
 	'8','6','*',0x0C,
 	'8','5','*',0x00,
@@ -74,13 +75,14 @@ const char typearray[] = {
 	};
 
 const char extensions[][4] = {
-	"73P","82P","83P","8XP","85P","86P","85S","86S","8XK","ROM","HEX","BIN"};
+	"73P","82P","83P","8XP","8XV","85P","86P","85S","86S","8XK","ROM","HEX","BIN"};
 
 enum calc_type {
 	TYPE_73P = 0,
 	TYPE_82P,
 	TYPE_83P,
 	TYPE_8XP,
+	TYPE_8XV,
 	TYPE_85P,
 	TYPE_86P,
 	TYPE_85S,
@@ -94,7 +96,7 @@ enum calc_type {
 int findfield ( unsigned char byte, const unsigned char* buffer );
 int siggen (const unsigned char* hashbuf, unsigned char* sigbuf, int* outf);
 void intelhex (FILE * outfile , const unsigned char* buffer, int size, unsigned int address = 0x4000);
-void alphanumeric (char* namestring);
+void alphanumeric (char* namestring, bool allow_lower);
 void makerom (const unsigned char *output_contents, DWORD output_len, FILE *outfile);
 void makehex (const unsigned char *output_contents, DWORD output_len, FILE *outfile);
 void makeapp (const unsigned char *output_contents, DWORD output_len, FILE *outfile, const char *prgmname);
@@ -162,6 +164,7 @@ void write_file (const unsigned char *output_contents, int output_len, const cha
 	case TYPE_82P:
 	case TYPE_83P:
 	case TYPE_8XP:
+	case TYPE_8XV:
 	case TYPE_85P:
 	case TYPE_85S:
 	case TYPE_86P:
@@ -446,7 +449,7 @@ void makeprgm (const unsigned char *output_contents, int size, FILE *outfile, co
 		namestring = strdup (lastSlash);
 		/* The name must be capital letters and numbers */
 		if (calc < TYPE_85P) {
-			alphanumeric (namestring);
+			alphanumeric (namestring, calc == TYPE_8XV);
 		}
 	}
 	/* get size */
@@ -491,7 +494,7 @@ void makeprgm (const unsigned char *output_contents, int size, FILE *outfile, co
 	if (calc == TYPE_85P) {
 		temp = size + 8 + strlen (namestring);
 	} else {
-		temp = size+15+((calc==TYPE_8XP)?2:0)+((calc==TYPE_86P)?1:0);
+		temp = size+15+((calc==TYPE_8XP||calc==TYPE_8XV)?2:0)+((calc==TYPE_86P)?1:0);
 	}
 	fputc(temp & 0xFF,outfile);
 	fputc(temp >> 8,outfile);
@@ -512,7 +515,10 @@ void makeprgm (const unsigned char *output_contents, int size, FILE *outfile, co
 		}
 		chksum += fputc(strlen(namestring),outfile);
 	} else {
-		chksum += fputc(6,outfile);
+		if (calc != TYPE_8XV)
+			chksum += fputc(6,outfile);
+		else
+			chksum += fputc(0x15,outfile);
 	}
 	
 	/* The actual name is placed with padded with zeros */
@@ -524,7 +530,7 @@ void makeprgm (const unsigned char *output_contents, int size, FILE *outfile, co
 		for(;i < 8; i++) fputc(0,outfile);
 	}
 	/* 83+ requires 2 extra bytes */
-	if (calc == TYPE_8XP) {
+	if (calc == TYPE_8XP || calc == TYPE_8XV) {
 		fputc(0,outfile);
 		fputc(0,outfile);
 	}
@@ -572,15 +578,18 @@ void makeprgm (const unsigned char *output_contents, int size, FILE *outfile, co
 }
 
 
-void alphanumeric (char* namestring) {
+void alphanumeric (char* namestring, bool allow_lower) {
 	char temp;
+	bool force_upper = true;
 
 	while ((temp = *namestring)) {
-		if (temp>='a' && temp<='z') *namestring = temp =(temp-('a'-'A'));
-		if (!( ((temp>='A') && (temp<='Z')) || (temp>='0' && temp<='9') || (temp==0) ) ) {
+		if (force_upper && temp>='a' && temp<='z') *namestring = temp =(temp-('a'-'A'));
+		if (!(((temp >= 'A') && (temp <= 'Z')) || ((temp >= 'a') && (temp <= 'z')) || (temp >= '0' && temp <= '9') || (temp == 0))) {
 			show_warning ("Invalid characters in name. Alphanumeric Only.");
 		}
 		namestring++;
+		if (allow_lower)
+			force_upper = false;
 	}
 }
 
