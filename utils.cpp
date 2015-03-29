@@ -901,12 +901,12 @@ void show_error_prefix(const char *zcif, const int zln) {
 
 void show_error(const char *text, ...) {
 	WORD attr = save_console_attributes();
-	set_console_attributes (COLOR_RED);
 	va_list args;
 	if (exit_code < EXIT_ERRORS) exit_code = EXIT_ERRORS;
 
 	show_error_prefix(curr_input_file, line_num);
 
+	set_console_attributes (COLOR_RED);
 	va_start(args, text);
 	
 	vprintf (text, args); 
@@ -916,7 +916,6 @@ void show_error(const char *text, ...) {
 
 void show_fatal_error(const char *text, ...) {
 	WORD attr = save_console_attributes();
-	set_console_attributes (COLOR_RED);
 
 	va_list args;
 	if (exit_code < EXIT_FATAL_ERROR) exit_code = EXIT_FATAL_ERROR;
@@ -927,6 +926,7 @@ void show_fatal_error(const char *text, ...) {
 	OutputDebugString(TEXT("\n"));
 #endif
 
+	set_console_attributes (COLOR_RED);
 	va_start(args, text);
 
 	vprintf (text, args);
@@ -945,7 +945,6 @@ void show_warning_prefix(const char *zcif, int zln) {
 
 void show_warning(const char *text, ...) {
 	WORD attr = save_console_attributes();
-	set_console_attributes (COLOR_YELLOW);
 
 	va_list args;
 	if (exit_code < EXIT_WARNINGS) exit_code = EXIT_WARNINGS;
@@ -956,6 +955,7 @@ void show_warning(const char *text, ...) {
 	OutputDebugString(TEXT("\n"));
 #endif
 
+	set_console_attributes (COLOR_YELLOW);
 	va_start(args, text);
 
 	vprintf (text, args);
