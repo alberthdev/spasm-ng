@@ -77,8 +77,10 @@ using namespace ATL;
 #include <unistd.h>
 #include <ctype.h>
 #include <stdarg.h>
+#ifndef NO_APPSIGN
 #include <gmp.h>
 #include <openssl/md5.h>
+#endif /* NO_APPSIGN */
 #include <math.h>
 #include <errno.h>
 #include <stdbool.h>

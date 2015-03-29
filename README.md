@@ -13,7 +13,7 @@ On Windows, you will need the following to build SPASM-ng:
     to downgrade. See http://stackoverflow.com/a/16196505 for more
     info.
 
-On Linux, Mac OS X, and other *nix, you will need the following to
+On Linux, Mac OS X, and other \*nix, you will need the following to
 build SPASM-ng:
 
   * C/C++ Compiler (GCC, Clang, etc.)
@@ -34,16 +34,24 @@ Suggested packages for Ubuntu/Debian:
   * checkinstall (optional, only if you want to build Debian packages -
     .deb files)
 
+If building without app signing support (see *Building* in this document),
+GMP and OpenSSL are not required.
+
 Building
 --------
 On Windows, simply build with the included Visual Studio project file.
 
-On Linux, Mac OS X, and other *nix, simply build by running:
+On Linux, Mac OS X, and other \*nix, simply build by running:
 
     make
     
     # Optional: install SPASM-ng (you may need sudo/su/root):
     make install
+
+To disable app signing support in your binary (thus eliminating the
+dependencies on OpenSSL and GMP), define NO\_APPSIGN when invoking `make`:
+
+    make NO_APPSIGN=1
 
 For Debian systems, you can run the following to create a Debian
 package:
