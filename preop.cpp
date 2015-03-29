@@ -443,7 +443,8 @@ static char *handle_preop_include (char *ptr)
 	char name[MAX_PATH], *file_path;
 	FILE *file;
 	char *qs, *alloc_path, *input_contents, *old_input_file, *old_line_start;
-	
+	int i;
+
 	int old_line_num, old_in_macro, old_old_line_num;
 
 	if (is_end_of_code_line (ptr)) {
@@ -453,11 +454,21 @@ static char *handle_preop_include (char *ptr)
 
 	//get the name of the file to include	
 	read_expr (&ptr, name, "");
+
+	// Check if the path doesn't contain a newline character
+	// Without this, a line such as ' #include "ti84pce.inc ' (missing last quote) would crash spasm (SIGABRT)
+	// Bug revealed by afl-fuzz
+	for (i=0; name[i]; i++) {
+		if (name[i] != '\\' && is_end_of_code_line(name+i)) {
+			show_error("#INCLUDE argument malformed. Did you miss a '\"'?");
+			return ptr;
+		}
+	}
+
 	fix_filename (name);
 	
 	qs = skip_whitespace (name);
 	if (*qs == '"') {
-		int i;
 		qs++;
 		for (i = 0; qs[i] != '"' && qs[i] != '\0'; i++);
 		qs[i] = '\0';
