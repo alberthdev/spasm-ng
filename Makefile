@@ -1,7 +1,13 @@
 CC = $(CROSS_COMPILE)g++
 LD = $(CROSS_COMPILE)ld
 CXXFLAGS+=  -I.  -DUSE_REUSABLES -DUNIXVER -DUSE_BUILTIN_FCREATE
-LDFLAGS+= -lc -lgmp -lm -lcrypto
+LDFLAGS+= -lc -lm
+
+ifdef NO_APPSIGN
+	CXXFLAGS += -DNO_APPSIGN
+else
+	LDFLAGS += -lgmp -lcrypto
+endif
 
 export CXXFLAGS
 export LDFLAGS

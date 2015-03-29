@@ -212,7 +212,7 @@ void makeapp (const unsigned char *output_contents, DWORD size, FILE *outfile, c
 	unsigned int total_size;
 
 	/* Copy file to memory */
-	buffer = (unsigned char *) malloc (size+256);
+	buffer = (unsigned char *) calloc(1, size+256);
 	memcpy (buffer, output_contents, sizeof (char) * size);
 
 /* Check if size will fit in mem with signature */
@@ -264,6 +264,7 @@ void makeapp (const unsigned char *output_contents, DWORD size, FILE *outfile, c
 	}
 	for (i=0; i < 8 ;i++) name[i]=buffer[i+pnt];
 
+#ifndef NO_APPSIGN
 /* Calculate MD5 */
 #ifdef WIN32
 	unsigned char hashbuf[64];
@@ -294,6 +295,10 @@ void makeapp (const unsigned char *output_contents, DWORD size, FILE *outfile, c
 /* sig must be 96 bytes ( don't ask me why) */
 	tempnum = 96 - (total_size - size);
 	while (tempnum--) buffer[total_size++] = 0xFF;
+#else /* NO_APPSIGN */
+    show_warning("App signing is not available in this build of SPASM");
+#endif /* NO_APPSIGN */
+
 
 /* Do 8xk header */
 	for (i = 0; i < hleng; i++) fputc(header8xk[i], outfile);
@@ -344,9 +349,7 @@ int findfield( unsigned char byte, const unsigned char* buffer ) {
 	return 0;
 }
 
-/* Gmp was originally used by Ben Moody, but due to it's massive size
- * Spencer wrote his own big num routines,  cutting the size to a tenth 
- * of what it was. */
+#ifndef NO_APPSIGN
 int siggen(const unsigned char* hashbuf, unsigned char* sigbuf, int* outf) {
 	mpz_t mhash, p, q, r, s, temp, result;
 	
@@ -421,7 +424,7 @@ int siggen(const unsigned char* hashbuf, unsigned char* sigbuf, int* outf) {
 	mpz_clear(result);
 	return siglength;
 }
-
+#endif /* NO_APPSIGN */
 
 void makeprgm (const unsigned char *output_contents, int size, FILE *outfile, const char *prgmname, calc_type calc) {
 	int i, temp, chksum;
