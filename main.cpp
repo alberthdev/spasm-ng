@@ -8,9 +8,6 @@
 #include "storage.h"
 #include "spasm.h"
 #include "utils.h"
-#ifndef USE_GMP
-#include "big.h"
-#endif
 #include "console.h"
 #include "errors.h"
 #include "Module.h"
