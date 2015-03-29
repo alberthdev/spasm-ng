@@ -13,7 +13,6 @@
 #endif
 #include "console.h"
 #include "errors.h"
-#include "Module.h"
 
 #define LISTING_BUF_SIZE 65536	//initial size of buffer for output listing
 
@@ -21,10 +20,6 @@ void write_file (const unsigned char *, int, const char *);
 
 extern expr_t *expr_list, *expr_list_tail;
 extern output_t *output_list, *output_list_tail;
-
-#ifdef _WIN32
-CSPASMModule _AtlModule;
-#endif
 
 /*
  * Must have mode set
@@ -212,12 +207,6 @@ int run_assembly()
 	return exit_code;
 }
 
-#if 0
-int CALLBACK WinMain(HINSTANCE hInst, HINSTANCE  hPrev, LPSTR lpCommandLine, int nCmdShow)
-{
-	return _AtlModule.WinMain(SW_HIDE);
-}
-#else
 int main (int argc, char **argv)
 {
 	int curr_arg = 1;
@@ -452,4 +441,3 @@ int main (int argc, char **argv)
 
 	return error;
 }
-#endif

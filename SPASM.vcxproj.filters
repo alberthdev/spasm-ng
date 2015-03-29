@@ -86,12 +86,6 @@
     <ClCompile Include="modp_ascii.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CZ80AssemblerTest.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CTextStream.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="opcodes_ez80.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -160,20 +154,8 @@
     <ClInclude Include="gmp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CTextStream.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CIncludeDirectoryCollection.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Module.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Z80Assembler.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="SPASM.rgs">
       <Filter>Resource Files</Filter>
     </None>
