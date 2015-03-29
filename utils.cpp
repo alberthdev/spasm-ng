@@ -886,11 +886,9 @@ char *expand_expr (const char *expr, bool search_local) {
 }*/
 
 void show_error_prefix(const char *zcif, const int zln) {
-#ifdef WIN32
 	//BuckeyeDude
 	//this is temporary till everything is rolled into errors.cpp
 	WORD attr = save_console_attributes();
-#endif
 #ifdef _WIN32
 	//TCHAR szPrefix[256];
 	//sprintf(szPrefix, "%s:%d: error: ", zcif, zln);
@@ -898,16 +896,12 @@ void show_error_prefix(const char *zcif, const int zln) {
 #endif
 	set_console_attributes (COLOR_RED);
 	printf ("%s:%d: error: ", zcif, zln);
-#ifdef WIN32
 	restore_console_attributes(attr);
-#endif
 }
 
 void show_error(const char *text, ...) {
-#ifdef WIN32
 	WORD attr = save_console_attributes();
 	set_console_attributes (COLOR_RED);
-#endif
 	va_list args;
 	if (exit_code < EXIT_ERRORS) exit_code = EXIT_ERRORS;
 
@@ -917,16 +911,12 @@ void show_error(const char *text, ...) {
 	
 	vprintf (text, args); 
 	putchar ('\n');
-#ifdef WIN32
 	restore_console_attributes(attr);
-#endif
 }
 
 void show_fatal_error(const char *text, ...) {
-#ifdef WIN32
 	WORD attr = save_console_attributes();
 	set_console_attributes (COLOR_RED);
-#endif
 
 	va_list args;
 	if (exit_code < EXIT_FATAL_ERROR) exit_code = EXIT_FATAL_ERROR;
@@ -943,27 +933,19 @@ void show_fatal_error(const char *text, ...) {
 	putchar ('\n');
 	error_occurred = true;
 
-#ifdef WIN32
 	restore_console_attributes(attr);
-#endif
 }
 
 void show_warning_prefix(const char *zcif, int zln) {
-#ifdef WIN32
 	WORD attr = save_console_attributes();
-#endif
 	set_console_attributes (COLOR_YELLOW);
 	printf ("%s:%d: warning: ", zcif, zln);
-#ifdef WIN32
-		restore_console_attributes(attr);
-#endif
+	restore_console_attributes(attr);
 }
 
 void show_warning(const char *text, ...) {
-#ifdef WIN32
 	WORD attr = save_console_attributes();
 	set_console_attributes (COLOR_YELLOW);
-#endif
 
 	va_list args;
 	if (exit_code < EXIT_WARNINGS) exit_code = EXIT_WARNINGS;
@@ -978,8 +960,6 @@ void show_warning(const char *text, ...) {
 
 	vprintf (text, args);
 	putchar ('\n');
-#ifdef WIN32
 	restore_console_attributes(attr);
-#endif
 }
 
