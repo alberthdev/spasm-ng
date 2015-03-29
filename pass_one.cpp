@@ -610,6 +610,14 @@ char *match_opcode_args (char *ptr, char **arg_ptrs, char **arg_end_ptrs, opcode
 			curr_arg++;
 		}
 
+		//special case, allow empty string at the end to match ix/iy offset
+		if (*curr_arg == '@') {
+			arg_ptrs[curr_arg_num] = curr_arg_file;
+			arg_end_ptrs[curr_arg_num] = curr_arg_file;
+			curr_arg_num++;
+			curr_arg++;
+		}
+
 		//see if all the arguments matched
 		if (!(*curr_arg) && (is_end_of_code_line (curr_arg_file) || *curr_arg_file == '\\'))
 			break;

@@ -626,6 +626,13 @@ char *parse_emit_string (const char *ptr, ES_TYPE type, void *echo_target) {
 		                program_counter+=2;
 		                break;
 					}
+				case ES_LONG:
+					{
+						add_pass_two_expr(word, ARG_NUM_24, 0);
+						stats_datasize += 3;
+						program_counter += 3;
+						break;
+					}
 				}
 
 				ReplayFatalSPASMErrorSession(session);
