@@ -443,12 +443,26 @@ static char *handle_preop_include (char *ptr)
 	char name[MAX_PATH], *file_path;
 	FILE *file;
 	char *qs, *alloc_path, *input_contents, *old_input_file, *old_line_start;
-	
+	int i, num_quotes;
+
 	int old_line_num, old_in_macro, old_old_line_num;
 
 	if (is_end_of_code_line (ptr)) {
 		show_error ("#INCLUDE is missing file name");
 		return ptr;
+	}
+
+	// Check if the line is not malformed and if there are either 0 or 2 '"'
+	// Without this, a line such as ' #include "ti84pce.inc ' (missing last quote) would crash spasm
+	// Bug revealed by afl-fuzz
+	for (i=0, num_quotes=0; ptr[i]; i++) {
+		if (ptr[i] == '"') {
+			num_quotes++;
+		}
+		if (num_quotes > 0 && num_quotes != 2 && ptr[i] != '\\' && is_end_of_code_line(ptr+i)) {
+			show_error("#INCLUDE argument malformed. Did you miss a '\"'?");
+			return ptr;
+		}
 	}
 
 	//get the name of the file to include	
@@ -457,7 +471,6 @@ static char *handle_preop_include (char *ptr)
 	
 	qs = skip_whitespace (name);
 	if (*qs == '"') {
-		int i;
 		qs++;
 		for (i = 0; qs[i] != '"' && qs[i] != '\0'; i++);
 		qs[i] = '\0';
