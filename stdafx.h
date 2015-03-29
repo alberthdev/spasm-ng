@@ -82,6 +82,7 @@ using namespace ATL;
 #include <math.h>
 #include <errno.h>
 #include <stdbool.h>
+#include <sys/timeb.h>
 
 #define __inout
 

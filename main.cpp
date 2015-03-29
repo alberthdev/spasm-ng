@@ -40,6 +40,9 @@ int run_assembly()
 #ifdef _WIN32
 	struct _timeb time_start, time_end;
 	_ftime(&time_start);
+#else
+	struct timeb time_start, time_end;
+	ftime(&time_start);
 #endif
 	exit_code = EXIT_NORMAL;
 	
@@ -193,6 +196,9 @@ int run_assembly()
 	
 #ifdef _WIN32
 	_ftime(&time_end);
+#else
+	ftime(&time_end);
+#endif
 	int s_diff = (int) (time_end.time - time_start.time);
 	int ms_diff = time_end.millitm - time_start.millitm;
 	if (ms_diff < 0) {
@@ -203,7 +209,6 @@ int run_assembly()
 		s_diff += 1;
 	}
 	printf("Assembly time: %0.3f seconds\n", (float) s_diff + ((float) ms_diff / 1000.0f));
-#endif
 	return exit_code;
 }
 
