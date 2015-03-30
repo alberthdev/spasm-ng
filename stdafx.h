@@ -3,6 +3,10 @@
 #ifndef _STDAFX_H
 #define _STDAFX_H
 
+#ifndef NO_APPSIGN
+#include <gmp.h>
+#endif
+
 #if defined(_WINDOWS)
 #ifndef STRICT
 #define STRICT
@@ -67,7 +71,6 @@ using namespace ATL;
 
 #include "SPASM_h.h"
 
-#include "gmp.h"
 #else
 #include <stdio.h>
 #include <stdlib.h>
@@ -78,7 +81,6 @@ using namespace ATL;
 #include <ctype.h>
 #include <stdarg.h>
 #ifndef NO_APPSIGN
-#include <gmp.h>
 #include <openssl/md5.h>
 #endif /* NO_APPSIGN */
 #include <math.h>
