@@ -2,36 +2,28 @@
 #define HASH_H_
 
 #include <stdint.h>
-#include <unordered_map>
+#include <map>
 #include "list.h"
 
 typedef struct {
 	char *name;
 } store_t;
 
-void MurmurHash3_x86_32(const void *key, int len, uint32_t seed, void *out);
-
-struct mystringhash
-    : public std::unary_function<const char *, size_t>
-{
-    size_t operator()(const char* _Keyval) const
-    {
-        uint32_t out;
-        MurmurHash3_x86_32(_Keyval, strlen(_Keyval), 0, &out);
-        return (size_t)out;
-    }
-};
-
-struct myequalto
+struct comparator
     : public std::binary_function<const char *, const char *, bool>
 {
     bool operator()(const char * _Left, const char *_Right) const
     {
-        return (strcmp(_Left, _Right) == 0) ? true: false;
+        if (strcmp(_Left, _Right) < 0)
+            return true;
+        else
+            return false;
     }
 };
 
-class hash_t : public std::unordered_map<const char *, void *, mystringhash, myequalto> {
+typedef std::map<const char *, void *, comparator> htt_base;
+
+class hash_t : public htt_base {
 public:
 	void (*remove_callback)(void *);
 
