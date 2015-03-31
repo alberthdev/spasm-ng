@@ -43,6 +43,10 @@ On Windows, simply build with the included Visual Studio project file.
 
 On Linux, Mac OS X, and other \*nix, simply build by running:
 
+    # Run this to update the version
+    make version
+    
+    # Now build!
     make
     
     # Optional: install SPASM-ng (you may need sudo/su/root):
