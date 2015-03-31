@@ -178,8 +178,8 @@ void init_storage() {
 	define_t *define;
 	char* test ;
 
-	define_table = hash_init (MAX_DEFINES, (HASH_REMOVE_CALLBACK) destroy_define_value);
-	label_table = hash_init (MAX_LABELS, (HASH_REMOVE_CALLBACK) destroy_label_value);
+	define_table = hash_init ((HASH_REMOVE_CALLBACK) destroy_define_value);
+	label_table = hash_init ((HASH_REMOVE_CALLBACK) destroy_label_value);
 
 	add_define (strdup ("SPASM"), NULL)->contents = strdup ("1");
 	add_define (strdup ("SPASMVER"), NULL)->contents = strdup ("2");
@@ -476,7 +476,7 @@ void set_define (define_t *define, const char *str, int len, bool redefined) {
 		list_t *old_arg_list = arg_list;
 		//arg_list = NULL;
 
-		define_table = hash_init (1, (HASH_REMOVE_CALLBACK) destroy_define_value);
+		define_table = hash_init ((HASH_REMOVE_CALLBACK) destroy_define_value);
 		
 		add_define (strdup (define->name), NULL, false)->contents = strdup (define->contents);
 		temp = len == -1 ? strdup (str) : strndup (str, len);
@@ -602,7 +602,7 @@ label_t *add_label (char *name, int value) {
  */
 
 list_t *add_arg_set(void) {
-	arg_list = list_prepend(arg_list, hash_init(MAX_ARGS, (HASH_REMOVE_CALLBACK) destroy_define_value));
+	arg_list = list_prepend(arg_list, hash_init((HASH_REMOVE_CALLBACK) destroy_define_value));
 	return arg_list;
 }
 

@@ -11,7 +11,7 @@ hash_t::hash_t(void (*remove_callback)(void *)) : htt_base() {
 /*
  * Creates a new hash table with an upper bound size
  */
-hash_t *hash_init (size_t size, void remove_callback(void *)) {
+hash_t *hash_init (void remove_callback(void *)) {
     hash_t *ht = new hash_t(remove_callback);
     return ht;
 }

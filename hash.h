@@ -33,7 +33,7 @@ public:
 typedef void (*HASH_ENUM_CALLBACK)(void *, void *);
 typedef void (*HASH_REMOVE_CALLBACK)(void *);
 
-hash_t *hash_init (size_t size, void remove_callback(void *));
+hash_t *hash_init (void remove_callback(void *));
 void hash_insert (hash_t *ht, void *store);
 void *hash_lookup (hash_t *ht, const char *name);
 int hash_remove (hash_t *ht, const char *name);
