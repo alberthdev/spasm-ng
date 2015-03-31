@@ -370,7 +370,6 @@ define_t *search_defines (const char *name, bool search_local) {
 	define_t *result = NULL;
 	char *search_name;
 	list_t *curr_arg_set = arg_list;
-	size_t curr_hash;
 
 	//make name uppercase if needed for case-insensitivity
 	if (!case_sensitive)
@@ -393,9 +392,6 @@ define_t *search_defines (const char *name, bool search_local) {
 	if (!result)
 		result = (define_t *)hash_lookup (define_table, search_name);
 	
-#define MHASH(Z) (murmur_hash(Z, strlen(Z)))
-
-	curr_hash = murmur_hash (search_name, strlen (search_name));
 	// Search all SPASM predefined values
 	if (!strcmp(search_name, "__LINE")) {
 		
