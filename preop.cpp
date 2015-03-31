@@ -680,6 +680,11 @@ char *parse_arg_defs (const char *ptr, define_t *define) {
 	context.fExpectingMore = false;
 	while ((word = extract_arg_string(&ptr, &context)) != NULL)
 	{
+		if (define->num_args == MAX_ARGS) {
+			show_fatal_error("Too many arguments in #define, maximum is %d", MAX_ARGS);
+			return NULL;
+		}
+		
 		bool is_dup = false;
 		int i;
 		
@@ -691,7 +696,7 @@ char *parse_arg_defs (const char *ptr, define_t *define) {
 				is_dup = true;
 		}
 		if (is_dup) {
-			show_fatal_error("Duplicate argument name '%s'", strdup (word));
+			show_fatal_error("Duplicate argument name '%s'", word);
 			return NULL;
 		}
 		define->args[define->num_args++] = strdup (word);
