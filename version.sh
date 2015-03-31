@@ -6,7 +6,7 @@ getversion() {
 		VERSION="v0.1-alpha.1"
 	fi
 	if [ -d ".git" ]; then
-		which git 2>&1 >/dev/null
+		test -z "$FORCE_NO_GIT" && which git 2>&1 >/dev/null
 		if [ "$?" = "0" ];then
 			git describe --exact-match --tags HEAD 2>/dev/null
 			if [ "$?" = "0" ];then
@@ -34,6 +34,6 @@ else
 	getversion
 	which git 2>&1 >/dev/null && git describe --exact-match --tags HEAD 2>/dev/null
 	if [ ! "$?" = "0" ];then
-		echo "Git revision: "`git rev-parse --short HEAD`
+		test -z "$FORCE_NO_GIT" && echo "Git revision: "`git rev-parse --short HEAD`
 	fi
 fi

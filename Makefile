@@ -3,6 +3,12 @@ LD = $(CROSS_COMPILE)ld
 CXXFLAGS+= -DUSE_REUSABLES -DUNIXVER -DUSE_BUILTIN_FCREATE
 LDFLAGS+= -lc -lm
 
+ifdef FORCE_NO_GIT
+	FORCE_NO_GIT = 1
+endif
+
+export FORCE_NO_GIT
+
 VERSION=$$(./version.sh | head -n 1)
 VERSION_DPKG=$$(./version.sh dpkg)
 GITREV=$$(./version.sh | grep "Git")
