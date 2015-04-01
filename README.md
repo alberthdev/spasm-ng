@@ -43,7 +43,8 @@ On Windows, simply build with the included Visual Studio project file.
 
 On Linux, Mac OS X, and other \*nix, simply build by running:
 
-    # Run this to update the version
+    # Git users: run this to update the version
+    # ONLY RUN THIS IF YOU ARE USING GIT
     make version
     
     # Now build!

@@ -77,4 +77,4 @@ clean:
 version:
 		@./version.sh set
 		@echo "The current spasm-ng version is: $(VERSION)"
-		@test -n "$(GITREV)" && echo "$(GITREV)"
+		@test -n "$(GITREV)" && echo "$(GITREV)" || exit 0

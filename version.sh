@@ -8,7 +8,7 @@ getversion() {
 	if [ -d ".git" ]; then
 		test -z "$FORCE_NO_GIT" && which git 2>&1 >/dev/null
 		if [ "$?" = "0" ];then
-			git describe --exact-match --tags HEAD 2>/dev/null
+			git describe --exact-match --tags HEAD 2>/dev/null >/dev/null
 			if [ "$?" = "0" ];then
 				echo "$VERSION"
 			else
@@ -32,7 +32,7 @@ elif [ "$1" = "dpkg" ];then
 	getversion | sed -r 's/^.{1}//' | sed 's/[-]/~/' | sed 's/[.]git/+git/' | sed -e ':begin;s/[.]//2;t begin'
 else
 	getversion
-	which git 2>&1 >/dev/null && git describe --exact-match --tags HEAD 2>/dev/null
+	which git 2>&1 >/dev/null && git describe --exact-match --tags HEAD 2>/dev/null >/dev/null
 	if [ ! "$?" = "0" ];then
 		test -z "$FORCE_NO_GIT" && echo "Git revision: "`git rev-parse --short HEAD`
 	fi
