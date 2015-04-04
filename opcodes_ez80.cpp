@@ -304,7 +304,7 @@ static instr ld_instrs[] = {
 		{ "DE,(*)", { 0x5B, 0xED }, 2, 6, 6, false, 0x00, 4, 2 },
 		{ "(*),HL", { 0x63, 0xED }, 2, 6, 6, false, 0x00, 4, 2 },
 		{ "HL,(*)", { 0x6B, 0xED }, 2, 6, 6, false, 0x00, 4, 2 },
-		{ "MB,A", { 0x6E, 0xED }, 2, 2, 2, false, 0x00, 2, 0 },
+		{ "MB,A", { 0x6D, 0xED }, 2, 2, 2, false, 0x00, 2, 0 },
 		{ "(*),SP", { 0x73, 0xED }, 2, 6, 6, false, 0x00, 4, 2 },
 		{ "SP,(*)", { 0x7B, 0xED }, 2, 6, 6, false, 0x00, 4, 2 },
 		{ "HL,*", { 0x21 }, 1, 3, 3, false, 0x00, 3, 1 },
