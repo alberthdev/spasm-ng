@@ -229,9 +229,15 @@ int main (int argc, char **argv)
 	//if there aren't enough args, show info
 	if (argc < 2) {
 		puts ("SPASM-ng Z80 Assembler by Spencer Putt and Don Straney");
-		printf ("Version %s\n", SPASM_NG_VERSION);
+		printf ("Version %s (built on %s @ %s)\n", SPASM_NG_VERSION, __DATE__, __TIME__);
+#ifdef SPASM_NG_GITREV
+		printf ("Git revision %s\n", SPASM_NG_GITREV);
+#endif
 #ifdef _M_X64
 		puts ("64-bit Version");
+#endif
+#ifdef NO_APPSIGN
+		printf ("\nApp signing is NOT available in this build of SPASM.\n");
 #endif
 		puts ("\nspasm [options] <input file> <output file>\n");
 		puts ("Options:\n-E = Assemble eZ80 code\n-T = Generate code listing\n-C = Code counter mode\n-L = Symbol table mode\n-S = Stats mode\n-O = Don't write to output file");
