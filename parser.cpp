@@ -498,6 +498,7 @@ static const char *parse_num_full (const char *expr, int *value, int depth) {
 	int total = 0, last_num;
 	MATHOP last_op = M_NONE;
 	bool invert_lastnum, neg_lastnum;
+	const char *const expr_start = expr;
 
 	parser_forward_ref_err = false;
 	if (++parse_depth > RECURSION_LIMIT)
@@ -553,6 +554,11 @@ static const char *parse_num_full (const char *expr, int *value, int depth) {
 			last_num = ~last_num;
 		if (neg_lastnum)
 			last_num = -last_num;
+		// Guard against divide by zero
+		if ((last_op == M_DIV || last_op == M_MOD) && last_num == 0) {
+			SetLastSPASMError(SPASM_ERR_DIVIDE_BY_ZERO, expr_start);
+			return NULL;
+		}
 
 		//Now check on the last operator to see what to do with this number
 		switch (last_op) {
