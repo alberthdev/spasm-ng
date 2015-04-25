@@ -554,9 +554,15 @@ static const char *parse_num_full (const char *expr, int *value, int depth) {
 			last_num = ~last_num;
 		if (neg_lastnum)
 			last_num = -last_num;
+
 		// Guard against divide by zero
 		if ((last_op == M_DIV || last_op == M_MOD) && last_num == 0) {
 			SetLastSPASMError(SPASM_ERR_DIVIDE_BY_ZERO, expr_start);
+			return NULL;
+		}
+		// Also INT_MIN / -1 and friends
+		if ((last_op == M_DIV || last_op == M_MOD) && total == INT_MIN && last_num == -1) {
+			SetLastSPASMError(SPASM_ERR_DIVIDE_IMIN1, expr_start);
 			return NULL;
 		}
 
@@ -644,98 +650,47 @@ static const char *parse_num_full (const char *expr, int *value, int depth) {
 	}
 }
 
-
 /*
- * Evaluates a hexadecimal string
- * returns true if succeeded, false otherwise
+ * General form of numeric literal conversion.
+ * 
+ * Writes the integer form of the value between `str` and `end` to `output_num`,
+ * parsed in base `base` and yielding SPASM error `error_code` in case of invalid
+ * characters.
+ *
+ * Returns true if successful, false otherwise.
  */
+static bool conv_generic(const char *str, const char *end, int *output_num,
+                  int base, int error_code) {
+	char *ep;
+	long value = strtol(str, &ep, base);
+
+	if (ep < end) {
+		char *number = strndup(str, end - str);
+		SetLastSPASMError(error_code, *ep, number);
+		free(number);
+		return false;
+	}
+
+	if (value < INT_MIN || value > INT_MAX) {
+		char *number = strndup(str, end - str);
+		SetLastSPASMError(SPASM_ERR_INTEGER_OVERFLOW, number);
+		free(number);
+		return false;
+	}
+		
+	*output_num = (int)value;
+	return true;
+}
 
 bool conv_hex (const char* str, const char *end, int *output_num) {
-	int acc = 0;
-	const char *start = str;
-
-	while (str < end) {
-		char hexchar = toupper (*str);
-		
-		if (!isxdigit (*str))
-		{
-			char number[256];
-			strncpy(number, start, end - start);
-			number[end - start] = '\0';
-
-			SetLastSPASMError(SPASM_ERR_INVALID_HEX_DIGIT, *str, number);
-			return false;
-		}
-		
-		acc <<= 4;
-		if (hexchar > '9') {
-			acc+= hexchar - ('A' - 10);
-		} else {
-			acc += hexchar - '0';
-		}
-		str++;
-	}
-	*output_num = acc;
-	return true;
+	return conv_generic(str, end, output_num, 16, SPASM_ERR_INVALID_HEX_DIGIT);
 }
-
-
-/*
- * Evaluates a decimal string
- * returns true if succeeded, false otherwise
- */
 
 static bool conv_dec (const char* str, const char *end, int *output_num) {
-	int acc = 0;
-	const char *start = str;
-
-	while (str < end) {
-		acc *= 10;
-		
-		if (!isdigit ((unsigned char) *str))
-		{
-			char number[256];
-			strncpy(number, start, end - start);
-			number[end - start] = '\0';
-
-			SetLastSPASMError(SPASM_ERR_INVALID_DECIMAL_DIGIT, *str, number);
-			return false;
-		}
-		
-		acc += *str-'0';
-		str++;
-	}
-	*output_num = acc;
-	return true;
+	return conv_generic(str, end, output_num, 10, SPASM_ERR_INVALID_DECIMAL_DIGIT);
 }
 
-
-/*
- * Evaluates a binary string
- * returns true if succeeded, false otherwise
- */
-
 static bool conv_bin (const char* str, const char *end, int *output_num) {
-	int acc = 0;
-	const char *start = str;
-
-	while (str < end) {
-		acc <<= 1;
-		
-		if (!(*str == '0' || *str == '1'))
-		{
-			char number[256];
-			strncpy(number, start, end - start);
-			number[end - start] = '\0';
-
-			SetLastSPASMError(SPASM_ERR_INVALID_BINARY_DIGIT, *str, number);
-			return false;
-		}
-		
-		if (*str == '1') acc++;
-		str++;
-	}
-	*output_num = acc;
-	return true;
+	return conv_generic(str, end, output_num, 2, SPASM_ERR_INVALID_BINARY_DIGIT);
 }
 
