@@ -26,11 +26,8 @@ char *handle_directive (const char *ptr) {
 	int dir;
 
 	//same deal as handle_preop, just with directives instead
-	name_end = ptr;
-	while (isalpha(*name_end)) {
-		name_buf[name_end - ptr] = *name_end;
-		name_end++;
-	}
+	name_end = skip_to_name_end(ptr);
+	memcpy(name_buf, ptr, name_end - ptr);
 	name_buf[name_end - ptr] = '\0';
 
 	dir = 0;
