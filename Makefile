@@ -3,7 +3,7 @@ LD = $(CROSS_COMPILE)ld
 CXXFLAGS+= -DUSE_REUSABLES -DUNIXVER -DUSE_BUILTIN_FCREATE
 LDFLAGS+= -lc -lm
 
-PREFIX ?= /usr/local 
+PREFIX ?= /usr/local
 
 ifdef FORCE_NO_GIT
 	FORCE_NO_GIT = 1
@@ -28,7 +28,7 @@ export LDFLAGS
 
 .cpp.o:
 		$(CC) $(CXXFLAGS) -c $<
-	 
+
 .cpp:
 		$(CC) $(CXXFLAGS) $< -o $@
 
@@ -58,7 +58,7 @@ tar: opt-static
 		tar czvf spasm-ng_$(VERSION)_binary.tar.gz spasm README.md LICENSE inc/
 
 # This is a fake Debian package builder - it uses checkinstall
-# to make this work.	 
+# to make this work.
 debian: opt spasm
 		echo "SPASM-ng is a z80 assembler with extra features to support development for TI calculators." > description-pak
 		checkinstall --requires "zlib1g, libssl1.0.0, libgmp10" \
