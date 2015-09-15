@@ -68,7 +68,7 @@ debian: opt spasm
 		rm -f description-pak
 
 install:
-		cp spasm /usr/bin/spasm
+		cp spasm /usr/local/bin/spasm
 
 clean:
 		rm -f $(OBJ) spasm description-pak spasm-ng*.deb spasm-ng*.tar.gz
