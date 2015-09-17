@@ -3,7 +3,7 @@ LD = $(CROSS_COMPILE)ld
 CXXFLAGS+= -DUSE_REUSABLES -DUNIXVER -DUSE_BUILTIN_FCREATE
 LDFLAGS+= -lc -lm
 
-PREFIX ?= /usr/local
+DESTDIR ?= /usr/local
 
 ifdef FORCE_NO_GIT
 	FORCE_NO_GIT = 1
@@ -69,7 +69,7 @@ debian: opt spasm
 		rm -f description-pak
 
 install:
-		cp spasm $(PREFIX)/bin/spasm
+		cp spasm $(DESTDIR)/bin/spasm
 
 clean:
 		rm -f $(OBJ) spasm description-pak spasm-ng*.deb spasm-ng*.tar.gz
