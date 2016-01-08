@@ -46,6 +46,9 @@ SPASMERROR, *LPSPASMERROR;
 #define SPASM_ERR_INVALID_DECIMAL_DIGIT		0x200
 #define SPASM_ERR_INVALID_HEX_DIGIT			0x201
 #define SPASM_ERR_INVALID_BINARY_DIGIT		0x202
+#define SPASM_ERR_DIVIDE_BY_ZERO			0x203
+#define SPASM_ERR_INTEGER_OVERFLOW			0x204
+#define SPASM_ERR_DIVIDE_IMIN1				0x205
 
 #define SPASM_ERR_FCREATE_NOFILE			0x301
 
@@ -113,6 +116,9 @@ SPASMERROR g_ErrorCodes[]
 	{SPASM_ERR_INVALID_DECIMAL_DIGIT,	_T("Invalid digit '%c' in the decimal number '%s'")},
 	{SPASM_ERR_INVALID_HEX_DIGIT,		_T("Invalid digit '%c' in the hexadecimal number '%s'")},
 	{SPASM_ERR_INVALID_BINARY_DIGIT,	_T("Invalid digit '%c' in the binary number '%s'")},
+	{SPASM_ERR_DIVIDE_BY_ZERO,			_T("Division by zero in evaluation of expression '%s'")},
+	{SPASM_ERR_INTEGER_OVERFLOW,		_T("Magnitude of literal value '%s' is too large")},
+	{SPASM_ERR_DIVIDE_IMIN1,			_T("Division of INT_MIN by -1 in expression '%s' is unrepresentable")},
 
 	{SPASM_ERR_FCREATE_NOFILE,			_T("No buffer was selected for the fcreate call")},
 	{SPASM_ERR_UNMATCHED_IF,			_T("Unbalanced #IF/#ENDIF")},
