@@ -1,0 +1,13 @@
+language: cpp
+
+before_install:
+  - sudo apt-get update -qq
+
+install:
+  - sudo apt-get install -y -qq zlib1g-dev
+
+script:
+  - make NO_APPSIGN=1
+  - make clean
+  - sudo apt-get install -y -qq libssl-dev libgmp-dev
+  - make
