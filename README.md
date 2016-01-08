@@ -1,6 +1,7 @@
 spasm-ng
 ========
 [![Build Status](https://travis-ci.org/alberthdev/spasm-ng.svg?branch=master)](https://travis-ci.org/alberthdev/spasm-ng)
+[![Coverage Status](https://coveralls.io/repos/alberthdev/spasm-ng/badge.svg?branch=master&service=github)](https://coveralls.io/github/alberthdev/spasm-ng?branch=master)
 
 SPASM-ng is a z80 assembler with extra features to support development
 for TI calculators. 
