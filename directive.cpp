@@ -580,21 +580,21 @@ char *parse_emit_string (const char *ptr, ES_TYPE type, void *echo_target) {
 #endif
 					case ES_BYTE: 
 					{
-						write_arg(value, ARG_NUM_8, 0);
+						write_arg(value, ARG_NUM_8, 0, 0);
 		                stats_datasize++;
 		                program_counter++;
 		                break;
 					}
 					case ES_WORD:
 					{
-		                write_arg(value, ARG_NUM_16, 0);
+		                write_arg(value, ARG_NUM_16, 0, 0);
 		                stats_datasize+=2;
 		                program_counter+=2;
 		                break;
 					}
 					case ES_LONG:
 					{
-						write_arg(value, ARG_NUM_24, 0);
+						write_arg(value, ARG_NUM_24, 0, 0);
 						stats_datasize+=3;
 						program_counter+=3;
 						break;
@@ -611,21 +611,21 @@ char *parse_emit_string (const char *ptr, ES_TYPE type, void *echo_target) {
 					break;
 				case ES_BYTE: 
 					{
-						add_pass_two_expr(word, ARG_NUM_8, 0);
+						add_pass_two_expr(word, ARG_NUM_8, 0, 0);
 		                stats_datasize++;
 		                program_counter++;
 		                break;
 					}
 				case ES_WORD:
 					{
-		                add_pass_two_expr(word, ARG_NUM_16, 0);
+		                add_pass_two_expr(word, ARG_NUM_16, 0, 0);
 		                stats_datasize+=2;
 		                program_counter+=2;
 		                break;
 					}
 				case ES_LONG:
 					{
-						add_pass_two_expr(word, ARG_NUM_24, 0);
+						add_pass_two_expr(word, ARG_NUM_24, 0, 0);
 						stats_datasize += 3;
 						program_counter += 3;
 						break;

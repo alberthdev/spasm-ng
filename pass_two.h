@@ -26,6 +26,7 @@ typedef struct tagexpr{
 	arg_type type;
 	char *input_file;
 	bool listing_on;
+	int inst_size;
 	int or_value;
 	struct tagexpr *next;
 } expr_t;
@@ -40,9 +41,9 @@ typedef struct output {
 	struct output *next;
 } output_t;
 
-void add_pass_two_expr (char *expr, arg_type type, int or_value);
+void add_pass_two_expr (char *expr, arg_type type, int inst_size, int or_value);
 void add_pass_two_output (char *expr, output_type type);
 void run_second_pass ();
-void write_arg (int value, arg_type type, int or_value);
+void write_arg (int value, arg_type type, int inst_size, int or_value);
 
 #endif

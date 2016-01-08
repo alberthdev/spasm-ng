@@ -9,8 +9,6 @@
 #include "console.h"
 #include "errors.h"
 
-void write_arg (int value, arg_type type, int or_value);
-
 expr_t *expr_list = NULL, *expr_list_tail = NULL;
 output_t *output_list = NULL, *output_list_tail = NULL;
 
@@ -23,7 +21,7 @@ output_t *output_list = NULL, *output_list_tail = NULL;
  * parsed in pass two
  */
 
-void add_pass_two_expr (char *expr, arg_type type, int or_value) {
+void add_pass_two_expr (char *expr, arg_type type, int inst_size, int or_value) {
 	int value;
 
 	//if we're in code counter or stats mode, where we don't need actual expressions, then just skip this crap
@@ -37,7 +35,7 @@ void add_pass_two_expr (char *expr, arg_type type, int or_value) {
 			expr++;
 		} else if (*expr == '\0') {
 			//IX/IY offsets are also allowed to be blank - a 0 is assumed then
-			write_arg (0, ARG_IX_IY_OFFSET, 0);
+			write_arg (0, ARG_IX_IY_OFFSET, inst_size, 0);
 			return;
 		}
 	}
@@ -61,6 +59,7 @@ void add_pass_two_expr (char *expr, arg_type type, int or_value) {
 		new_expr->type = type;
 		new_expr->input_file = curr_input_file;
 		new_expr->listing_on = listing_on;
+		new_expr->inst_size = inst_size;
 		new_expr->or_value = or_value;
 		new_expr->next = NULL;
 
@@ -83,7 +82,7 @@ void add_pass_two_expr (char *expr, arg_type type, int or_value) {
 		if (type == ARG_ADDR_OFFSET) {
 			type = ARG_NUM_8;
 		}
-		write_arg (0, type, 0);
+		write_arg (0, type, inst_size, 0);
 
 	}
 	else if (fResult == false)
@@ -93,7 +92,7 @@ void add_pass_two_expr (char *expr, arg_type type, int or_value) {
 	else
 	{
 		//write the value now
-		write_arg (value, type, or_value);
+		write_arg (value, type, inst_size, or_value);
 		ReplaySPASMErrorSession(session);
 	}
 
@@ -185,7 +184,7 @@ void run_second_pass () {
 					case 0x28:
 					case 0x30:
 					case 0x38:
-						write_arg(value + 0xC7, expr_list->type, expr_list->or_value);
+						write_arg(value + 0xC7, expr_list->type, expr_list->inst_size, expr_list->or_value);
 						break;
 					default:
 						SetLastSPASMError(SPASM_ERR_INVALID_RST_OPERANDS);
@@ -194,7 +193,7 @@ void run_second_pass () {
 			} else {
 				out_ptr = expr_list->out_ptr;
 				listing_on = expr_list->listing_on;
-				write_arg (value, expr_list->type, expr_list->or_value);
+				write_arg (value, expr_list->type, expr_list->inst_size, expr_list->or_value);
 			}
 		}
 		free (expr_list->expr);
@@ -262,7 +261,7 @@ void run_second_pass () {
  * for bit numbers
  */
 
-void write_arg (int value, arg_type type, int or_value) {
+void write_arg (int value, arg_type type, int inst_size, int or_value) {
 
 	switch (type) {
 		case ARG_NUM_8:
@@ -308,12 +307,12 @@ void write_arg (int value, arg_type type, int or_value) {
 		case ARG_ADDR_OFFSET:
 			if (mode & MODE_EZ80) {
 				value &= 0xFFFFFF;
-				value -= ((program_counter & 0xFFFFFF) + 2);
+				value -= ((program_counter & 0xFFFFFF) + inst_size);
 			}
 			else
 			{
 				value &= 0xFFFF;
-				value -= ((program_counter & 0xFFFF) + 2);
+				value -= ((program_counter & 0xFFFF) + inst_size);
 			}
 
 			if (value < -128 || value > 127)

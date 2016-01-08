@@ -703,23 +703,23 @@ int write_instruction_data (instr *curr_instr, char **arg_ptrs, char **arg_end_p
 				case '*': //16-bit number
 					if (suffix >= 0 && suffix & SUFFIX_IL) {
 						size++;
-						add_pass_two_expr (arg_text, ARG_NUM_24, 0);
+						add_pass_two_expr (arg_text, ARG_NUM_24, size, 0);
 					}
 					else {
-						add_pass_two_expr (arg_text, ARG_NUM_16, 0);
+						add_pass_two_expr (arg_text, ARG_NUM_16, size, 0);
 					}
 					free (arg_text);
 					break;
 				case '&': //8-bit number
-					add_pass_two_expr (arg_text, ARG_NUM_8, 0);
+					add_pass_two_expr (arg_text, ARG_NUM_8, size, 0);
 					free (arg_text);
 					break;
 				case '%': //8-bit address offset
-					add_pass_two_expr (arg_text, ARG_ADDR_OFFSET, 0);
+					add_pass_two_expr (arg_text, ARG_ADDR_OFFSET, size, 0);
 					free (arg_text);
 					break;
 				case '@': //8-bit IX/IY offset	
-					add_pass_two_expr (arg_text, ARG_IX_IY_OFFSET, 0);
+					add_pass_two_expr (arg_text, ARG_IX_IY_OFFSET, size, 0);
 					free (arg_text);
 					break;
 				case '^': //bit number
@@ -727,7 +727,7 @@ int write_instruction_data (instr *curr_instr, char **arg_ptrs, char **arg_end_p
 					bit_arg_text = arg_text;
 					break;
 				case '#':
-					add_pass_two_expr (arg_text, ARG_RST, 0);
+					add_pass_two_expr (arg_text, ARG_RST, size, 0);
 					free(arg_text);
 					break;
 			}
@@ -737,7 +737,7 @@ int write_instruction_data (instr *curr_instr, char **arg_ptrs, char **arg_end_p
 	//if there's extra data at the end of the instruction, write that too
 	if (curr_instr->has_end_data && (mode & MODE_NORMAL || mode & MODE_LIST)) {
 		if (has_bit_arg)
-			add_pass_two_expr (bit_arg_text, ARG_BIT_NUM, curr_instr->end_data);
+			add_pass_two_expr (bit_arg_text, ARG_BIT_NUM, size, curr_instr->end_data);
 		else
 			write_out (curr_instr->end_data);
 	}
