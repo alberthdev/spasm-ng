@@ -1,8 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SPASMTests", "..\..\Tests\SPASMTests\SPASMTests.vcxproj", "{85D2CCCD-B12D-4A80-BB4E-9233E078D9EA}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SPASM", "SPASM.vcxproj", "{106FF797-6997-43F1-88E3-7D6C0D8A6F3F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{339D2AC9-17A8-4F03-BCB0-6148573892BC}"
@@ -15,9 +13,6 @@ Global
 		SccLocalPath0 = .
 		SccProjectUniqueName1 = SPASM.vcxproj
 		SccLocalPath1 = .
-		SccProjectUniqueName2 = ..\\..\\Tests\\SPASMTests\\SPASMTests.vcxproj
-		SccProjectName2 = ../../Tests/SPASMTests
-		SccLocalPath2 = ..\\..\\Tests\\SPASMTests
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
