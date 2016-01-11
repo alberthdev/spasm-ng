@@ -54,6 +54,12 @@ Building
 --------
 On Windows, simply build with the included Visual Studio project file.
 
+If you wish to build with COM support, you must:
+
+  * define `SPASM_NG_ENABLE_COM` globally within the Visual Studio
+    project;
+  * ensure that ATL include files are accessible.
+
 On Linux, Mac OS X, and other \*nix, simply build by running:
 
     # Git users: run this to update the version
