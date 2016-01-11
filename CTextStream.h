@@ -1,5 +1,6 @@
 #pragma once
 
+#ifdef SPASM_NG_ENABLE_COM
 class ATL_NO_VTABLE CTextStream :
 	public CComObjectRootEx<CComObjectThreadModel>,
 	public IDispatchImpl<ITextStream, &__uuidof(ITextStream), &__uuidof(__Scripting), 1, 0>
@@ -39,3 +40,4 @@ public:
 private:
 	HANDLE m_hRead;
 };
+#endif

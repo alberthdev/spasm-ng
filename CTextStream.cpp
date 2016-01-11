@@ -4,6 +4,7 @@
 
 #define MAX_PIPE_SIZE (1024 * 1024)
 
+#ifdef SPASM_NG_ENABLE_COM
 HRESULT CTextStream::FinalConstruct()
 {
 	HANDLE hRead, hWrite;
@@ -114,3 +115,4 @@ STDMETHODIMP CTextStream::Close()
 {
 	return S_FALSE;
 }
+#endif

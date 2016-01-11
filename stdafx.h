@@ -10,6 +10,7 @@
 
 #include "targetver.h"
 
+#ifdef SPASM_NG_ENABLE_COM
 //#define _ATL_APARTMENT_THREADED
 #define _ATL_FREE_THREADED
 
@@ -19,8 +20,11 @@
 
 #define _ATL_STATIC_REGISTRY
 #define ATL_NO_ASSERT_ON_DESTROY_NONEXISTENT_WINDOW
+#endif
 
 #include "resource.h"
+
+#ifdef SPASM_NG_ENABLE_COM
 #include <atlbase.h>
 #include <atlcom.h>
 #include <atlctl.h>
@@ -29,9 +33,10 @@
 
 using namespace ATL;
 
-
-
+// We don't have to really worry about this (non-ATL), but
+// we'll include it in this #ifdef anyways.
 #include <comutil.h>
+#endif
 
 #include <windows.h>
 #include <windowsx.h>
