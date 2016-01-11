@@ -13,9 +13,18 @@ On Windows, you will need the following to build SPASM-ng:
 
   * Visual Studio with C++ support
     
-    Visual Studio 2012 or newer is recommended, but it may be possible
+    Visual Studio 2010 or newer is recommended, but it may be possible
     to downgrade. See http://stackoverflow.com/a/16196505 for more
     info.
+    
+    Visual Studio Express can be used for building.
+    
+    If you want to build with COM support, however, you will need the ATL
+    include files. You can get these by either:
+    
+      * using Visual Studio Professional;
+      * installing Windows SDKs that contain the ATL include files, and
+        reconfiguring the project accordingly.
 
 On Linux, Mac OS X, and other \*nix, you will need the following to
 build SPASM-ng:
