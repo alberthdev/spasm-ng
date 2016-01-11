@@ -4,7 +4,7 @@ spasm-ng
 [![Windows Build status](https://ci.appveyor.com/api/projects/status/3bl3ys8kw844acqd/branch/master?svg=true)](https://ci.appveyor.com/project/alberthdev/spasm-ng/branch/master)
 [![Coverage Status](https://coveralls.io/repos/alberthdev/spasm-ng/badge.svg?branch=master&service=github)](https://coveralls.io/github/alberthdev/spasm-ng?branch=master)
 
-SPASM-ng is a z80 assembler with extra features to support development
+SPASM-ng is a z80/eZ80 assembler with extra features to support development
 for TI calculators. 
 
 Requirements
@@ -62,47 +62,55 @@ If you wish to build with COM support, you must:
 
 On Linux, Mac OS X, and other \*nix, simply build by running:
 
-    # Git users: run this to update the version
-    # ONLY RUN THIS IF YOU ARE USING GIT
-    make version
-    
-    # Now build!
-    make
-    
-    # Optional: install SPASM-ng (you may need sudo/su/root):
-    make install
+```bash
+# Git users: run this to update the version
+# ONLY RUN THIS IF YOU ARE USING GIT
+make version
+
+# Now build!
+make
+
+# Optional: install SPASM-ng (you may need sudo/su/root):
+make install
+```
 
 To disable app signing support in your binary (thus eliminating the
 dependencies on OpenSSL and GMP), define NO\_APPSIGN when invoking `make`:
 
-    make NO_APPSIGN=1
+```bash
+make NO_APPSIGN=1
+```
 
 For Debian systems, you can run the following to create a Debian
 package:
 
-    # You should "make clean" before running this!
-    make clean
-    
-    # Create a Debian package (builds opt target):
-    make debian
+```bash
+# You should "make clean" before running this!
+make clean
+
+# Create a Debian package (builds opt target):
+make debian
+```
 
 Other Makefile commands:
 
-    # You should "make clean" before running any of this!
-    make clean
-    
-    # Build with -static (static linking, bigger binary due to
-    # including libraries):
-    make static
-    
-    # Build with -O3 optimization:
-    make opt
-    
-    # Build with both -static and -O3 optimization:
-    make opt-static
-    
-    # Create tarball of spasm-ng binary (builds opt-static target):
-    make tar
+```bash
+# You should "make clean" before running any of this!
+make clean
+
+# Build with -static (static linking, bigger binary due to
+# including libraries):
+make static
+
+# Build with -O3 optimization:
+make opt
+
+# Build with both -static and -O3 optimization:
+make opt-static
+
+# Create tarball of spasm-ng binary (builds opt-static target):
+make tar
+```
 
 Documentation
 -------------
