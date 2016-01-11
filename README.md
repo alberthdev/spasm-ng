@@ -17,7 +17,7 @@ On Windows, you will need the following to build SPASM-ng:
     to downgrade. See http://stackoverflow.com/a/16196505 for more
     info.
     
-    Visual Studio Express can be used for building.
+    Visual Studio Express editions can be used for building.
     
     If you want to build with COM support, however, you will need the ATL
     include files. You can get these by either:
