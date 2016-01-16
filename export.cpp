@@ -219,6 +219,7 @@ void makeapp (const unsigned char *output_contents, DWORD size, FILE *outfile, c
 	if ((tempnum = ((size+96)%16384))) {
 		if (tempnum < 97 && size > 16384)
 		{
+			free(buffer);
 			SetLastSPASMError(SPASM_ERR_SIGNER_ROOM_FOR_SIG);
 			return;
 		}
@@ -231,6 +232,7 @@ void makeapp (const unsigned char *output_contents, DWORD size, FILE *outfile, c
 /* Fix app header fields */
 /* Length Field: set to size of app - 6 */
 	if (!(buffer[0] == 0x80 && buffer[1] == 0x0F)) {
+		free(buffer);
 		SetLastSPASMError(SPASM_ERR_SIGNER_MISSING_LENGTH);
 		return;
 	}
@@ -243,12 +245,14 @@ void makeapp (const unsigned char *output_contents, DWORD size, FILE *outfile, c
 /* Program Type Field: Must be present and shareware (0104) */
 	pnt = findfield(0x12, buffer);
 	if (!pnt || ( buffer[pnt++]!=1) || (buffer[pnt]!=4) ) {
+		free(buffer);
 		SetLastSPASMError(SPASM_ERR_SIGNER_PRGM_TYPE);
 		return;
 	}
 /* Pages Field: Corrects page num*/
 	pnt = findfield(0x81, buffer);
 	if (!pnt) {
+		free(buffer);
 		SetLastSPASMError(SPASM_ERR_SIGNER_MISSING_PAGES);
 		return;
 	}
@@ -259,6 +263,7 @@ void makeapp (const unsigned char *output_contents, DWORD size, FILE *outfile, c
 /* Name Field: MUST BE 8 CHARACTERS, no checking if valid */
 	pnt = findfield(0x48, buffer);
 	if (!pnt) {
+		free(buffer);
 		SetLastSPASMError(SPASM_ERR_SIGNER_MISSING_NAME);
 		return;
 	}

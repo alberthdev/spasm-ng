@@ -74,6 +74,7 @@ void write_labels (char *filename) {
 	fclose (symtable);
 	
 	list_free (label_list.next, true, NULL);
+	free(hdr_node.name);
 }
 
 /*

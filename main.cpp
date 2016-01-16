@@ -262,7 +262,7 @@ int main (int argc, char **argv)
 	
 	//otherwise, get any options
 	curr_input_file = strdup("Commandline");
-	const char * const starting_input_file = curr_input_file;
+	char *starting_input_file = curr_input_file;
 
 	while (curr_arg < argc) {
 		if (argv[curr_arg][0] == '-'
@@ -413,9 +413,14 @@ int main (int argc, char **argv)
 	set_case_sensitive (case_sensitive);
 	
 	//check on filenames
-	if (!(mode & MODE_COMMANDLINE) && !curr_input_file) {
+	if (!(mode & MODE_COMMANDLINE) && curr_input_file == starting_input_file) {
 		puts ("No input file specified");
+		free(starting_input_file);
 		return EXIT_FATAL_ERROR;
+	}
+
+	if (curr_input_file != starting_input_file) {
+		free(starting_input_file);
 	}
 
 	if (!output_filename) {
