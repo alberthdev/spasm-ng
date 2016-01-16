@@ -210,6 +210,7 @@ EXPORT void free_storage() {
 	all_opcodes = opcode_list;
 
 	list_free(input_files, true, NULL);
+	input_files = NULL;
 
 	hash_free(label_table);
 	label_table = NULL;

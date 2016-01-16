@@ -128,6 +128,12 @@ int run_assembly()
 	list_free (include_dirs, true, NULL);
 	include_dirs = NULL;
 
+	if (mode & MODE_SYMTABLE) {
+		char* fileName = change_extension(output_filename, "lab");
+		write_labels (fileName);
+		free(fileName);
+	}
+
 	//...and if there's output, run the second pass and write it to the output file
 	if (mode & MODE_NORMAL || mode & MODE_LIST)
 	{
@@ -180,12 +186,6 @@ int run_assembly()
 		         stats_codesize, stats_mintime, stats_maxtime);
 	}
 	
-	if (mode & MODE_SYMTABLE) {
-		char* fileName = change_extension(output_filename, "lab");
-		write_labels (fileName);
-		free(fileName);
-	}
-
 	if (mode & MODE_STATS) {
 		fprintf(stdout, "Number of labels: %u\nNumber of defines: %u\nCode size: %u\nData size: %u\nTotal size: %u\n",
 		         get_num_labels (), get_num_defines (), stats_codesize, stats_datasize, stats_codesize + stats_datasize);
@@ -414,10 +414,7 @@ int main (int argc, char **argv)
 	}
 
 	if (!output_filename) {
-		if (mode & MODE_SYMTABLE)
-			output_filename = change_extension (curr_input_file, "lab");
-		else
-			output_filename = change_extension (curr_input_file, "bin");
+		output_filename = change_extension (curr_input_file, "bin");
 	}
 
 	if (!is_storage_initialized)
