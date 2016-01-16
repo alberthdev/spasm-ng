@@ -141,8 +141,8 @@ typedef void *LPVOID;
 #define sprintf_s sprintf
 
 
-#define StringCchPrintf(dest, size, fmt, ...) sprintf(dest, fmt, __VA_ARGS__)
-#define StringCchVPrintf(dest, size, fmt, args) vsprintf(dest, fmt, args)
+#define StringCchPrintf(dest, size, fmt, ...) snprintf(dest, size, fmt, __VA_ARGS__)
+#define StringCchVPrintf(dest, size, fmt, args) vsnprintf(dest, size, fmt, args)
 
 #define ARRAYSIZE(z) (sizeof(z)/sizeof((z)[0]))
 
