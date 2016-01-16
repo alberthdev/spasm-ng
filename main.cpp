@@ -128,20 +128,20 @@ int run_assembly()
 	list_free (include_dirs, true, NULL);
 	include_dirs = NULL;
 
-	if (mode & MODE_SYMTABLE) {
-		char* fileName = change_extension(output_filename, "lab");
-		write_labels (fileName);
-		free(fileName);
-	}
-
 	//...and if there's output, run the second pass and write it to the output file
-	if (mode & MODE_NORMAL || mode & MODE_LIST)
+	if (mode & MODE_SYMTABLE || mode & MODE_NORMAL || mode & MODE_LIST)
 	{
 		printf ("Pass two... \n");
 		int second_pass_session = StartSPASMErrorSession();
 		run_second_pass ();
 		ReplaySPASMErrorSession(second_pass_session);
 		EndSPASMErrorSession(second_pass_session);
+
+		if (mode & MODE_SYMTABLE) {
+			char* fileName = change_extension(output_filename, "lab");
+			write_labels (fileName);
+			free(fileName);
+		}
 
 		//run the output through the appropriate program export and write it to a file
 		if (mode & MODE_NORMAL && output_filename != NULL)
