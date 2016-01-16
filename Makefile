@@ -74,6 +74,8 @@ install:
 check:
 		# TODO - write better checks
 		./spasm
+		./spasm -O inc/ti83plus.inc
+		./spasm -O -E inc/ti84pce.inc
 
 coverage: CXXFLAGS+=-g -O0 --coverage
 coverage: LDFLAGS+=-g -O0 --coverage
