@@ -4,6 +4,7 @@
 #ifndef _TEST
 #include "SPASM_h.h"
 
+#ifdef SPASM_NG_ENABLE_COM
 class CSPASMModule : public ATL::CAtlExeModuleT<CSPASMModule>
 {
 public:
@@ -11,5 +12,7 @@ public:
 };
 
 extern CSPASMModule _AtlModule;
+#endif
+
 #endif
 #endif

@@ -2,6 +2,7 @@ language: cpp
 
 before_install:
   - sudo apt-get update -qq
+  - pip install --user cpp-coveralls
 
 install:
   - sudo apt-get install -y -qq zlib1g-dev
@@ -11,3 +12,7 @@ script:
   - make clean
   - sudo apt-get install -y -qq libssl-dev libgmp-dev
   - make
+  - make coverage
+
+after_success:
+  - coveralls --gcov-options '\-lp'

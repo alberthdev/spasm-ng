@@ -10,6 +10,7 @@
 
 #include "targetver.h"
 
+#ifdef SPASM_NG_ENABLE_COM
 //#define _ATL_APARTMENT_THREADED
 #define _ATL_FREE_THREADED
 
@@ -19,8 +20,11 @@
 
 #define _ATL_STATIC_REGISTRY
 #define ATL_NO_ASSERT_ON_DESTROY_NONEXISTENT_WINDOW
+#endif
 
 #include "resource.h"
+
+#ifdef SPASM_NG_ENABLE_COM
 #include <atlbase.h>
 #include <atlcom.h>
 #include <atlctl.h>
@@ -29,9 +33,10 @@
 
 using namespace ATL;
 
-
-
+// We don't have to really worry about this (non-ATL), but
+// we'll include it in this #ifdef anyways.
 #include <comutil.h>
+#endif
 
 #include <windows.h>
 #include <windowsx.h>
@@ -68,6 +73,40 @@ using namespace ATL;
 #include "SPASM_h.h"
 
 #include "gmp.h"
+
+// Silly workarounds for WinSDK conflicts with VS2010 Express
+// (a seriously buggy release of VS...)
+#ifdef SPASM_NG_ENABLE_COM
+// Are we using VS2010?
+#if (_MSC_VER == 1600)
+
+// The Chromium devs did it best, so I'll let them take over here...
+
+/* Copyright 2013 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license.
+ * Workaround for:
+ * http://connect.microsoft.com/VisualStudio/feedback/details/621653/
+ * http://crbug.com/225822
+ * Note that we can't actually include <stdint.h> here because there's other
+ * code in third_party that has partial versions of stdint types that conflict.
+ */
+#include <intsafe.h>
+#undef INT8_MIN
+#undef INT16_MIN
+#undef INT32_MIN
+#undef INT64_MIN
+#undef INT8_MAX
+#undef UINT8_MAX
+#undef INT16_MAX
+#undef UINT16_MAX
+#undef INT32_MAX
+#undef UINT32_MAX
+#undef INT64_MAX
+#undef UINT64_MAX
+
+#endif // VS2010 check
+#endif // SPASM_NG_ENABLE_COM
+
 #else
 #include <stdio.h>
 #include <stdlib.h>

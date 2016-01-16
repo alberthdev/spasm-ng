@@ -71,9 +71,18 @@ debian: opt spasm
 install:
 		cp spasm $(DESTDIR)/bin/spasm
 
+check:
+		# TODO - write better checks
+		./spasm
+
+coverage: CXXFLAGS+=-g -O0 --coverage
+coverage: LDFLAGS+=-g -O0 --coverage
+coverage: clean spasm check
+
 clean:
 		rm -f $(OBJ) spasm description-pak spasm-ng*.deb spasm-ng*.tar.gz
 		rm -f opt static prep-special-build
+		rm -f *.gcno *.gcda *.gcov
 
 version:
 		@./version.sh set

@@ -1,4 +1,5 @@
 #pragma once
+#ifdef SPASM_NG_ENABLE_COM
 struct _CopyVariantFromAdaptBstr {
 	static HRESULT copy(VARIANT* p1, const CAdapt<CComBSTR>* p2) {
 		p1->vt = VT_BSTR;
@@ -68,3 +69,4 @@ public:
 		return S_OK;
 	}
 };
+#endif

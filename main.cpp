@@ -20,7 +20,9 @@ extern expr_t *expr_list, *expr_list_tail;
 extern output_t *output_list, *output_list_tail;
 
 #ifdef _WIN32
+#ifdef SPASM_NG_ENABLE_COM
 CSPASMModule _AtlModule;
+#endif
 #endif
 
 /*
@@ -383,8 +385,11 @@ int main (int argc, char **argv)
 				{
 #ifndef _TEST
 #ifdef _WINDOWS
+					printf ("Unrecognized option %s\n", argv[curr_arg]);
+#ifdef SPASM_NG_ENABLE_COM
 					FreeConsole();
 					return _AtlModule.WinMain(SW_HIDE);
+#endif
 #endif
 #else
 					printf ("Unrecognized option %s\n", argv[curr_arg]);

@@ -10,6 +10,7 @@
 
 #include "Module.h"
 
+#ifdef SPASM_NG_ENABLE_COM
 class ATL_NO_VTABLE CZ80Assembler :
 	public CComObjectRootEx<CComObjectThreadModel>,
 	public CComCoClass<CZ80Assembler, &__uuidof(Z80Assembler)>,
@@ -284,3 +285,4 @@ private:
 };
 
 OBJECT_ENTRY_AUTO(__uuidof(Z80Assembler), CZ80Assembler)
+#endif
