@@ -8,7 +8,15 @@ import shlex
 import subprocess
 import sys
 import tempfile
-from typing import Tuple, ByteString, Iterable, Sequence
+
+def have_typing_module() -> bool:
+    (major, minor, _, _, _) = sys.version_info
+    return (major == 3 and minor >= 5) or major > 3
+
+if have_typing_module():
+    from typing import Tuple, ByteString, Iterable, Sequence
+else:
+    Tuple = ByteString = Iterable = Sequence = NotImplemented
 
 # In case you need more visiblity into what's going on.
 #logging.basicConfig(level=logging.DEBUG)
