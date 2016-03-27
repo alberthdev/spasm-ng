@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+#
+# spasm-ng test runner
 
 import logging
 import re
@@ -8,7 +10,8 @@ import sys
 import tempfile
 from typing import Tuple, ByteString, Iterable, Sequence
 
-logging.basicConfig(level=logging.DEBUG)
+# In case you need more visiblity into what's going on.
+#logging.basicConfig(level=logging.DEBUG)
 
 class Checker(object):
     def __init__(self, line_tail):
@@ -93,12 +96,12 @@ def find_assembler_args(sources: Iterable[str]) -> str:
     return ' '.join(args)
 
 
-def run_assembler(assembler: str, infile: str, opts: str) -> Tuple[bool, ByteString, Sequence[str]]:
+def run_assembler(assembler: str, infile: str, opts: str) -> Tuple[int, ByteString, Sequence[str]]:
     """
     Run the assembler over the given file, with the given command line
     arguments.
 
-    Returns whether the assembler exited normally, the binary emitted from the
+    Returns the assembler's return code, the binary emitted from the
     assembler and the lines emitted to the console.
     """
     with tempfile.NamedTemporaryFile('rb') as outfile:
@@ -107,7 +110,7 @@ def run_assembler(assembler: str, infile: str, opts: str) -> Tuple[bool, ByteStr
                 stdin=subprocess.DEVNULL, stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT, universal_newlines=True)
         binary = outfile.read()
-    return (res.returncode != 0, binary, res.stdout.split('\n'))
+    return (res.returncode, binary, res.stdout.split('\n'))
 
 
 def filter_whitespace(s: str) -> str:
