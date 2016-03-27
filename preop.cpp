@@ -40,6 +40,7 @@ char *handle_preop (char *ptr) {
 		name_end++;
 	name = strndup (ptr, name_end - ptr);
 
+	//then try to match it against the list of preops
 	preop = 0;
 	while (preops[preop]) {
 		if (!strcasecmp (preops[preop], name)) {

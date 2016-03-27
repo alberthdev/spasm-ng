@@ -24,27 +24,27 @@ char *handle_directive (const char *ptr) {
 	int dir;
 
 	//same deal as handle_preop, just with directives instead
-    bool valid_directive = false;
-    unsigned name_len = 0;
-    while (!isspace(ptr[name_len])) {
-        name_len++;
+	bool valid_directive = false;
+	unsigned name_len = 0;
+	while (!isspace(ptr[name_len])) {
+		name_len++;
 	}
 
-	// If longer than name_buf, it can't be a valid directive.
-	if (name_len < sizeof(name_buf)) {
-		// Copy string for comparing against
-		memcpy(name_buf, ptr, name_len);
-		name_buf[name_len] = 0;
-		
-		dir = 0;
-		while (dirs[dir]) {
-			if (!strcasecmp(dirs[dir], name_buf)) {
-				valid_directive = true;
-				break;
-			}
-			dir++;
-		}
-	}
+	// If longer than name_buf, it can't be a valid directive.
+	if (name_len < sizeof(name_buf)) {
+		// Copy string for comparing against
+		memcpy(name_buf, ptr, name_len);
+		name_buf[name_len] = 0;
+
+		dir = 0;
+		while (dirs[dir]) {
+			if (!strcasecmp(dirs[dir], name_buf)) {
+				valid_directive = true;
+				break;
+			}
+			dir++;
+		}
+	}
 
 	if (!valid_directive)
 		return handle_opcode_or_macro ((char *) ptr - 1);
