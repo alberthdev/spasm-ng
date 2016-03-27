@@ -20,27 +20,36 @@
 char *handle_directive (const char *ptr) {
 	static const char *dirs[] = {"db", "dw", "end", "org", "byte", "word", "fill", "block", "addinstr",
 		"echo", "error", "list", "nolist", "equ", "show", "option", "seek", "assume", "dl", "long", NULL};
-	const char *name_end;
 	char name_buf[32];
-	char *name;
 	int dir;
 
 	//same deal as handle_preop, just with directives instead
-	name_end = skip_to_name_end(ptr);
-	memcpy(name_buf, ptr, name_end - ptr);
-	name_buf[name_end - ptr] = '\0';
-
-	dir = 0;
-	while (dirs[dir]) {
-		if (!strcasecmp (dirs[dir], name_buf))
-			break;
-		dir++;
+	bool valid_directive = false;
+	unsigned name_len = 0;
+	while (ptr[name_len] != 0 && !isspace(ptr[name_len])) {
+		name_len++;
 	}
 
-	if (!dirs[dir])
+	// If longer than name_buf, it can't be a valid directive.
+	if (name_len < sizeof(name_buf)) {
+		// Copy string for comparing against
+		memcpy(name_buf, ptr, name_len);
+		name_buf[name_len] = 0;
+
+		dir = 0;
+		while (dirs[dir]) {
+			if (!strcasecmp(dirs[dir], name_buf)) {
+				valid_directive = true;
+				break;
+			}
+			dir++;
+		}
+	}
+
+	if (!valid_directive)
 		return handle_opcode_or_macro ((char *) ptr - 1);
 
-	ptr = skip_whitespace (name_end);
+	ptr = skip_whitespace(&ptr[name_len]);
 
 	switch (dir) {
 		case 0: //DB

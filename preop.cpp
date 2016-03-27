@@ -36,16 +36,16 @@ char *handle_preop (char *ptr) {
 
 	//first get the name
 	name_end = ptr;
-	while (isalpha (*name_end))
+	while (*name_end != 0 && !isspace(*name_end))
 		name_end++;
-
 	name = strndup (ptr, name_end - ptr);
 
 	//then try to match it against the list of preops
 	preop = 0;
 	while (preops[preop]) {
-		if (!strcasecmp (preops[preop], name))
+		if (!strcasecmp (preops[preop], name)) {
 			break;
+		}
 		preop++;
 	}
 
