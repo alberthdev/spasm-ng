@@ -26,7 +26,7 @@ char *handle_directive (const char *ptr) {
 	//same deal as handle_preop, just with directives instead
 	bool valid_directive = false;
 	unsigned name_len = 0;
-	while (!isspace(ptr[name_len])) {
+	while (ptr[name_len] != 0 && !isspace(ptr[name_len])) {
 		name_len++;
 	}
 
