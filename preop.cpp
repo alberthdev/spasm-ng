@@ -36,7 +36,7 @@ char *handle_preop (char *ptr) {
 
 	//first get the name
 	name_end = ptr;
-	while (!isspace(*name_end))
+	while (*name_end != 0 && !isspace(*name_end))
 		name_end++;
 	name = strndup (ptr, name_end - ptr);
 
