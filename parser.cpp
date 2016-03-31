@@ -428,7 +428,7 @@ static const char *parse_single_num (const char *expr, int *value) {
 						return NULL;
 					}
 
-			} else if ((unsigned char) isdigit (expr[0])) {
+			} else if (isdigit ((unsigned char) *expr)) {
 				const char *expr_start = expr;
 				//Find the end of the number
 				while (isalnum ((unsigned char) expr[1])) expr++;

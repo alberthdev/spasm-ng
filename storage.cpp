@@ -31,8 +31,8 @@ hash_t *label_table, *define_table;
 list_t *arg_list = NULL;
 const char *separators = "+-*<>|&/%^()\\, \t\r";
 
-void write_labels_callback(label_t *label, list_t *label_list);
-void write_defines_callback(define_t *, list_t *label_list);
+void write_labels_callback(void *, void *);
+void write_defines_callback(void *, void *);
 
 
 /*
@@ -58,8 +58,8 @@ void write_labels (char *filename) {
 	label_list.next = NULL;
 	
 	int session = StartSPASMErrorSession();
-	hash_enum (label_table, (HASH_ENUM_CALLBACK) write_labels_callback, &label_list);
-	hash_enum (define_table, (HASH_ENUM_CALLBACK) write_defines_callback, &label_list);
+	hash_enum (label_table, write_labels_callback, &label_list);
+	hash_enum (define_table, write_defines_callback, &label_list);
 	EndSPASMErrorSession(session);
 	
 	node = label_list.next;
@@ -74,13 +74,16 @@ void write_labels (char *filename) {
 	fclose (symtable);
 	
 	list_free (label_list.next, true, NULL);
+	free(hdr_node.name);
 }
 
 /*
  * Inserts a label into label_list alphabetically
  */
 
-void write_labels_callback(label_t *label, list_t *label_list) {
+void write_labels_callback(void *data, void *data_list) {
+	label_t *label = (label_t *)data;
+	list_t *label_list = (list_t *)data_list;
 	label_t *labelToAdd;
 
 	list_t * node = label_list->next, *prev = label_list;
@@ -98,7 +101,9 @@ void write_labels_callback(label_t *label, list_t *label_list) {
 /*
  * Inserts a define into a label list alphabetically (will parse if possible)
  */
-void write_defines_callback(define_t *define, list_t *label_list) {
+void write_defines_callback(void *data, void *data_list) {
+	define_t *define = (define_t *)data;
+	list_t *label_list = (list_t *)data_list;
 	int value;
 	label_t *label;
 	list_t *node, *prev;
@@ -121,7 +126,8 @@ void write_defines_callback(define_t *define, list_t *label_list) {
 	list_insert(prev, label);
 }
 
-void dump_defines_callback(define_t *define, void *reserved) {
+void dump_defines_callback(void *data, void *reserved) {
+	define_t *define = (define_t *)data;
 #ifdef WIN32
 	OutputDebugString(define->name);
 	OutputDebugString("---------\n");
@@ -134,7 +140,7 @@ void dump_defines_callback(define_t *define, void *reserved) {
 
 void dump_defines() {
 
-	hash_enum(define_table, (HASH_ENUM_CALLBACK) dump_defines_callback, NULL);
+	hash_enum(define_table, dump_defines_callback, NULL);
 
 }
 
@@ -143,7 +149,8 @@ void dump_defines() {
  * values in hash tables
  */
 
-static void destroy_define_value (define_t *define) {
+static void destroy_define_value (void *data) {
+	define_t *define = (define_t *)data;
 	int curr_arg;
 
 	if (define->contents)
@@ -161,7 +168,8 @@ static void destroy_define_value (define_t *define) {
 	free (define);
 }
 
-static void destroy_label_value (label_t *label) {
+static void destroy_label_value (void *data) {
+	label_t *label = (label_t *)data;
 	if (label->name)
 		free (label->name);
 	if (label->input_file)
@@ -178,8 +186,8 @@ void init_storage() {
 	define_t *define;
 	char* test ;
 
-	define_table = hash_init ((HASH_REMOVE_CALLBACK) destroy_define_value);
-	label_table = hash_init ((HASH_REMOVE_CALLBACK) destroy_label_value);
+	define_table = hash_init (destroy_define_value);
+	label_table = hash_init (destroy_label_value);
 
 	add_define (strdup ("SPASM"), NULL)->contents = strdup ("1");
 	add_define (strdup ("SPASMVER"), NULL)->contents = strdup ("2");
@@ -210,6 +218,7 @@ EXPORT void free_storage() {
 	all_opcodes = opcode_list;
 
 	list_free(input_files, true, NULL);
+	input_files = NULL;
 
 	hash_free(label_table);
 	label_table = NULL;
@@ -476,7 +485,7 @@ void set_define (define_t *define, const char *str, int len, bool redefined) {
 		list_t *old_arg_list = arg_list;
 		//arg_list = NULL;
 
-		define_table = hash_init ((HASH_REMOVE_CALLBACK) destroy_define_value);
+		define_table = hash_init (destroy_define_value);
 		
 		add_define (strdup (define->name), NULL, false)->contents = strdup (define->contents);
 		temp = len == -1 ? strdup (str) : strndup (str, len);
@@ -602,7 +611,7 @@ label_t *add_label (char *name, int value) {
  */
 
 list_t *add_arg_set(void) {
-	arg_list = list_prepend(arg_list, hash_init((HASH_REMOVE_CALLBACK) destroy_define_value));
+	arg_list = list_prepend(arg_list, hash_init(destroy_define_value));
 	return arg_list;
 }
 

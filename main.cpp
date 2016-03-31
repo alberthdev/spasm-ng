@@ -131,13 +131,19 @@ int run_assembly()
 	include_dirs = NULL;
 
 	//...and if there's output, run the second pass and write it to the output file
-	if (mode & MODE_NORMAL || mode & MODE_LIST)
+	if (mode & MODE_SYMTABLE || mode & MODE_NORMAL || mode & MODE_LIST)
 	{
 		printf ("Pass two... \n");
 		int second_pass_session = StartSPASMErrorSession();
 		run_second_pass ();
 		ReplaySPASMErrorSession(second_pass_session);
 		EndSPASMErrorSession(second_pass_session);
+
+		if (mode & MODE_SYMTABLE) {
+			char* fileName = change_extension(output_filename, "lab");
+			write_labels (fileName);
+			free(fileName);
+		}
 
 		//run the output through the appropriate program export and write it to a file
 		if (mode & MODE_NORMAL && output_filename != NULL)
@@ -182,12 +188,6 @@ int run_assembly()
 		         stats_codesize, stats_mintime, stats_maxtime);
 	}
 	
-	if (mode & MODE_SYMTABLE) {
-		char* fileName = change_extension(output_filename, "lab");
-		write_labels (fileName);
-		free(fileName);
-	}
-
 	if (mode & MODE_STATS) {
 		fprintf(stdout, "Number of labels: %u\nNumber of defines: %u\nCode size: %u\nData size: %u\nTotal size: %u\n",
 		         get_num_labels (), get_num_defines (), stats_codesize, stats_datasize, stats_codesize + stats_datasize);
@@ -262,7 +262,7 @@ int main (int argc, char **argv)
 	
 	//otherwise, get any options
 	curr_input_file = strdup("Commandline");
-	const char * const starting_input_file = curr_input_file;
+	char *starting_input_file = curr_input_file;
 
 	while (curr_arg < argc) {
 		if (argv[curr_arg][0] == '-'
@@ -413,16 +413,18 @@ int main (int argc, char **argv)
 	set_case_sensitive (case_sensitive);
 	
 	//check on filenames
-	if (!(mode & MODE_COMMANDLINE) && !curr_input_file) {
+	if (!(mode & MODE_COMMANDLINE) && curr_input_file == starting_input_file) {
 		puts ("No input file specified");
+		free(starting_input_file);
 		return EXIT_FATAL_ERROR;
 	}
 
+	if (curr_input_file != starting_input_file) {
+		free(starting_input_file);
+	}
+
 	if (!output_filename) {
-		if (mode & MODE_SYMTABLE)
-			output_filename = change_extension (curr_input_file, "lab");
-		else
-			output_filename = change_extension (curr_input_file, "bin");
+		output_filename = change_extension (curr_input_file, "bin");
 	}
 
 	if (!is_storage_initialized)
