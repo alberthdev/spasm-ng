@@ -1,18 +1,19 @@
 language: cpp
 
 before_install:
+  - sudo add-apt-repository ppa:fkrull/deadsnakes -y
   - sudo apt-get update -qq
   - pip install --user cpp-coveralls
 
 install:
-  - sudo apt-get install -y -qq zlib1g-dev
+  - sudo apt-get install -y -qq zlib1g-dev python3.5
 
 script:
   - make NO_APPSIGN=1
   - make clean
   - sudo apt-get install -y -qq libssl-dev libgmp-dev
   - make
-  - make coverage
+  - make PYTHON=python3.5 coverage
 
 after_success:
   - coveralls --gcov-options '\-lp'
