@@ -9,6 +9,10 @@ import subprocess
 import sys
 import tempfile
 
+class NotImplementedType:
+    def __getitem__(cls, x):
+        return NotImplemented
+
 def have_typing_module() -> bool:
     (major, minor, _, _, _) = sys.version_info
     return (major == 3 and minor >= 5) or major > 3
@@ -16,7 +20,7 @@ def have_typing_module() -> bool:
 if have_typing_module():
     from typing import Tuple, ByteString, Iterable, Sequence
 else:
-    Tuple = ByteString = Iterable = Sequence = NotImplemented
+    Tuple = ByteString = Iterable = Sequence = NotImplementedType()
 
 # In case you need more visiblity into what's going on.
 #logging.basicConfig(level=logging.DEBUG)
@@ -113,12 +117,13 @@ def run_assembler(assembler: str, infile: str, opts: str) -> Tuple[int, ByteStri
     assembler and the lines emitted to the console.
     """
     with tempfile.NamedTemporaryFile('rb') as outfile:
-        res = subprocess.run(
+        proc = subprocess.Popen(
                 [assembler] + shlex.split(opts) + [infile, outfile.name],
                 stdin=subprocess.DEVNULL, stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT, universal_newlines=True)
+        pout, perr = proc.communicate()
         binary = outfile.read()
-    return (res.returncode, binary, res.stdout.split('\n'))
+    return (proc.returncode, binary, pout.split('\n'))
 
 
 def filter_whitespace(s: str) -> str:
