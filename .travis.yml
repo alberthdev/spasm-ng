@@ -1,5 +1,4 @@
 language: cpp
-
 env:
   global:
   - secure: EdjR6CuuntACqf28H1XtuSRGQT8EYYlgSH4fmHMpFc3YGUZGrVeyesAFKIMrAqpE0Of0AklsAkgN9GOK9Dpv3B624J1q/YsBkUI2qN6WvdTYqIkJExPa5uoFdfzIsoLI1tuNnMdgsK8LGpF1WsZjVTUANtBgfAAjSQ/YGRWYl7k=
@@ -10,23 +9,21 @@ addons:
       description: Build submitted via Travis CI
     notification_email:
       secure: Gf/0/SZB7IJT+0c1TTxLxjSmS2TY6mkyAoQhZimVBcB9PSaHTUxTQ0+HVuuNaLBdLE8qjpz+4mEzI5603kb9AfjV8Ny4fw5PMPS5Sh2I5hmiaVfze5zrvJtkHRAHteYPK1tMQoqksiAy4gFLa5M+piwdBZ/uiQEulTzeCQATeVI=
-    build_command_prepend: make clean
+    build_command_prepend: sudo apt-get install -y -qq libssl-dev libgmp-dev; make clean
     build_command: make
     branch_pattern: coverity_scan
-
 before_install:
-  - sudo apt-get update -qq
-  - pip install --user cpp-coveralls
-
+- sudo apt-get update -qq
+- pip install --user cpp-coveralls
+- sudo apt-get install -y -qq libssl-dev libgmp-dev
 install:
-  - sudo apt-get install -y -qq zlib1g-dev
-
+- sudo apt-get install -y -qq zlib1g-dev
 script:
-  - make NO_APPSIGN=1
-  - make clean
-  - sudo apt-get install -y -qq libssl-dev libgmp-dev
-  - make
-  - make coverage
-
+- sudo apt-get remove -y -qq libssl-dev libgmp-dev
+- make NO_APPSIGN=1
+- make clean
+- sudo apt-get install -y -qq libssl-dev libgmp-dev
+- make
+- make coverage
 after_success:
-  - coveralls --gcov-options '\-lp'
+- coveralls --gcov-options '\-lp'
