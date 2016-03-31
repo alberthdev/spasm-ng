@@ -71,15 +71,12 @@ debian: opt spasm
 install:
 		cp spasm $(DESTDIR)/bin/spasm
 
-check:
-		# TODO - write better checks
-		./spasm
-		./spasm -O inc/ti83plus.inc
-		./spasm -O -E inc/ti84pce.inc
+check: spasm
+	$(PYTHON) tests/test-runner.py ./spasm $(wildcard tests/*.asm)
 
 coverage: CXXFLAGS+=-g -O0 --coverage
 coverage: LDFLAGS+=-g -O0 --coverage
-coverage: clean spasm check
+coverage: clean check
 
 clean:
 		rm -f $(OBJ) spasm description-pak spasm-ng*.deb spasm-ng*.tar.gz
