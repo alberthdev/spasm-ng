@@ -6,6 +6,7 @@ import logging
 import re
 import shlex
 import subprocess
+import os
 import sys
 import tempfile
 
@@ -13,9 +14,17 @@ class NotImplementedType:
     def __getitem__(cls, x):
         return NotImplemented
 
+def min_version_met() -> bool:
+    (major, minor, _, _, _) = sys.version_info
+    return (major == 3 and minor >= 1) or major > 3
+
 def have_typing_module() -> bool:
     (major, minor, _, _, _) = sys.version_info
     return (major == 3 and minor >= 5) or major > 3
+
+if not min_version_met():
+    print("ERROR: You need Python 3.1+ to run the test suite.")
+    sys.exit(1)
 
 if have_typing_module():
     from typing import Tuple, ByteString, Iterable, Sequence
@@ -116,10 +125,11 @@ def run_assembler(assembler: str, infile: str, opts: str) -> Tuple[int, ByteStri
     Returns the assembler's return code, the binary emitted from the
     assembler and the lines emitted to the console.
     """
+    DEVNULL = open(os.devnull, 'wb')
     with tempfile.NamedTemporaryFile('rb') as outfile:
         proc = subprocess.Popen(
                 [assembler] + shlex.split(opts) + [infile, outfile.name],
-                stdin=subprocess.DEVNULL, stdout=subprocess.PIPE,
+                stdin=DEVNULL, stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT, universal_newlines=True)
         pout, perr = proc.communicate()
         binary = outfile.read()

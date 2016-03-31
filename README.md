@@ -54,6 +54,9 @@ Suggested packages for Ubuntu/Debian:
 If building without app signing support (see *Building* in this document),
 GMP and OpenSSL are not required.
 
+To run the tests, you will also need Python 3.1+. Versions below
+Python 3.1 will not work!
+
 Building
 --------
 On Windows, simply build with the included Visual Studio project file.
