@@ -234,7 +234,12 @@ char *eval (const char *expr)
 	EndSPASMErrorSession(session);
 	if (fResult)
 	{
-		sprintf (result, "$%0X", value);
+		const char *sign = "";
+		if (value < 0) {
+			sign = "-";
+			value = -value;
+		}
+		snprintf (result, sizeof (result), "%s$%0X", sign, value);
 		expr_value = strdup (result);
 	}
 	else
