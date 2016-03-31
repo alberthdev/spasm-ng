@@ -55,7 +55,7 @@ int eb_insert (expand_buf *buf, int offset, const char *text, size_t length) {
 	//if the string's too long for the buffer to hold, expand it
 	if ((size_t) (buf->end + length - buf->start) > buf->size) {
 		unsigned char *old_start = buf->start;
-		if (!buf->size)
+		if (buf->size == 0)
 			buf->size = 1;
 		while ((size_t) (buf->end + length - buf->start) > buf->size)
 			buf->size *= 2;
