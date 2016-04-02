@@ -17,3 +17,11 @@ script:
 
 after_success:
   - coveralls --gcov-options '\-lp'
+
+notifications:
+  irc:
+    channels:
+      - "irc.choopa.net#spasm-ng"
+    on_success: change
+    on_failure: always
+    skip_join: true
