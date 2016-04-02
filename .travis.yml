@@ -1,7 +1,9 @@
 language: cpp
+
 env:
   global:
   - secure: EdjR6CuuntACqf28H1XtuSRGQT8EYYlgSH4fmHMpFc3YGUZGrVeyesAFKIMrAqpE0Of0AklsAkgN9GOK9Dpv3B624J1q/YsBkUI2qN6WvdTYqIkJExPa5uoFdfzIsoLI1tuNnMdgsK8LGpF1WsZjVTUANtBgfAAjSQ/YGRWYl7k=
+
 addons:
   coverity_scan:
     project:
@@ -12,12 +14,15 @@ addons:
     build_command_prepend: sudo apt-get install -y -qq libssl-dev libgmp-dev; make clean
     build_command: make
     branch_pattern: coverity_scan
+
 before_install:
 - sudo apt-get update -qq
 - pip install --user cpp-coveralls
 - sudo apt-get install -y -qq libssl-dev libgmp-dev
+
 install:
 - sudo apt-get install -y -qq zlib1g-dev
+
 script:
 - sudo apt-get remove -y -qq libssl-dev libgmp-dev
 - make NO_APPSIGN=1
@@ -25,5 +30,14 @@ script:
 - sudo apt-get install -y -qq libssl-dev libgmp-dev
 - make
 - make coverage
+
 after_success:
 - coveralls --gcov-options '\-lp'
+
+notifications:
+  irc:
+    channels:
+      - "irc.choopa.net#spasm-ng"
+    on_success: change
+    on_failure: always
+    skip_join: true
