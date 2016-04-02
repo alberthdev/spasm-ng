@@ -20,16 +20,10 @@ before_install:
 
 install:
 - sudo apt-get install -y -qq libssl-dev libgmp-dev zlib1g-dev
-- pip install --user cpp-coveralls
 
 script:
 - if [[ -e cov-int/build_log.txt ]]; then echo "Coverity Build Log:"; cat cov-int/build_log.txt; else echo "No Coverity build log found."; fi
 - if [[ -e cov-int/scm_log.txt ]]; then echo "Coverity SCM Log:"; cat cov-int/scm_log.txt; else echo "No Coverity SCM log found."; fi
-- sudo apt-get remove -y -qq libssl-dev libgmp-dev
-- make NO_APPSIGN=1
-
-after_success:
-- coveralls --gcov-options '\-lp'
 
 notifications:
   irc:
