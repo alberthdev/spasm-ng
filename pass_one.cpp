@@ -720,13 +720,18 @@ int write_instruction_data (instr *curr_instr, char **arg_ptrs, char **arg_end_p
 					free (arg_text);
 					break;
 				case '@': //8-bit IX/IY offset
-					// prefix the arg with "0 " so that the first "+" or "-" is
-					// correctly parsed as an operand, also handles an empty arg
-					fake_arg_text = (char *)malloc (2 + strlen(arg_text) + 1);
-					strcpy (fake_arg_text, "0 ");
-					strcpy (fake_arg_text + 2, arg_text);
-					add_pass_two_expr (fake_arg_text, ARG_IX_IY_OFFSET, size, 0);
-					free (fake_arg_text);
+					if (arg_text[0] != '\0' && arg_text[0] != '+' && arg_text[0] != '-')
+						SetLastSPASMError(SPASM_ERR_INVALID_INDEX_OFFSET);
+					else {
+						// prefix the arg with "0 " so that the first "+" or "-" is
+						// correctly parsed as an operator, also handles an empty arg
+						// the space is to make sure the 0 doesn't merge with a number
+						fake_arg_text = (char *)malloc (2 + strlen(arg_text) + 1);
+						strcpy (fake_arg_text, "0 ");
+						strcpy (fake_arg_text + 2, arg_text);
+						add_pass_two_expr (fake_arg_text, ARG_IX_IY_OFFSET, size, 0);
+						free (fake_arg_text);
+					}
 					free (arg_text);
 					break;
 				case '^': //bit number
