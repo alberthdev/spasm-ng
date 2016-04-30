@@ -73,16 +73,19 @@ char *skip_to_next_line (const char *ptr) {
 	return (char *) ptr;
 }
 
+bool is_name_char (char c) {
+  const char *ext_label_set = "_[]!?.";
+  return isalnum(c) || memchr(ext_label_set, c, strlen(ext_label_set)) != NULL;
+}
+
 /*
  * Skips to the end of a value spasm2 label name
  */
 char *skip_to_name_end (const char *ptr) {
-	const char ext_label_set[] = "_[]!?.";
-	
 	if (ptr == NULL)
 		return NULL;
 
-	while (*ptr != '\0' && (isalnum((unsigned char) *ptr) || strchr(ext_label_set, *ptr) != NULL))
+	while (is_name_char(*ptr))
 		ptr++;
 
 	return (char *) ptr;

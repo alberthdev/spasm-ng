@@ -592,6 +592,10 @@ char *match_opcode_args (char *ptr, char **arg_ptrs, char **arg_end_ptrs, opcode
 				if (is_end_of_code_line (curr_arg_file) || *curr_arg_file == '\\')
 					break;
 
+				// if a name starts with, but is longer than, "ix" or "iy", don't match index offset
+				if (*curr_arg == '@' && is_name_char(*curr_arg_file))
+					break;
+
 				arg_ptrs[curr_arg_num] = curr_arg_file;
 				BOOL test = read_expr (&curr_arg_file, trash_buf, ",");
 				if (*(curr_arg_file - 1) == ',')
@@ -606,7 +610,9 @@ char *match_opcode_args (char *ptr, char **arg_ptrs, char **arg_end_ptrs, opcode
 
 				curr_arg_file++;
 			}
-			curr_arg_file = skip_whitespace (curr_arg_file);
+			// only skip whitespace if not in the middle of a register
+			if (!isalpha(*(curr_arg_file - 1)) || !isalpha(*curr_arg_file))
+				curr_arg_file = skip_whitespace (curr_arg_file);
 			curr_arg++;
 		}
 
