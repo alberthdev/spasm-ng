@@ -677,6 +677,7 @@ int write_instruction_data (instr *curr_instr, char **arg_ptrs, char **arg_end_p
 			//first get the text of each argument
 			char *arg_text = strndup (arg_ptrs[curr_arg_num],
 			                          arg_end_ptrs[curr_arg_num] - arg_ptrs[curr_arg_num]);
+			char *fake_arg_text;
 
 			// Check for extra parentheses (confusingly looks like indirection)
 			if (arg_text[0] == '(') {
@@ -718,8 +719,14 @@ int write_instruction_data (instr *curr_instr, char **arg_ptrs, char **arg_end_p
 					add_pass_two_expr (arg_text, ARG_ADDR_OFFSET, size, 0);
 					free (arg_text);
 					break;
-				case '@': //8-bit IX/IY offset	
-					add_pass_two_expr (arg_text, ARG_IX_IY_OFFSET, size, 0);
+				case '@': //8-bit IX/IY offset
+					// prefix the arg with "0 " so that the first "+" or "-" is
+					// correctly parsed as an operand, also handles an empty arg
+					fake_arg_text = (char *)malloc (2 + strlen(arg_text) + 1);
+					strcpy (fake_arg_text, "0 ");
+					strcpy (fake_arg_text + 2, arg_text);
+					add_pass_two_expr (fake_arg_text, ARG_IX_IY_OFFSET, size, 0);
+					free (fake_arg_text);
 					free (arg_text);
 					break;
 				case '^': //bit number

@@ -28,18 +28,6 @@ void add_pass_two_expr (char *expr, arg_type type, int inst_size, int or_value) 
 	/*if (mode & MODE_CODE_COUNTER)
 		return;*/
 
-	if (type == ARG_IX_IY_OFFSET) {
-		//if it's an IX or IY offset, it's allowed to have a + in front of it, so skip that
-		// so the parser doesn't try to interpret it as a local label
-		if (*expr == '+') {
-			expr++;
-		} else if (*expr == '\0') {
-			//IX/IY offsets are also allowed to be blank - a 0 is assumed then
-			write_arg (0, ARG_IX_IY_OFFSET, inst_size, 0);
-			return;
-		}
-	}
-
 	int session = StartSPASMErrorSession();
 	bool fResult = parse_num (expr, &value);
 	if ((fResult == false) && (IsSPASMErrorSessionFatal(session) == false))
