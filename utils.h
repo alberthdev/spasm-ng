@@ -15,6 +15,7 @@ typedef struct arg_context
 
 char *eval (const char *expr);
 bool is_end_of_code_line (const char *ptr);
+bool is_name_char (char c);
 char *skip_to_next_line (const char *ptr);
 char *skip_to_name_end (const char *ptr);
 char *skip_to_line_end (const char *ptr);
