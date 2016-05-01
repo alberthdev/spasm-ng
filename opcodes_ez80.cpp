@@ -69,7 +69,11 @@ static instr in_instrs[] = {
 		{ "H,(C)", { 0x60, 0xED }, 2, 3, 3, false, 0x00, 2, 0 },
 		{ "H,(BC)", { 0x60, 0xED }, 2, 3, 3, false, 0x00, 2, 0 },
 		{ "L,(C)", { 0x68, 0xED }, 2, 3, 3, false, 0x00, 2, 0 },
-		{ "L,(BC)", { 0x68, 0xED }, 2, 3, 3, false, 0x00, 2, 0 }, };
+		{ "L,(BC)", { 0x68, 0xED }, 2, 3, 3, false, 0x00, 2, 0 },
+		{ "F,(C)", { 0x70, 0xED }, 2, 3, 3, false, 0x00, 2, 0 },
+		{ "F,(BC)", { 0x70, 0xED }, 2, 3, 3, false, 0x00, 2, 0 },
+		{ "(C)", { 0x70, 0xED }, 2, 3, 3, false, 0x00, 2, 0 },
+		{ "(BC)", { 0x70, 0xED }, 2, 3, 3, false, 0x00, 2, 0 } };
 
 static instr jp_instrs[] = {
 		{ "(IX)", { 0xE9, 0xDD }, 2, 4, 4, false, 0x00, 2, 0 },
@@ -535,7 +539,9 @@ static instr in0_instrs[] = {
 		{ "E,(&)", { 0x18, 0xED }, 2, 4, 4, false, 0x00, 3, 0 },
 		{ "H,(&)", { 0x20, 0xED }, 2, 4, 4, false, 0x00, 3, 0 },
 		{ "L,(&)", { 0x28, 0xED }, 2, 4, 4, false, 0x00, 3, 0 },
-		{ "A,(&)", { 0x38, 0xED }, 2, 4, 4, false, 0x00, 3, 0 } };
+		{ "A,(&)", { 0x38, 0xED }, 2, 4, 4, false, 0x00, 3, 0 },
+		{ "F,(&)", { 0x30, 0xED }, 2, 4, 4, false, 0x00, 3, 0 },
+		{ "(&)", { 0x30, 0xED }, 2, 4, 4, false, 0x00, 3, 0 } };
 
 static instr ind_instrs[] = {
 		{ "", { 0xAA, 0xED }, 2, 5, 5, false, 0x00, 2, 0 } };
