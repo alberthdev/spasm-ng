@@ -74,8 +74,8 @@ char *skip_to_next_line (const char *ptr) {
 }
 
 bool is_name_char (char c) {
-  const char *ext_label_set = "_[]!?.";
-  return isalnum(c) || memchr(ext_label_set, c, strlen(ext_label_set)) != NULL;
+  static const char ext_label_set[] = { '_', '[', ']', '!', '?', '.' };
+  return isalnum(c) || memchr(ext_label_set, c, sizeof(ext_label_set)) != NULL;
 }
 
 /*
