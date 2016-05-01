@@ -525,17 +525,11 @@ static const char *parse_num_full (const char *expr, int *value, int depth) {
 		if (*expr == '~') {
 			invert_lastnum = true;
 			expr = skip_whitespace (expr + 1);
-		//Same with - signs
-		} else if (*expr == '-') {
-			expr++;
-			if (*expr == '-' || (*expr == '_' && skip_to_name_end (expr) == expr + 1))
-				//It's a local label, so let the number parsing stuff deal with it
-				expr--;
-			else {
-				//Otherwise, it's something like "-3" or "-value"
-				neg_lastnum = true;
-				expr = skip_whitespace (expr);
-			}
+		//Same with +/- signs, unless it's a local label
+		} else if ((*expr == '-' || *expr == '+') && expr[1] != *expr &&
+			   (expr[1] != '_' || skip_to_name_end (expr + 1) != expr + 2)) {
+			neg_lastnum = expr[0] == '-';
+			expr = skip_whitespace (expr + 1);
 		}
 
 		//If it's a parenthesis, evaluate the stuff inside there
