@@ -135,7 +135,11 @@ using namespace ATL;
 
 #define __inout
 
+#ifdef UNIXVER
 typedef unsigned int DWORD;
+#else
+#include <windows.h>
+#endif
 typedef const char *LPCTSTR;
 typedef char *LPSTR, *LPTSTR;
 typedef char TCHAR;
@@ -152,7 +156,9 @@ typedef void *LPVOID;
 #define StringCchPrintf(dest, size, fmt, ...) snprintf(dest, size, fmt, __VA_ARGS__)
 #define StringCchVPrintf(dest, size, fmt, args) vsnprintf(dest, size, fmt, args)
 
+#ifdef UNIXVER
 #define ARRAYSIZE(z) (sizeof(z)/sizeof((z)[0]))
+#endif
 
 #endif
 #endif
