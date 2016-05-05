@@ -19,7 +19,7 @@ void write_file (const unsigned char *, int, const char *);
 extern expr_t *expr_list, *expr_list_tail;
 extern output_t *output_list, *output_list_tail;
 
-#ifdef _WIN32
+#ifdef _WINDOWS
 #ifdef SPASM_NG_ENABLE_COM
 CSPASMModule _AtlModule;
 #endif
