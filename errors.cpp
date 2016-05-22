@@ -152,6 +152,7 @@ static void ReplayErrorRecursive(const list_t *pList, bool fFatalOnly)
 		}
 		PrintSPASMError(lpError);
 	}
+	exit(-1);
 }
 
 void ReplaySPASMErrorSession(int nSession, bool fFatalOnly)
@@ -357,7 +358,6 @@ static void SetLastSPASMProblem(DWORD dwErrorCode, bool fIsWarning, va_list vali
 	lpErr->lpszErrorText = _strdup(szBuffer);
 
 	g_ErrorList = (errorlist_t *) list_prepend((list_t *) g_ErrorList, (LPVOID) lpErr);
-
 	//if (suppress_errors == false)
 	//{
 		//PrintSPASMError(lpErr);
