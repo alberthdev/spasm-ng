@@ -152,7 +152,6 @@ static void ReplayErrorRecursive(const list_t *pList, bool fFatalOnly)
 		}
 		PrintSPASMError(lpError);
 	}
-	exit(-1);
 }
 
 void ReplaySPASMErrorSession(int nSession, bool fFatalOnly)
@@ -222,9 +221,10 @@ void AddSPASMErrorSessionAnnotation(int nSession, LPCTSTR lpszFormat, ...)
 		pList = pList->next;
 	}
 }
-
-void EndSPASMErrorSession(int nSession)
+//returns the number of fatal errors
+int EndSPASMErrorSession(int nSession)
 {
+    int fatalErrorCount = 0;
 	list_t *pList = (list_t *) g_ErrorList;
 	
 	list_t *pPrev = NULL, *old_list = NULL;
@@ -240,7 +240,9 @@ void EndSPASMErrorSession(int nSession)
 		{
 			pPrev->next = pList->next;
 		}
-
+        if(IsSPASMErrorFatal(lpErr->dwErrorCode)){
+            fatalErrorCount++;
+        }
 		FreeErrorInstance(lpErr);
 		list_t *pListOld = pList;
 		pList = pList->next;
@@ -252,6 +254,7 @@ void EndSPASMErrorSession(int nSession)
 	}
 
 	g_nErrorSession--;
+	return fatalErrorCount;
 }
 
 

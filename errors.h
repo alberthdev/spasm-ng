@@ -153,7 +153,7 @@ int GetSPASMErrorSessionErrorCount(int nSession);
 bool IsSPASMErrorSessionFatal(int nSession);
 void ReplaySPASMErrorSession(int nSession, bool fFatalOnly = false);
 void ReplayFatalSPASMErrorSession(int nSession);
-void EndSPASMErrorSession(int nSession);
+int EndSPASMErrorSession(int nSession);
 void ClearSPASMErrorSessions();
 void AddSPASMErrorSessionAnnotation(int nSession, LPCTSTR lpszFormat, ...);
 bool IsErrorInSPASMErrorSession(int nSession, DWORD dwErrorCode);

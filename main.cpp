@@ -118,8 +118,9 @@ int run_assembly()
 	int first_pass_session = StartSPASMErrorSession();
 	run_first_pass ((char *) input_contents);
 	ReplayFatalSPASMErrorSession(first_pass_session);
-	EndSPASMErrorSession(first_pass_session);
-
+	int firstPassFatalErrors = EndSPASMErrorSession(first_pass_session);
+    
+    
 	//free include dirs when done
 	if ((mode & MODE_COMMANDLINE) == 0)
 	{
@@ -129,7 +130,9 @@ int run_assembly()
 	
 	list_free (include_dirs, true, NULL);
 	include_dirs = NULL;
-
+    if(firstPassFatalErrors >0){
+        exit(firstPassFatalErrors); //or should this be just a constant?
+    }
 	//...and if there's output, run the second pass and write it to the output file
 	if (mode & MODE_SYMTABLE || mode & MODE_NORMAL || mode & MODE_LIST)
 	{
@@ -137,14 +140,16 @@ int run_assembly()
 		int second_pass_session = StartSPASMErrorSession();
 		run_second_pass ();
 		ReplaySPASMErrorSession(second_pass_session);
-		EndSPASMErrorSession(second_pass_session);
+		int secondPassFatalErrors = EndSPASMErrorSession(second_pass_session);
 
 		if (mode & MODE_SYMTABLE) {
 			char* fileName = change_extension(output_filename, "lab");
 			write_labels (fileName);
 			free(fileName);
 		}
-
+        if(secondPassFatalErrors >0){
+            exit(secondPassFatalErrors);
+        }
 		//run the output through the appropriate program export and write it to a file
 		if (mode & MODE_NORMAL && output_filename != NULL)
 		{
