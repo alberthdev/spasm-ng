@@ -222,15 +222,15 @@ void AddSPASMErrorSessionAnnotation(int nSession, LPCTSTR lpszFormat, ...)
 	}
 }
 void EndSPASMErrorSession(int fatalErrors){
-    if(fatalErrors >0){
-        exit(1);
-    }
+	if(fatalErrors >0){
+		exit(1);
+	}
 
 }
 //returns the number of fatal errors
 int CleanupSPASMErrorSession(int nSession)
 {
-    int fatalErrorCount = 0;
+	int fatalErrorCount = 0;
 	list_t *pList = (list_t *) g_ErrorList;
 	
 	list_t *pPrev = NULL, *old_list = NULL;
@@ -246,9 +246,9 @@ int CleanupSPASMErrorSession(int nSession)
 		{
 			pPrev->next = pList->next;
 		}
-        if(IsSPASMErrorFatal(lpErr->dwErrorCode)){
-            fatalErrorCount++;
-        }
+		if(IsSPASMErrorFatal(lpErr->dwErrorCode)){
+			fatalErrorCount++;
+		}
 		FreeErrorInstance(lpErr);
 		list_t *pListOld = pList;
 		pList = pList->next;

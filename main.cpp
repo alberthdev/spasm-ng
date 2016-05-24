@@ -119,8 +119,8 @@ int run_assembly()
 	run_first_pass ((char *) input_contents);
 	ReplayFatalSPASMErrorSession(first_pass_session);
 	EndSPASMErrorSession(CleanupSPASMErrorSession((first_pass_session)));
-    
-    
+	
+	
 	//free include dirs when done
 	if ((mode & MODE_COMMANDLINE) == 0)
 	{
@@ -130,7 +130,7 @@ int run_assembly()
 	
 	list_free (include_dirs, true, NULL);
 	include_dirs = NULL;
-    
+	
 	//...and if there's output, run the second pass and write it to the output file
 	if (mode & MODE_SYMTABLE || mode & MODE_NORMAL || mode & MODE_LIST)
 	{
@@ -145,7 +145,7 @@ int run_assembly()
 			write_labels (fileName);
 			free(fileName);
 		}
-        
+		
 		//run the output through the appropriate program export and write it to a file
 		if (mode & MODE_NORMAL && output_filename != NULL)
 		{
@@ -186,12 +186,12 @@ int run_assembly()
 	//if there's info to be dumped, do that
 	if (mode & MODE_CODE_COUNTER) {
 		fprintf (stdout, "Size: %u\nMin. execution time: %u\nMax. execution time: %u\n",
-		         stats_codesize, stats_mintime, stats_maxtime);
+				 stats_codesize, stats_mintime, stats_maxtime);
 	}
 	
 	if (mode & MODE_STATS) {
 		fprintf(stdout, "Number of labels: %u\nNumber of defines: %u\nCode size: %u\nData size: %u\nTotal size: %u\n",
-		         get_num_labels (), get_num_defines (), stats_codesize, stats_datasize, stats_codesize + stats_datasize);
+				 get_num_labels (), get_num_defines (), stats_codesize, stats_datasize, stats_codesize + stats_datasize);
 	}
 	
 #ifdef _WIN32
@@ -213,7 +213,7 @@ int run_assembly()
 }
 
 #if 0
-int CALLBACK WinMain(HINSTANCE hInst, HINSTANCE  hPrev, LPSTR lpCommandLine, int nCmdShow)
+int CALLBACK WinMain(HINSTANCE hInst, HINSTANCE	 hPrev, LPSTR lpCommandLine, int nCmdShow)
 {
 	return _AtlModule.WinMain(SW_HIDE);
 }
