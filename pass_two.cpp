@@ -96,7 +96,7 @@ void add_pass_two_expr (char *expr, arg_type type, int inst_size, int or_value) 
 		ReplaySPASMErrorSession(session);
 	}
 
-	EndSPASMErrorSession(session);
+	EndSPASMErrorSession(CleanupSPASMErrorSession((session)));
 }
 
 
@@ -225,7 +225,7 @@ void run_second_pass () {
 					int session = StartSPASMErrorSession();
 					parse_emit_string (output_list->expr, ES_ECHO, stdout);
 					ReplaySPASMErrorSession(session);
-					EndSPASMErrorSession(session);
+					EndSPASMErrorSession(CleanupSPASMErrorSession((session)));
 					restore_console_attributes(orig_attributes);
 					break;
 				}
