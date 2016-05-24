@@ -141,7 +141,7 @@ int parse_f (const char *expr) {
 		result = -1;
 	}
 
-	EndSPASMErrorSession(session);
+	EndSPASMErrorSession(CleanupSPASMErrorSession((session)));
 	return result;
 }
 
@@ -412,7 +412,7 @@ static const char *parse_single_num (const char *expr, int *value) {
 							ReplaySPASMErrorSession(session);
 							fHasError = true;
 						}
-						EndSPASMErrorSession(session);
+						EndSPASMErrorSession(CleanupSPASMErrorSession((session)));
 
 						remove_arg_set (args);
 						if (fHasError == true)

@@ -416,7 +416,7 @@ char *handle_opcode_or_macro (char *ptr) {
 					AddSPASMErrorSessionAnnotation(session, "Error during invocation of fcreate");
 					ReplaySPASMErrorSession(session);
 				}
-				EndSPASMErrorSession(session);
+				EndSPASMErrorSession(CleanupSPASMErrorSession((session)));
 			}
 			ptr += 2;
 		} else
@@ -513,7 +513,7 @@ char *handle_opcode_or_macro (char *ptr) {
 
 			AddSPASMErrorSessionAnnotation(session, "Error during invocation of macro '%s'", define->name);
 			ReplayFatalSPASMErrorSession(session);
-			EndSPASMErrorSession(session);
+			EndSPASMErrorSession(CleanupSPASMErrorSession((session)));
 
 		} else {
 			char *name = strndup(name_start, name_end - name_start);

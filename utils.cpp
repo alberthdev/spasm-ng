@@ -234,7 +234,7 @@ char *eval (const char *expr)
 
 	int session = StartSPASMErrorSession();
 	bool fResult = parse_num (expr, &value);
-	EndSPASMErrorSession(session);
+	EndSPASMErrorSession(CleanupSPASMErrorSession((session)));
 	if (fResult)
 	{
 		const char *sign = "";
@@ -301,7 +301,7 @@ char *parse_args (const char *ptr, define_t *define, list_t **curr_arg_set) {
 
 				//AddSPASMErrorSessionAnnotation(nSession, "Error during evaluation of macro '%s' argument '%s'", define->name, define->args[num_args - 1]);
 				//ReplaySPASMErrorSession(nSession);
-				//EndSPASMErrorSession(nSession);
+				//EndSPASMErrorSession(CleanupSPASMErrorSession((nSession)));
 			}
 		}
 	}
