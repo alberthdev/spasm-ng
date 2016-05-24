@@ -223,7 +223,7 @@ void AddSPASMErrorSessionAnnotation(int nSession, LPCTSTR lpszFormat, ...)
 }
 void EndSPASMErrorSession(int fatalErrors){
     if(fatalErrors >0){
-        exit(fatalErrors);
+        exit(1);
     }
 
 }
