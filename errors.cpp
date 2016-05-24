@@ -220,8 +220,14 @@ void AddSPASMErrorSessionAnnotation(int nSession, LPCTSTR lpszFormat, ...)
 		pList = pList->next;
 	}
 }
+void EndSPASMErrorSession(int fatalErrors){
+    if(fatalErrors >0){
+        exit(fatalErrors);
+    }
+
+}
 //returns the number of fatal errors
-int EndSPASMErrorSession(int nSession)
+int CleanupSPASMErrorSession(int nSession)
 {
     int fatalErrorCount = 0;
 	list_t *pList = (list_t *) g_ErrorList;
