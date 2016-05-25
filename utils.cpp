@@ -678,7 +678,7 @@ char *get_file_contents (const char *filename) {
 	return (char *) lpData;
 #else
 	FILE *file;
-	char *buffer, *p;
+	char *buffer;
 	size_t size, read_size;
 
 	// first try to open it
@@ -693,22 +693,25 @@ char *get_file_contents (const char *filename) {
 	rewind (file);
 
 
-	// now allocate the memory and read in the contents
-	buffer = (char *) malloc (size + 1);
-
+	// If there is a UTF-8 endian marker at the beginning of the file, skip it.
 	const unsigned char utf8_endian_mark[] = {0xEF, 0xBB, 0xBF};
-	fread(buffer, 1, sizeof(utf8_endian_mark), file);
-	if (memcmp(buffer, &utf8_endian_mark, sizeof(utf8_endian_mark)) == 0) {
+	bool matched = true;
+	for (unsigned i = 0; matched && i < sizeof(utf8_endian_mark); i++) {
+		int c = fgetc(file);
+		if (c == EOF) {
+			return NULL;
+		}
+		matched &= (unsigned char)c == utf8_endian_mark[i];
+	}
+	if (matched) {
 		size -= sizeof(utf8_endian_mark);
-		p = (char *) malloc (size + 1);
-		memcpy(p, buffer + sizeof(utf8_endian_mark), size);
-		free(buffer);
 	} else {
-		p = buffer;
 		rewind(file);
 	}
 
-	read_size = fread (p, 1, size, file);
+	// now allocate the memory and read in the contents
+	buffer = (char *) malloc (size + 1);
+	read_size = fread (buffer, 1, size, file);
 	fclose (file);
 
 	if (read_size != size) {
@@ -716,8 +719,8 @@ char *get_file_contents (const char *filename) {
 		return NULL;
 	}
 
-	p[size] = '\0';
-	return p;
+	buffer[size] = '\0';
+	return buffer;
 #endif
 }
 
@@ -830,7 +833,10 @@ static void expand_expr_full (const char *expr, expand_buf *new_expr, int depth,
 				}
 				expand_expr_full (define->contents, new_expr, depth + 1, search_local);
 				remove_arg_set (args);
-				if (error_occurred) return;
+				if (error_occurred) {
+					free(name);
+					return;
+				}
 			//if it's a label, write its value
 			} else if ((label = search_labels (name))) {
 				char buf[10];
