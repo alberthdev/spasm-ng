@@ -571,7 +571,7 @@ int parse_suffix(char **opcode_end) {
  */
 
 char *match_opcode_args (char *ptr, char **arg_ptrs, char **arg_end_ptrs, opcode *curr_opcode, instr **curr_instr) {
-	char *curr_arg_file;
+	char *curr_arg_file = NULL;
 	int instr_num;
 
 	for (instr_num = 0; instr_num < curr_opcode->num_instrs; instr_num++) {
