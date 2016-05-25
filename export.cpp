@@ -438,23 +438,25 @@ void makeprgm (const unsigned char *output_contents, int size, FILE *outfile, co
 	
 	if (calc==TYPE_82P) {
 		char name_buf[256];
-		name_buf[0] = (char) 0xDC;
-		name_buf[1] = '\0';
-		strcat(name_buf, prgmname);
+		snprintf(name_buf, sizeof(name_buf), "\xdc%s", prgmname);
 		namestring = strdup (name_buf);
 	} else {
-		int i;
-		size_t len = strlen(prgmname);
-		char *p = (char *) prgmname + len - 1, *lastSlash;
-		for (i = len - 1; i >= 0; i--, p--) {
-			if (*p == '\\' || *p == '/') {
-				lastSlash = ++p;
+		// Find basename(prgmname)
+		const char *baseName = prgmname + strlen(prgmname) - 1;
+		bool found = false;
+		while (baseName > prgmname) {
+			if (*baseName == '/' || *baseName == '\\') {
+				found = true;
 				break;
 			}
+			baseName -= 1;
 		}
-		if (i == -1)
-			lastSlash = ++p;
-		namestring = strdup (lastSlash);
+		if (found) {
+			baseName += 1;
+		}
+
+		// Use the base filename (no directory, if given) as the program name.
+		namestring = strdup(baseName);
 		/* The name must be capital letters and numbers */
 		if (calc < TYPE_85P) {
 			alphanumeric (namestring, calc == TYPE_8XV);
