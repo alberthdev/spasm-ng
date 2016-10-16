@@ -661,8 +661,8 @@ void make83 (const unsigned char *output_contents, int size, FILE *outfile, cons
 	alphanumeric (namestring, false ); 
 	/* get size */
 	size *= 2; // Double size to account for character conversion of hex opcodes
-	size += 2; // 2 extra bytes for variable header
 	size += 9; // Will have to add assembly trailer End0000End
+	size += 2; // 2 extra bytes for variable header
 	/* size must be smaller than z80 mem */
 	if (size > 24575) {
 		if (size > 65535) {
@@ -703,9 +703,11 @@ void make83 (const unsigned char *output_contents, int size, FILE *outfile, cons
 	chksum += fputc(size & 0xFF,outfile);
 	chksum += fputc(size>>8,outfile);
 	
+	size -= 9;
+	size >>= 1; // Divide by 2 to get original code size back
 	/* Actual program data!
 	In original spasm, it leaves contents as hex, but they must be converted to char equivalents */
-	for (i = 0; i < sizeof(output_contents); i++) {
+	for (i = 0; i < size ; i++) {
 		sprintf(progstring, "%02X", output_contents[i]);
 		chksum += fputc (progstring[0], outfile);
 		chksum += fputc (progstring[1], outfile);
