@@ -10,6 +10,14 @@
 
 #include "targetver.h"
 
+/* Workaround for error in Visual Studio 2015 (and newer):
+ * error LNK2019: unresolved external symbol ___iob_func referenced in function ___gmp_default_allocate
+ */
+#if _MSC_VER >= 1900
+#include <stdio.h>
+extern "C" { FILE __iob_func[3] = { *stdin,*stdout,*stderr }; }
+#endif
+
 #ifdef SPASM_NG_ENABLE_COM
 //#define _ATL_APARTMENT_THREADED
 #define _ATL_FREE_THREADED
