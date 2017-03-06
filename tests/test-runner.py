@@ -8,6 +8,7 @@ import shlex
 import subprocess
 import os
 import sys
+import glob
 import tempfile
 
 class NotImplementedType:
@@ -147,6 +148,11 @@ def format_bytes(b) -> str:
 def main(assembler, files: Iterable[str]) -> int:
     passes = failures = errors = 0
 
+    if len(files) == 0:
+        print("No tests specified, so sourcing from tests directory.")
+        script_dir = os.path.dirname(os.path.realpath(__file__))
+        files = glob.glob(os.path.join(script_dir, '*.asm'))
+
     for filename in files:
         print('{} '.format(filename), end='')
         with open(filename, 'r') as infile:
@@ -182,9 +188,9 @@ def main(assembler, files: Iterable[str]) -> int:
 
 
 if __name__ == '__main__':
-    if len(sys.argv) > 2:
+    if len(sys.argv) > 1:
         [assembler_binary, *files] = sys.argv[1:]
         if main(assembler_binary, files) > 0:
             sys.exit(1)
     else:
-        print("Usage: {} assembler-exe asm-file...".format(sys.argv[0]), file=sys.stderr)
+        print("Usage: {} assembler-exe [asm-file...]".format(sys.argv[0]), file=sys.stderr)
