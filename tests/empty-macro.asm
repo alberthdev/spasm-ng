@@ -1,5 +1,5 @@
 ; Test using empty macros.
 #macro test
 #endmacro
-; CHECK:
+; CHECK-ERR: 102
 .echo test
