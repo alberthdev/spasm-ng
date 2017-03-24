@@ -183,13 +183,18 @@ def run_assembler(assembler: str, infile: str, opts: str) -> Tuple[int, ByteStri
     assembler and the lines emitted to the console.
     """
     DEVNULL = open(os.devnull, 'wb')
-    with tempfile.NamedTemporaryFile('rb') as outfile:
-        proc = subprocess.Popen(
-                [assembler] + shlex.split(opts) + [infile, outfile.name],
-                stdin=DEVNULL, stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT, universal_newlines=True)
-        pout, perr = proc.communicate()
-        binary = outfile.read()
+    outfile_fd, outfile_name = tempfile.mkstemp()
+    
+    logging.debug("Command: " + " ".join([assembler] + shlex.split(opts) + [infile, outfile_name]))
+    proc = subprocess.Popen(
+            [assembler] + shlex.split(opts) + [infile, outfile_name],
+            stdin=DEVNULL, stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT, universal_newlines=True)
+    pout, perr = proc.communicate()
+    
+    outfile = os.fdopen(outfile_fd, "rb")
+    binary = outfile.read()
+    outfile.close()
     return (proc.returncode, binary, pout.split('\n'))
 
 
@@ -245,7 +250,6 @@ def main(assembler, files: Iterable[str]) -> int:
 
 
 if __name__ == '__main__':
-    logging.basicConfig(level=logging.DEBUG)
     if len(sys.argv) > 1:
         [assembler_binary, *files] = sys.argv[1:]
         if main(assembler_binary, files) > 0:
