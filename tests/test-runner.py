@@ -245,6 +245,7 @@ def main(assembler, files: Iterable[str]) -> int:
 
 
 if __name__ == '__main__':
+    logging.basicConfig(level=logging.DEBUG)
     if len(sys.argv) > 1:
         [assembler_binary, *files] = sys.argv[1:]
         if main(assembler_binary, files) > 0:
