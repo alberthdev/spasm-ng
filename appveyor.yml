@@ -3,5 +3,4 @@ build:
   project: SPASM.sln
 
 test_script:
-  - Debug\SPASM.exe -E tests\jr-ez80-offset.asm
   - C:\Python35\python tests\test-runner.py Debug\SPASM.exe
