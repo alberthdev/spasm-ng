@@ -73,9 +73,65 @@ class SkipBytes(Checker):
         return (binary[:self.length], output)
 
 
-class EmitsWarning(Checker): pass
-class EmitsError(Checker): pass
+class EmitsWarning(Checker):
+    def __init__(self, s):
+        s = filter_whitespace(s)
+        if len(s) != 3:
+            raise ValueError("CHECK-ERR values must specify a 3 digit hex value")
+        
+        try:
+            int(s, 16)
+        except ValueError:
+            raise ValueError("CHECK-ERR values must specify a 3 digit hex value")
 
+        self.warn_code = s
+
+    def __call__(self, binary, output):
+        assert len(binary) == 0, "Binary is non-empty, despite an error occurring! Got binary {}, length {}!".format(binary, len(binary))
+        found_warn_code = None
+        output_idx = 0
+
+        for line in output:
+            m = re.search(r'error SW(\d{3}):', line)
+            if m:
+                found_warn_code = m.group(1)
+                break
+            output_idx += 1
+
+        logging.debug('EmitsWarning receives %s, expects %s',
+                str(found_warn_code), self.warn_code)
+        assert found_warn_code == self.warn_code, "Expected error code {}, found {}".format(self.warn_code, found_warn_code)
+        return (binary, output[(output_idx + 1):])
+
+class EmitsError(Checker):
+    def __init__(self, s):
+        s = filter_whitespace(s)
+        if len(s) != 3:
+            raise ValueError("CHECK-ERR values must specify a 3 digit hex value")
+        
+        try:
+            int(s, 16)
+        except ValueError:
+            raise ValueError("CHECK-ERR values must specify a 3 digit hex value")
+
+        self.err_code = s
+
+    def __call__(self, binary, output):
+        assert len(binary) == 0, "Binary is non-empty, despite an error occurring! Got binary {}, length {}!".format(binary, len(binary))
+        found_err_code = None
+        output_idx = 0
+
+        for line in output:
+            m = re.search(r'error SE(\d{3}):', line)
+            if m:
+                found_err_code = m.group(1)
+                break
+            output_idx += 1
+
+        logging.debug('EmitsError receives %s, expects %s',
+                str(found_err_code), self.err_code)
+        assert found_err_code == self.err_code, "Expected error code {}, found {}".format(self.err_code, found_err_code)
+        return (binary, output[(output_idx + 1):])
 
 CHECK_TYPES = {
     '': EmitsBytes,
@@ -164,9 +220,10 @@ def main(assembler, files: Iterable[str]) -> int:
 
         (status, binary, console) = run_assembler(assembler, filename, args)
         if status != 0:
-            print('ERROR exited with code {}'.format(status))
-            print('Output:\n{}\n'.format(console))
-            continue
+            print("(exited with code {}) ".format(status), end='')
+            #print('ERROR exited with code {}'.format(status))
+            #print('Output:\n{}\n'.format(console))
+            #continue
 
         orig_len = len(binary)
         offset = 0
