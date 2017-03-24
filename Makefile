@@ -40,6 +40,9 @@ OBJ_FILES = $(addsuffix .o, $(basename $(notdir $(SRC))))
 spasm: $(OBJ) Makefile
 		$(CC) -o spasm $(OBJ_FILES) $(LDFLAGS)
 
+debug: CXXFLAGS+= -g
+debug: spasm
+
 prep-special-build:
 		$(MAKE) clean
 		touch prep-special-build
