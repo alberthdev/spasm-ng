@@ -140,7 +140,10 @@ void write_file (const unsigned char *output_contents, int output_len, const cha
 	outfile = fopen (output_filename, "wb");
 	if (!outfile) {
 		int error = errno;
-		SetLastSPASMError(SPASM_ERR_FILE_NOT_FOUND, output_filename);
+		if (errno == ENOENT)
+			SetLastSPASMError(SPASM_ERR_FILE_NOT_FOUND, output_filename);
+		else
+			SetLastSPASMError(SPASM_ERR_NO_ACCESS, output_filename);
 		free(curr_input_file);
 		curr_input_file = NULL;
 		return;

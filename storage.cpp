@@ -47,7 +47,11 @@ void write_labels (char *filename) {
 
 	symtable = fopen (filename, "w");
 	if (!symtable) {
-		printf ("Couldn't open output file %s\n", filename);
+		int error = errno;
+		if (errno == ENOENT)
+			SetLastSPASMError(SPASM_ERR_FILE_NOT_FOUND, filename);
+		else
+			SetLastSPASMError(SPASM_ERR_NO_ACCESS, filename);
 		return;
 	}
 
