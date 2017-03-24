@@ -220,12 +220,13 @@ void AddSPASMErrorSessionAnnotation(int nSession, LPCTSTR lpszFormat, ...)
 		pList = pList->next;
 	}
 }
-void EndSPASMErrorSession(int fatalErrors){
-	if(fatalErrors >0){
+void EndSPASMErrorSession(int nSession) {
+	int fatalErrors = CleanupSPASMErrorSession(nSession);
+	if (fatalErrors > 0) {
 		exit(1);
 	}
-
 }
+
 //returns the number of fatal errors
 int CleanupSPASMErrorSession(int nSession)
 {
@@ -245,7 +246,10 @@ int CleanupSPASMErrorSession(int nSession)
 		{
 			pPrev->next = pList->next;
 		}
-		if(IsSPASMErrorFatal(lpErr->dwErrorCode)){
+		if(IsSPASMErrorFatal(lpErr->dwErrorCode) && (nSession != 1)) {
+			// Note that if nSession == 1, ReplaySPASMErrorSession will
+			// call ReplayErrorRecursive, and print an error message there!
+			PrintSPASMError(lpErr);
 			fatalErrorCount++;
 		}
 		FreeErrorInstance(lpErr);

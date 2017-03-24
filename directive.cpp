@@ -299,7 +299,7 @@ addinstr_fail:
 					int internal_session = StartSPASMErrorSession();
 					parse_emit_string (expr, ES_ECHO, stdout);
 					restore_console_attributes(orig_attributes);
-					EndSPASMErrorSession(CleanupSPASMErrorSession((internal_session)));
+					EndSPASMErrorSession(internal_session);
 
 					ReplaySPASMErrorSession(session);
 				}
@@ -317,7 +317,7 @@ addinstr_fail:
 					add_pass_two_output (expanded_string, OUTPUT_ECHO);
 					free(expanded_string);
 				}
-				EndSPASMErrorSession(CleanupSPASMErrorSession((session)));
+				EndSPASMErrorSession(session);
 			}
 			break;
 		}
@@ -697,14 +697,14 @@ char *parse_emit_string (const char *ptr, ES_TYPE type, void *echo_target) {
 								parse_emit_string(expr, type, echo_target);
 								if (IsSPASMErrorSessionFatal(inner_session))
 								{
-									EndSPASMErrorSession(CleanupSPASMErrorSession((inner_session)));
+									EndSPASMErrorSession(inner_session);
 									AddSPASMErrorSessionAnnotation(session, _T("Error during evaluation of macro '%s'"), define->name);
 
 									ReplaySPASMErrorSession(session);
 								}
 								else
 								{
-									EndSPASMErrorSession(CleanupSPASMErrorSession((inner_session)));
+									EndSPASMErrorSession(inner_session);
 								}
 								//ReplaySPASMErrorSession(session);
 							}
@@ -742,7 +742,7 @@ echo_error:
 					ReplaySPASMErrorSession(session);
 				}
 			}
-			EndSPASMErrorSession(CleanupSPASMErrorSession((session)));
+			EndSPASMErrorSession(session);
 		}
 	}
 

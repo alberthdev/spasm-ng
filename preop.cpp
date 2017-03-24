@@ -87,7 +87,7 @@ char *handle_preop (char *ptr) {
 				}
 				int session = StartSPASMErrorSession();
 				ptr = skip_until(ptr, &line_num, 1, "#endif");
-				EndSPASMErrorSession(CleanupSPASMErrorSession((session)));
+				EndSPASMErrorSession(session);
 				break;
 			}
 		case 3: //IFDEF
@@ -146,7 +146,7 @@ char *handle_preop (char *ptr) {
 			{
 				int session = StartSPASMErrorSession();
 				ptr = skip_until (ptr, &line_num, 3, "#else", "#elif", "#endif");
-				EndSPASMErrorSession(CleanupSPASMErrorSession((session)));
+				EndSPASMErrorSession(session);
 			}
 			break;
 		}
@@ -182,7 +182,7 @@ char *handle_preop (char *ptr) {
 		{
 			int session = StartSPASMErrorSession();
 			ptr = skip_until (ptr, &line_num, 1, "#endcomment");
-			EndSPASMErrorSession(CleanupSPASMErrorSession((session)));
+			EndSPASMErrorSession(session);
 			break;
 		}
 		case 12: //MACRO

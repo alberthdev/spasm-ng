@@ -118,7 +118,7 @@ int run_assembly()
 	int first_pass_session = StartSPASMErrorSession();
 	run_first_pass ((char *) input_contents);
 	ReplayFatalSPASMErrorSession(first_pass_session);
-	EndSPASMErrorSession(CleanupSPASMErrorSession((first_pass_session)));
+	EndSPASMErrorSession(first_pass_session);
 	
 	
 	//free include dirs when done
@@ -138,7 +138,7 @@ int run_assembly()
 		int second_pass_session = StartSPASMErrorSession();
 		run_second_pass ();
 		ReplaySPASMErrorSession(second_pass_session);
-		EndSPASMErrorSession(CleanupSPASMErrorSession((second_pass_session)));
+		EndSPASMErrorSession(second_pass_session);
 
 		if (mode & MODE_SYMTABLE) {
 			char* fileName = change_extension(output_filename, "lab");
