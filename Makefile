@@ -43,6 +43,9 @@ spasm: $(OBJ) Makefile
 debug: CXXFLAGS+= -g
 debug: spasm
 
+debugp: CXXFLAGS+= -g -DDEBUG_PRINT
+debugp: spasm
+
 prep-special-build:
 		$(MAKE) clean
 		touch prep-special-build

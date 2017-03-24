@@ -149,6 +149,7 @@ static void ReplayErrorRecursive(const list_t *pList, bool fFatalOnly)
 				return;
 			}
 		}
+		DPRINT("[ReplayErrorRecursive] printing error\n");
 		PrintSPASMError(lpError);
 	}
 }
@@ -157,6 +158,7 @@ void ReplaySPASMErrorSession(int nSession, bool fFatalOnly)
 {
 	if (nSession == 1)
 	{
+		DPRINT("[ReplaySPASMErrorSession] calling ReplayErrorRecursive\n");
 		ReplayErrorRecursive((list_t *) g_ErrorList, fFatalOnly);
 	}
 	else
@@ -221,7 +223,9 @@ void AddSPASMErrorSessionAnnotation(int nSession, LPCTSTR lpszFormat, ...)
 	}
 }
 void EndSPASMErrorSession(int nSession) {
+	DPRINT("[EndSPASMErrorSession] called with nSession = %d\n", nSession);
 	int fatalErrors = CleanupSPASMErrorSession(nSession);
+	DPRINT("[EndSPASMErrorSession] fatal errs = %d\n", fatalErrors);
 	if (fatalErrors > 0) {
 		exit(1);
 	}
@@ -246,10 +250,11 @@ int CleanupSPASMErrorSession(int nSession)
 		{
 			pPrev->next = pList->next;
 		}
-		if(IsSPASMErrorFatal(lpErr->dwErrorCode) && (nSession != 1)) {
+		if(IsSPASMErrorFatal(lpErr->dwErrorCode)) {
 			// Note that if nSession == 1, ReplaySPASMErrorSession will
 			// call ReplayErrorRecursive, and print an error message there!
-			PrintSPASMError(lpErr);
+			if (nSession != 1)
+				PrintSPASMError(lpErr);
 			fatalErrorCount++;
 		}
 		FreeErrorInstance(lpErr);
