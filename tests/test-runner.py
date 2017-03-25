@@ -17,14 +17,14 @@ class NotImplementedType:
 
 def min_version_met() -> bool:
     (major, minor, _, _, _) = sys.version_info
-    return (major == 3 and minor >= 1) or major > 3
+    return (major == 3 and minor >= 5) or major > 3
 
 def have_typing_module() -> bool:
     (major, minor, _, _, _) = sys.version_info
     return (major == 3 and minor >= 5) or major > 3
 
 if not min_version_met():
-    print("ERROR: You need Python 3.1+ to run the test suite.")
+    print("ERROR: You need Python 3.5+ to run the test suite.")
     sys.exit(1)
 
 if have_typing_module():
@@ -212,7 +212,7 @@ def main(assembler, files: Iterable[str]) -> int:
     if len(files) == 0:
         print("No tests specified, so sourcing from tests directory.")
         script_dir = os.path.dirname(os.path.realpath(__file__))
-        files = glob.glob(os.path.join(script_dir, '*.asm'))
+        files = glob.glob(os.path.join(script_dir, '**', '*.asm'), recursive=True)
 
     for filename in files:
         print('{} '.format(filename), end='')
