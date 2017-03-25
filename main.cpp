@@ -217,6 +217,33 @@ int run_assembly()
 	printf("Assembly time: %0.3f seconds\n", (float) s_diff + ((float) ms_diff / 1000.0f));
 	return exit_code;
 }
+void print_help_message(void){
+	puts ("SPASM-ng Z80 Assembler by Spencer Putt and Don Straney");
+	printf ("Version %s (built on %s @ %s)\n", SPASM_NG_VERSION, __DATE__, __TIME__);
+#ifdef SPASM_NG_GITREV
+	printf ("Git revision %s\n", SPASM_NG_GITREV);
+#endif
+#ifdef _M_X64
+	puts ("64-bit Version");
+#endif
+#ifdef NO_APPSIGN
+	printf ("\nApp signing is NOT available in this build of SPASM.\n");
+#endif
+	puts ("\nspasm [options] <input file> <output file>\n");
+	puts ("Options:\n-E = Assemble eZ80 code\n-T = Generate code listing\n-C = Code counter mode\n-L = Symbol table mode\n-S = Stats mode\n-O = Don't write to output file");
+	puts ("-I [directory] = Add include directory\n-A = Labels are cAse-sensitive\n-D<name>[=value] = Create a define 'name' [with 'value']");
+	puts ("-N = Don't use colors for messages");
+	puts ("-V <Expression> = Pipe expression directly into assembly");
+	puts ("-H = Print this help message");
+
+#if defined(_DEBUG) && defined(WIN32)
+	if (IsDebuggerPresent())
+	{
+		system("PAUSE");
+	}
+#endif
+	exit(EXIT_NORMAL);
+}
 
 #if 0
 int CALLBACK WinMain(HINSTANCE hInst, HINSTANCE	 hPrev, LPSTR lpCommandLine, int nCmdShow)
@@ -237,30 +264,7 @@ int main (int argc, char **argv)
 
 	//if there aren't enough args, show info
 	if (argc < 2) {
-		puts ("SPASM-ng Z80 Assembler by Spencer Putt and Don Straney");
-		printf ("Version %s (built on %s @ %s)\n", SPASM_NG_VERSION, __DATE__, __TIME__);
-#ifdef SPASM_NG_GITREV
-		printf ("Git revision %s\n", SPASM_NG_GITREV);
-#endif
-#ifdef _M_X64
-		puts ("64-bit Version");
-#endif
-#ifdef NO_APPSIGN
-		printf ("\nApp signing is NOT available in this build of SPASM.\n");
-#endif
-		puts ("\nspasm [options] <input file> <output file>\n");
-		puts ("Options:\n-E = Assemble eZ80 code\n-T = Generate code listing\n-C = Code counter mode\n-L = Symbol table mode\n-S = Stats mode\n-O = Don't write to output file");
-		puts ("-I [directory] = Add include directory\n-A = Labels are cAse-sensitive\n-D<name>[=value] = Create a define 'name' [with 'value']");
-		puts ("-N = Don't use colors for messages");
-		puts ("-V <Expression> = Pipe expression directly into assembly");
-
-#if defined(_DEBUG) && defined(WIN32)
-		if (IsDebuggerPresent())
-		{
-			system("PAUSE");
-		}
-#endif
-		return EXIT_NORMAL;
+		print_help_message();
 	}
 
 	//init stuff
@@ -388,6 +392,10 @@ int main (int argc, char **argv)
 				strcat(input_contents, "\n");
 				break;
 			}
+			case 'H':
+			case 'h':
+				print_help_message();
+				break;
 			default:
 				{
 #ifndef _TEST
