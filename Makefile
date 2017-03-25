@@ -78,7 +78,7 @@ install:
 		cp spasm $(DESTDIR)/bin/spasm
 
 check: spasm
-	$(PYTHON) tests/test-runner.py ./spasm $(wildcard tests/*.asm)
+	$(PYTHON) tests/test-runner.py ./spasm
 
 coverage: CXXFLAGS+=-g -O0 --coverage
 coverage: LDFLAGS+=-g -O0 --coverage
