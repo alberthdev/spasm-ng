@@ -200,6 +200,9 @@ char *handle_preop (char *ptr) {
 			char *name = strndup(ptr, name_end - ptr);
 			
 			macro = add_define (name, NULL);
+			
+			if (macro == NULL)
+				return NULL;
 
 			name_end = skip_whitespace (name_end);
 			if (*name_end == '(') {
