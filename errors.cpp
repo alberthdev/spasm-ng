@@ -226,9 +226,6 @@ void EndSPASMErrorSession(int nSession) {
 	DPRINT("[EndSPASMErrorSession] called with nSession = %d\n", nSession);
 	int fatalErrors = CleanupSPASMErrorSession(nSession);
 	DPRINT("[EndSPASMErrorSession] fatal errs = %d\n", fatalErrors);
-	if (fatalErrors > 0) {
-		exit(1);
-	}
 }
 
 //returns the number of fatal errors
@@ -251,10 +248,6 @@ int CleanupSPASMErrorSession(int nSession)
 			pPrev->next = pList->next;
 		}
 		if(IsSPASMErrorFatal(lpErr->dwErrorCode)) {
-			// Note that if nSession == 1, ReplaySPASMErrorSession will
-			// call ReplayErrorRecursive, and print an error message there!
-			if (nSession != 1)
-				PrintSPASMError(lpErr);
 			fatalErrorCount++;
 		}
 		FreeErrorInstance(lpErr);
