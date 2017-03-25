@@ -226,6 +226,9 @@ void EndSPASMErrorSession(int nSession) {
 	DPRINT("[EndSPASMErrorSession] called with nSession = %d\n", nSession);
 	int fatalErrors = CleanupSPASMErrorSession(nSession);
 	DPRINT("[EndSPASMErrorSession] fatal errs = %d\n", fatalErrors);
+	
+	if (nSession == 1 && fatalErrors > 0)
+		exit(EXIT_FATAL_ERROR);
 }
 
 //returns the number of fatal errors
