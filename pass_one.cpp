@@ -148,6 +148,9 @@ void run_first_pass (char *ptr) {
 				do_listing_for_line (ptr);
 	
 			line_num++;
+		} else {
+			// Nothing more to read, return
+			break;
 		}
 	}
 }
