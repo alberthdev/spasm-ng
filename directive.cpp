@@ -160,12 +160,11 @@ char *handle_directive (const char *ptr) {
 
 			// Instruction data
 			if (!read_expr (&ptr, word, " \t")) goto addinstr_fail;
-	        conv_hex (word, word + strlen (word), &result);
-	        instr->instr_size = strlen (word) / 2;
+			conv_hex (word, word + strlen (word), &result);
+			instr->instr_size = strlen (word) / 2;
 
-	        for (j = instr->instr_size - 1; j >= 0; j--)
-	        	instr->instr_data[instr->instr_size - j - 1] = (result >> (j * 8)) & 0xFF;
-
+			for (j = instr->instr_size - 1; j >= 0; j--)
+				instr->instr_data[instr->instr_size - j - 1] = (result >> (j * 8)) & 0xFF;
 
 			// Size
 			if (!read_expr (&ptr, word, " \t")) goto addinstr_fail;
