@@ -163,6 +163,10 @@ char *handle_directive (const char *ptr) {
 			conv_hex (word, word + strlen (word), &result);
 			instr->instr_size = strlen (word) / 2;
 
+			// Sanity check: are we within the upper bound?
+			// (If not, fail - otherwise we start overwriting memory)
+			if (instr->instr_size > 8) goto addinstr_fail;
+
 			for (j = instr->instr_size - 1; j >= 0; j--)
 				instr->instr_data[instr->instr_size - j - 1] = (result >> (j * 8)) & 0xFF;
 

@@ -108,7 +108,7 @@ SPASMERROR g_ErrorCodes[]
 	{SPASM_ERR_NO_PREVIOUS_DEFINE,		_T("No previous define to continue")},
 	{SPASM_ERR_ELIF_WITHOUT_IF,			_T("Use of #ELIF outside of an #IF expression")},
 	{SPASM_ERR_INVALID_OPTION,			_T("The option %s does not exist")},
-	{SPASM_ERR_INVALID_ADDINSTR,		_T("Missing required information for .ADDINSTR")},
+	{SPASM_ERR_INVALID_ADDINSTR,		_T("Required information for .ADDINSTR is missing or invalid")},
 	{SPASM_ERR_INVALID_RST_OPERANDS,	_T("Invalid operands for the RST command")},
 	{SPASM_ERR_DEFINE_HAS_NO_VALUE,		_T("The define '%s' has been used, but doesn't have a value")},
 	{SPASM_ERR_RECURSION_DEPTH,			_T("Expression is too deep (only %d levels allowed)")},
