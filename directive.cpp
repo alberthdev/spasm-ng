@@ -142,7 +142,7 @@ char *handle_directive (const char *ptr) {
 			instr *instr = (struct _instr *) malloc (sizeof (struct _instr));
 			char word[256];
 			int result;
-			char *mnemonic;
+			char *mnemonic = NULL;
 			size_t i, base = 0, size_left;
 			int j;
 			opcode *last_opcode = NULL, *curr_opcode = all_opcodes, *new_opcode;
@@ -230,6 +230,7 @@ char *handle_directive (const char *ptr) {
 			break;
 addinstr_fail:
 			SetLastSPASMError(SPASM_ERR_INVALID_ADDINSTR);
+			if (mnemonic) free((void *) mnemonic);
 			if (instr && instr->args) free ((void *) instr->args);
 			if (instr) free (instr);
 			ptr = skip_to_line_end(ptr);
