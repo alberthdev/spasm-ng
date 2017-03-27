@@ -398,16 +398,12 @@ int main (int argc, char **argv)
 				break;
 			default:
 				{
-#ifndef _TEST
-#ifdef _WINDOWS
-					printf ("Unrecognized option %s\n", argv[curr_arg]);
+					fprintf (stderr,"Unrecognized option %s\n", argv[curr_arg]);
 #ifdef SPASM_NG_ENABLE_COM
 					FreeConsole();
 					return _AtlModule.WinMain(SW_HIDE);
-#endif
-#endif
 #else
-					printf ("Unrecognized option %s\n", argv[curr_arg]);
+                    return 1;
 #endif
 				}
 				
