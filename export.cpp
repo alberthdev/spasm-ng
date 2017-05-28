@@ -162,11 +162,9 @@ void write_file (const unsigned char *output_contents, int output_len, const cha
 	//then decide how to write the contents
 	switch (calc)
 	{
-	case TYPE_83P:
-		make83 (output_contents, (DWORD) output_len, outfile, prgmname);
-		break;
 	case TYPE_73P:
 	case TYPE_82P:
+	case TYPE_83P:
 	case TYPE_8XP:
 	case TYPE_8XV:
 	case TYPE_85P:
@@ -190,7 +188,6 @@ void write_file (const unsigned char *output_contents, int output_len, const cha
 			fputc(output_contents[i], outfile);
 		break;
 	}
-		
 
 	fclose (outfile);
 	free(curr_input_file);
@@ -305,7 +302,7 @@ void makeapp (const unsigned char *output_contents, DWORD size, FILE *outfile, c
 	tempnum = 96 - (total_size - size);
 	while (tempnum--) buffer[total_size++] = 0xFF;
 #else /* NO_APPSIGN */
-    show_warning("App signing is not available in this build of SPASM");
+	show_warning("App signing is not available in this build of SPASM");
 #endif /* NO_APPSIGN */
 
 
@@ -438,7 +435,8 @@ int siggen(const unsigned char* hashbuf, unsigned char* sigbuf, int* outf) {
 void makeprgm (const unsigned char *output_contents, int size, FILE *outfile, const char *prgmname, calc_type calc) {
 	int i, temp, chksum;
 	unsigned char* pnt;
-	char *namestring;
+	char *namestring, progstring[3];
+	const char trailer83[] = { 0x3f, 0xd4, 0x3f, 0x30, 0x30, 0x30, 0x30, 0x3f, 0xd4 };
 	
 	if (calc==TYPE_82P) {
 		char name_buf[256];
@@ -465,14 +463,18 @@ void makeprgm (const unsigned char *output_contents, int size, FILE *outfile, co
 		}
 	}
 	/* get size */
+	if (calc==TYPE_83P) {
+	size *= 2; // Double size to account for character conversion of hex opcodes
+	size += 9; // Will have to add assembly trailer End0000End
+	}
 	size += 2;
 	/* 86ers don't need to put the asm token*/
 	if (calc==TYPE_86P) {
 		size += 2;
 	}
 	/* size must be smaller than z80 mem */
-	if (size > 24000) {
-		if (size > 65000) {
+	if (size > 24575) {
+		if (size > 65535) {
 			SetLastSPASMWarning(SPASM_WARN_SIGNER_FILE_SIZE_64KB);
 		} else {
 			SetLastSPASMWarning(SPASM_WARN_SIGNER_FILE_SIZE_24KB);
@@ -564,9 +566,9 @@ void makeprgm (const unsigned char *output_contents, int size, FILE *outfile, co
 		}
 	}
 	if (calc == TYPE_86P) {
-	   chksum += fputc (0x8E, outfile);
-	   chksum += fputc (0x28, outfile);
-	   size -= 2;
+		chksum += fputc (0x8E, outfile);
+		chksum += fputc (0x28, outfile);
+		size -= 2;
 	} else if (calc == TYPE_82P) {
 		chksum += 
 			fputc (0xD5, outfile);
@@ -577,9 +579,26 @@ void makeprgm (const unsigned char *output_contents, int size, FILE *outfile, co
 	}
 	
 	if (calc == TYPE_82P) size -= 3;
+	if (calc == TYPE_83P) {
+		size -= 9;
+		size >>= 1; // Divide by 2 to get original code size back
+	}
 	/* Actual program data! */
 	for (i = 0; i < size; i++) {
-		chksum += fputc (output_contents[i], outfile);
+		if (calc == TYPE_83P) {
+			//In original spasm, it leaves contents as hex, for TI-83 they must be converted to char equivalents
+			sprintf(progstring, "%02X", output_contents[i]);
+			chksum += fputc (progstring[0], outfile);
+			chksum += fputc (progstring[1], outfile);
+		} else {
+			chksum += fputc (output_contents[i], outfile);
+		}
+	}
+	if (calc == TYPE_83P) {
+		// Must add trailer to signify asm program End0000End
+		for (i=0; i < sizeof(trailer83); i++) {
+			chksum += fputc (trailer83[i], outfile);
+		}
 	}
 	/* short little endian Checksum */
 	fputc (chksum & 0xFF,outfile);
@@ -638,90 +657,5 @@ void intelhex (FILE* outfile, const unsigned char* buffer, int size, unsigned in
 		}         
 	}
 	fprintf(outfile,":00000001FF");
-}
-
-void make83 (const unsigned char *output_contents, int size, FILE *outfile, const char *prgmname) {
-	int i, temp, chksum;
-	unsigned char* pnt;
-	char *namestring, progstring[3];
-	const char trailer[] = { 0x3f, 0xd4, 0x3f, 0x30, 0x30, 0x30, 0x30, 0x3f, 0xd4 };
-	
-	size_t len = strlen(prgmname);
-	char *p = (char *) prgmname + len - 1, *lastSlash;
-	for (i = len - 1; i >= 0; i--, p--) {
-		if (*p == '\\' || *p == '/') {
-			lastSlash = ++p;
-			break;
-		}
-	}
-	if (i == -1)
-		lastSlash = ++p;
-	namestring = strdup (lastSlash);
-	/* The name must be capital letters and numbers */
-	alphanumeric (namestring, false ); 
-	/* get size */
-	size *= 2; // Double size to account for character conversion of hex opcodes
-	size += 9; // Will have to add assembly trailer End0000End
-	size += 2; // 2 extra bytes for variable header
-	/* size must be smaller than z80 mem */
-	if (size > 24575) {
-		if (size > 65535) {
-			SetLastSPASMWarning(SPASM_WARN_SIGNER_FILE_SIZE_64KB);
-		} else {
-			SetLastSPASMWarning(SPASM_WARN_SIGNER_FILE_SIZE_24KB);
-		}
-	}
-	
-	fputs ("**TI83**", outfile);
-	for (i = 5; i < 8; i++)
-		fputc (fileheader[i], outfile);
-	
-	// Copy in the comment
-	for (i = 0; i < 42; i++)
-		fputc(comment[i],outfile);
-
-	/* For some reason TI thinks it's important to put the file size */
-	temp = size+15;
-	fputc(temp & 0xFF,outfile);
-	fputc(temp >> 8,outfile);
-	chksum = fputc(0x0b,outfile);
-	fputc(0,outfile);
-	/* OMG the Size again! */
-	chksum += fputc(size & 0xFF,outfile);
-	chksum += fputc(size>>8,outfile);
-	chksum += fputc(5,outfile); // Use 6 to hide source of program
-	
-	/* The actual name is placed with padded with zeros */
-	if (!((temp=namestring[0])>='A' && temp<='Z')) show_warning ("First character in name must be a letter.");
-	for(i = 0; i < 8 && namestring[i]; i++) chksum += fputc(namestring[i], outfile);
-    for(;i < 8; i++) fputc(0,outfile); //Can skip checksum since it would only add 0
-
-	/*Yeah, lets put the size twice in a row  X( */
-	chksum += fputc(size & 0xFF,outfile);
-	chksum += fputc(size>>8,outfile);
-	size-=2;
-	chksum += fputc(size & 0xFF,outfile);
-	chksum += fputc(size>>8,outfile);
-	
-	size -= 9;
-	size >>= 1; // Divide by 2 to get original code size back
-	/* Actual program data!
-	In original spasm, it leaves contents as hex, but they must be converted to char equivalents */
-	for (i = 0; i < size ; i++) {
-		sprintf(progstring, "%02X", output_contents[i]);
-		chksum += fputc (progstring[0], outfile);
-		chksum += fputc (progstring[1], outfile);
-	}
-	// Must add trailer to signify asm program End0000End
-	for (i=0; i < sizeof(trailer); i++) {
-		chksum += fputc (trailer[i], outfile);
-	}	
-
-	/* short little endian Checksum */
-	fputc (chksum & 0xFF,outfile);
-	fputc ((chksum >> 8) & 0xFF,outfile);
-//    printf("%s (%d bytes) was successfully generated!\n",filestring,size);
-
-	free (namestring);
 }
 
