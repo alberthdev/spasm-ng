@@ -147,7 +147,7 @@ typedef void *LPVOID;
 #define _tcsdup strdup
 #define _strdup strdup
 #define sprintf_s sprintf
-
+#define _strtoi64 strtoll
 
 #define StringCchPrintf(dest, size, fmt, ...) snprintf(dest, size, fmt, __VA_ARGS__)
 #define StringCchVPrintf(dest, size, fmt, args) vsnprintf(dest, size, fmt, args)
