@@ -666,7 +666,7 @@ static bool conv_generic(const char *str, const char *end, int *output_num,
 		return false;
 	}
 
-	if (value < INT_MIN || value > INT_MAX) {
+	if (value < INT_MIN || value > UINT_MAX) {
 		char *number = strndup(str, end - str);
 		SetLastSPASMError(SPASM_ERR_INTEGER_OVERFLOW, number);
 		free(number);
