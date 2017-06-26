@@ -657,7 +657,7 @@ static const char *parse_num_full (const char *expr, int *value, int depth) {
 static bool conv_generic(const char *str, const char *end, int *output_num,
                   int base, int error_code) {
 	char *ep;
-	long value = strtol(str, &ep, base);
+	long long value = strtoll(str, &ep, base);
 
 	if (ep < end) {
 		char *number = strndup(str, end - str);
