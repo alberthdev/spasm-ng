@@ -2,5 +2,16 @@ build:
   parallel: true
   project: SPASM.sln
 
+environment:
+  matrix:
+  - platform: msvc
+  - platform: mingw
+
+build_script:
+  - if %platform%==mingw set PATH=C:\mingw-w64\i686-6.3.0-posix-dwarf-rt_v5-rev1\bin;%PATH%
+  - if %platform%==mingw mingw32-make CROSS_COMPILE=i686-w64-mingw32- NO_APPSIGN=1
+  - if %platform%==mingw mingw32-make clean
+  - if %platform%==mingw mingw32-make CROSS_COMPILE=i686-w64-mingw32-
+
 test_script:
   - C:\Python35\python tests\test-runner.py Debug\SPASM.exe

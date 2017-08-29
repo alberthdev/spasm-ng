@@ -7,12 +7,18 @@ before_install:
 
 install:
   - sudo apt-get install -y -qq zlib1g-dev python3.5
+  - sudo apt-get install -y -qq g++-mingw-w64
 
 script:
   - make NO_APPSIGN=1
   - make PYTHON=python3.5 check
   - make clean
   - sudo apt-get install -y -qq libssl-dev libgmp-dev
+  - make
+  - echo MinGW Build
+  - make clean
+  - make CROSS_COMPILE=i686-w64-mingw32- NO_APPSIGN=1
+  - make clean
   - make
   - make PYTHON=python3.5 check
   - make PYTHON=python3.5 coverage
