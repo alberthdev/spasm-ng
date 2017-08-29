@@ -77,17 +77,16 @@ class EmitsWarning(Checker):
     def __init__(self, s):
         s = filter_whitespace(s)
         if len(s) != 3:
-            raise ValueError("CHECK-ERR values must specify a 3 digit hex value")
+            raise ValueError("CHECK-WARN values must specify a 3 digit hex value")
         
         try:
             int(s, 16)
         except ValueError:
-            raise ValueError("CHECK-ERR values must specify a 3 digit hex value")
+            raise ValueError("CHECK-WARN values must specify a 3 digit hex value")
 
         self.warn_code = s
 
     def __call__(self, binary, output):
-        assert len(binary) == 0, "Binary is non-empty, despite an error occurring! Got binary {}, length {}!".format(binary, len(binary))
         found_warn_code = None
         output_idx = 0
 
@@ -133,11 +132,20 @@ class EmitsError(Checker):
         assert found_err_code == self.err_code, "Expected error code {}, found {}".format(self.err_code, found_err_code)
         return (binary, output[(output_idx + 1):])
 
+class EmitsNonFatalError(EmitsError):
+    def __init__(self, *args, **kwargs):
+        super(EmitsNonFatalError, self).__init__(*args, **kwargs)
+
+    def __call__(self, binary, output):
+        _, output = super(EmitsNonFatalError, self).__call__(bytearray(), output)
+        return (binary, output)
+
 CHECK_TYPES = {
     '': EmitsBytes,
     '-SKIP': SkipBytes,
     '-WARN': EmitsWarning,
-    '-ERR': EmitsError
+    '-ERR': EmitsError,
+    '-NFERR': EmitsNonFatalError
 }
 
 
