@@ -469,8 +469,8 @@ void makeprgm (const unsigned char *output_contents, int size, FILE *outfile, co
 	}
 	/* get size */
 	if (calc==TYPE_83P) {
-	size *= 2; // Double size to account for character conversion of hex opcodes
-	size += 9; // Will have to add assembly trailer End0000End
+		size *= 2; // Double size to account for character conversion of hex opcodes
+		size += 9; // Will have to add assembly trailer End0000End
 	}
 	size += 2;
 	/* 86ers don't need to put the asm token*/
