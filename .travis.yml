@@ -7,7 +7,9 @@ before_install:
 
 install:
   - sudo apt-get install -y -qq zlib1g-dev python3.5
-  - sudo apt-get install -y -qq g++-mingw-w64
+  - sudo apt-get install -y -qq binutils-mingw-w64-i686 
+  - sudo apt-get install -y -qq gcc-mingw-w64-i686 
+  - sudo apt-get install -y -qq g++-mingw-w64-i686 
 
 script:
   - make NO_APPSIGN=1
