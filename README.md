@@ -9,6 +9,12 @@ spasm-ng
 SPASM-ng is a z80/eZ80 assembler with extra features to support development
 for TI calculators. 
 
+Downloads
+---------
+Releases with pre-built binaries may be found here:
+
+### [Downloads](../../releases)
+
 Requirements
 ------------
 On Windows, you will need the following to build SPASM-ng:
@@ -118,6 +124,13 @@ make opt-static
 
 # Create tarball of spasm-ng binary (builds opt-static target):
 make tar
+```
+
+Cross-compiling can be enabled by simply setting the cross-compiling
+prefix, e.g.
+
+```bash
+make CROSS_COMPILE=i686-w64-mingw32-
 ```
 
 Documentation
