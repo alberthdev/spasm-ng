@@ -33,6 +33,7 @@ On Windows, you will need the following to build SPASM-ng:
     If you want to build with COM support, however, you will need the ATL
     include files. You can get these by either:
     
+      * using Visual Studio Community (2015+, free w/restrictions);
       * using Visual Studio Professional;
       * installing Windows SDKs that contain the ATL include files, and
         reconfiguring the project accordingly.
