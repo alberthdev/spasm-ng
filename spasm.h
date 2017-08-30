@@ -9,7 +9,7 @@
 
 // Debugging prints
 #ifdef DEBUG_PRINT
-#define DPRINT(fmt, ...) printf("[%s:%d] "fmt, __FILE__,__LINE__,##__VA_ARGS__)
+#define DPRINT(fmt, ...) printf("[%s:%d] " fmt, __FILE__,__LINE__,##__VA_ARGS__)
 #else
 #define DPRINT(fmt, ...)
 #endif
