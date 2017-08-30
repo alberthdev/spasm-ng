@@ -77,7 +77,7 @@ debian: opt $(EXE)
 			--pkgname="spasm-ng" --pkgversion="$(VERSION_DPKG)" --pkgrelease="1" \
 			--maintainer="alberthdev@users.noreply.github.com" \
 			--backup=no --deldoc=yes --deldesc=yes --delspec=yes \
-			--install=no --default
+			--install=no --default $(CHECKINSTALL_OPTS)
 		rm -f description-pak
 
 install:
