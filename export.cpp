@@ -441,7 +441,7 @@ void makeprgm (const unsigned char *output_contents, int size, FILE *outfile, co
 	int i, temp, chksum;
 	unsigned char* pnt;
 	char *namestring, progstring[3];
-	const char trailer83[] = { 0x3f, 0xd4, 0x3f, 0x30, 0x30, 0x30, 0x30, 0x3f, 0xd4 };
+	const unsigned char trailer83[] = { 0x3f, 0xd4, 0x3f, 0x30, 0x30, 0x30, 0x30, 0x3f, 0xd4 };
 	
 	if (calc==TYPE_82P) {
 		char name_buf[256];
