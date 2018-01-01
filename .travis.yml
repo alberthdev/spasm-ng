@@ -6,7 +6,7 @@ before_install:
   - pip install --user cpp-coveralls
 
 install:
-  - sudo apt-get install -y -qq zlib1g-dev python3.5
+  - sudo apt-get install -y --allow-unauthenticated -qq zlib1g-dev python3.5
   - sudo apt-get install -y -qq binutils-mingw-w64-i686 
   - sudo apt-get install -y -qq gcc-mingw-w64-i686 
   - sudo apt-get install -y -qq g++-mingw-w64-i686 
