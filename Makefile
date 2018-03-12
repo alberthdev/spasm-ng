@@ -1,7 +1,7 @@
+CC ?= $(CROSS_COMPILE)g++
+LD ?= $(CROSS_COMPILE)ld
+STRIP ?= $(CROSS_COMPILE)strip
 ISWIN = $(or $(findstring Windows,$(OS)),$(findstring mingw,$(CROSS_COMPILE)))
-CC = $(CROSS_COMPILE)g++
-LD = $(CROSS_COMPILE)ld
-STRIP = $(CROSS_COMPILE)strip
 CXXFLAGS+= -Wall -DUSE_REUSABLES $(if $(ISWIN),,-DUNIXVER) -DUSE_BUILTIN_FCREATE
 LDFLAGS+= -lm
 
@@ -38,18 +38,18 @@ SRC = main.cpp opcodes.cpp pass_one.cpp pass_two.cpp utils.cpp export.cpp preop.
 expand_buf.cpp hash.cpp list.cpp parser.cpp storage.cpp errors.cpp bitmap.cpp modp_ascii.cpp opcodes_ez80.cpp
 OBJ = $(addsuffix .o, $(basename $(SRC)))
 OBJ_FILES = $(addsuffix .o, $(basename $(notdir $(SRC))))
-EXE = $(if $(ISWIN),spasm.exe,spasm)
+EXE ?= $(if $(ISWIN),spasm.exe,spasm)
 
 $(EXE): $(OBJ) Makefile
 	$(CC) -o $@ $(OBJ_FILES) $(LDFLAGS)
-	$(STRIP) $@
+	[ -n "${NO_STRIP_BINARY}" ] || $(STRIP) $@
 
 debug: CXXFLAGS+= -g
-debug: STRIP= :
+debug: NO_STRIP_BINARY=1
 debug: $(EXE)
 
 debugp: CXXFLAGS+= -g -DDEBUG_PRINT
-debugp: STRIP= :
+debugp: NO_STRIP_BINARY=1
 debugp: $(EXE)
 
 prep-special-build:
