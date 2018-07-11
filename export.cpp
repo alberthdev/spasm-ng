@@ -94,6 +94,7 @@ enum calc_type {
 };
 
 int findfield ( unsigned char byte, const unsigned char* buffer );
+int findfield_flex( unsigned char prefix_byte, const unsigned char* buffer, int *buf_field_loc, int *buf_field_size );
 int siggen (const unsigned char* hashbuf, unsigned char* sigbuf, int* outf);
 void intelhex (FILE * outfile , const unsigned char* buffer, int size, unsigned int address = 0x4000);
 void alphanumeric (char* namestring, bool allow_lower);
@@ -212,7 +213,7 @@ void makehex (const unsigned char *output_contents, DWORD size, FILE *outfile) {
 
 void makeapp (const unsigned char *output_contents, DWORD size, FILE *outfile, const char* prgmname) {
 	unsigned char *buffer;
-	int i,pnt,siglength,tempnum,f,pages;
+	int i,pnt,siglength,tempnum,f,pages,field_sz;
 	unsigned int total_size;
 
 	/* Copy file to memory */
@@ -264,14 +265,16 @@ void makeapp (const unsigned char *output_contents, DWORD size, FILE *outfile, c
 	pages = size>>14; /* this is safe because we know there's enough room for the sig */
 	if (size & 0x3FFF) pages++;
 	buffer[pnt] = pages;
-/* Name Field: MUST BE 8 CHARACTERS, no checking if valid */
-	pnt = findfield(0x48, buffer);
-	if (!pnt) {
+/* Name Field: Can be a variable number of characters, no checking if valid */
+	if (findfield_flex(0x40, buffer, &pnt, &field_sz)) {
 		free(buffer);
 		SetLastSPASMError(SPASM_ERR_SIGNER_MISSING_NAME);
 		return;
 	}
-	for (i=0; i < 8 ;i++) name[i]=buffer[i+pnt];
+	/* Set name length */
+	*(name - 1) = (field_sz <= 8) ? field_sz : 8;
+	/* Only copy the part of the name defined in the size returned */
+	for (i=0; i < ((field_sz <= 8) ? field_sz : 8); i++) name[i]=buffer[i+pnt];
 
 #ifndef NO_APPSIGN
 /* Calculate MD5 */
@@ -358,6 +361,29 @@ int findfield( unsigned char byte, const unsigned char* buffer ) {
 		pnt++;
 	}
 	return 0;
+}
+
+/* This implements findfield but with byte splitting, e.g.
+ * prefix for first 4 bits and size for last 4 bits.
+ * Uses return by arg to return both location and app field size.
+ * Actual return value indicates success or failure. Location and size
+ * will be set to 0 if failure.
+ */
+int findfield_flex( unsigned char prefix_byte, const unsigned char* buffer, int *buf_field_loc, int *buf_field_size ) {
+	int pnt=6;
+	while (buffer[pnt++] == 0x80) {
+		if ((buffer[pnt] & 0xF0) == (prefix_byte & 0xF0)) {
+			*buf_field_size = (buffer[pnt] & 0x0F);
+			pnt++;
+			*buf_field_loc = pnt;
+			return 0;
+		} else
+			pnt += (buffer[pnt] & 0x0F);
+		pnt++;
+	}
+	*buf_field_loc = 0;
+	*buf_field_size = 0;
+	return 1;
 }
 
 #ifndef NO_APPSIGN
