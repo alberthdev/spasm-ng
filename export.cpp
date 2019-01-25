@@ -483,7 +483,7 @@ void makeprgm (const unsigned char *output_contents, int size, FILE *outfile, co
 	if (size > 24575) {
 		if (size > 65535) {
 			SetLastSPASMWarning(SPASM_WARN_SIGNER_FILE_SIZE_64KB);
-		} else {
+		} else if (!(mode & MODE_EZ80)) {
 			SetLastSPASMWarning(SPASM_WARN_SIGNER_FILE_SIZE_24KB);
 		}
 	}
