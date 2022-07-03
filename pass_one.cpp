@@ -334,15 +334,16 @@ char *handle_opcode_or_macro (char *ptr) {
 		define_t *define;
 #ifdef USE_BUILTIN_FCREATE
 		if (!strncasecmp (name_start, "buf", name_end - name_start) && *ptr == '(') {
-		    char buf[256];
+			char buf[256];
 			int value;
-			cur_buf = read_expr(ptr, buf, _T(")"));
+			ptr++;
+			read_expr(&ptr, buf, _T(")"));
 			if (parse_num(buf, &value)) {
 				cur_buf = value;
 			} else {
 				SetLastSPASMError(SPASM_ERR_INVALID_OPERANDS);
 			}
-			ptr += 2;
+			ptr++;
 		} else if (!strncasecmp (name_start, "clr", name_end - name_start) && *ptr == '(') {
 			expand_buf_t *eb_fcreate = fcreate_bufs[cur_buf];
 			if (eb_fcreate != NULL) {
