@@ -132,7 +132,7 @@ int run_assembly()
 	include_dirs = NULL;
 	
 	//...and if there's output, run the second pass and write it to the output file
-	if (mode & MODE_SYMTABLE || mode & MODE_NORMAL || mode & MODE_LIST)
+	if (mode & MODE_NORMAL || mode & MODE_LIST)
 	{
 		printf ("Pass two... \n");
 		int second_pass_session = StartSPASMErrorSession();
@@ -140,14 +140,6 @@ int run_assembly()
 		ReplaySPASMErrorSession(second_pass_session);
 		EndSPASMErrorSession(second_pass_session);
 
-		if (mode & MODE_SYMTABLE) {
-			int symtable_session = StartSPASMErrorSession();
-			char* fileName = change_extension(output_filename, "lab");
-			write_labels (fileName);
-			free(fileName);
-			ReplayFatalSPASMErrorSession(symtable_session);
-			EndSPASMErrorSession(symtable_session);
-		}
 		
 		//run the output through the appropriate program export and write it to a file
 		if (mode & MODE_NORMAL && output_filename != NULL)
@@ -187,6 +179,16 @@ int run_assembly()
 		//free the output buffer and all the names of input files
 		list_free(input_files, true, NULL);
 		input_files = NULL;
+	}
+
+	if (mode & MODE_SYMTABLE) {
+		printf("Outputting symbol table\n");
+		int symtable_session = StartSPASMErrorSession();
+		char* fileName = change_extension(output_filename, "lab");
+		write_labels(fileName);
+		free(fileName);
+		ReplayFatalSPASMErrorSession(symtable_session);
+		EndSPASMErrorSession(symtable_session);
 	}
 
 	//if there's info to be dumped, do that
