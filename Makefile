@@ -94,6 +94,7 @@ clean:
 		rm -f $(OBJ) $(EXE) description-pak spasm-ng*.deb spasm-ng*.tar.gz
 		rm -f opt static prep-special-build
 		rm -f *.gcno *.gcda *.gcov
+		rm -r version.h
 
 version:
 		@./version.sh set
