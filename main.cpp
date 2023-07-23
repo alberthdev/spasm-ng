@@ -112,8 +112,8 @@ int run_assembly()
 
 	//add the the input file's path to the include directories
 	include_dirs = list_prepend (include_dirs, strdup (temp_path));
-
-	printf ("Pass one... \n");
+	if (!quiet_output)
+		printf ("Pass one... \n");
 
 	int first_pass_session = StartSPASMErrorSession();
 	run_first_pass ((char *) input_contents);
@@ -134,7 +134,8 @@ int run_assembly()
 	//...and if there's output, run the second pass and write it to the output file
 	if (mode & MODE_SYMTABLE || mode & MODE_NORMAL || mode & MODE_LIST)
 	{
-		printf ("Pass two... \n");
+		if (quiet_output)
+			printf ("Pass two... \n");
 		int second_pass_session = StartSPASMErrorSession();
 		run_second_pass ();
 		ReplaySPASMErrorSession(second_pass_session);
@@ -190,12 +191,12 @@ int run_assembly()
 	}
 
 	//if there's info to be dumped, do that
-	if (mode & MODE_CODE_COUNTER) {
+	if (mode & MODE_CODE_COUNTER & !quiet_output) {
 		fprintf (stdout, "Size: %u\nMin. execution time: %u\nMax. execution time: %u\n",
 				 stats_codesize, stats_mintime, stats_maxtime);
 	}
 	
-	if (mode & MODE_STATS) {
+	if (mode & MODE_STATS & !quiet_output) {
 		fprintf(stdout, "Number of labels: %u\nNumber of defines: %u\nCode size: %u\nData size: %u\nTotal size: %u\n",
 				 get_num_labels (), get_num_defines (), stats_codesize, stats_datasize, stats_codesize + stats_datasize);
 	}
@@ -214,7 +215,8 @@ int run_assembly()
 		ms_diff -= 1000;
 		s_diff += 1;
 	}
-	printf("Assembly time: %0.3f seconds\n", (float) s_diff + ((float) ms_diff / 1000.0f));
+	if (!quiet_output)
+		printf("Assembly time: %0.3f seconds\n", (float) s_diff + ((float) ms_diff / 1000.0f));
 	return exit_code;
 }
 void print_help_message(void){
@@ -270,6 +272,7 @@ int main (int argc, char **argv)
 	//init stuff
 	mode = MODE_NORMAL;
 	in_macro = 0;
+	quiet_output = true;
 	
 	//otherwise, get any options
 	curr_input_file = strdup("Commandline");
@@ -395,6 +398,9 @@ int main (int argc, char **argv)
 			case 'H':
 			case 'h':
 				print_help_message();
+				break;
+			case 'q':
+				quiet_output = true;
 				break;
 			default:
 				{
