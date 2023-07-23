@@ -7,6 +7,7 @@
 # Precompiled Headers
 *.gch
 *.pch
+version.h
 
 # Libraries
 *.lib
@@ -38,6 +39,9 @@ spasm
 SPASM_i.c
 SPASM_i.h
 SPASM_h.h
+
+# Temporary backup files
+.*.swp
 
 #######################################################################
 # Visual Studio .gitignore
