@@ -40,7 +40,7 @@ OBJ = $(addsuffix .o, $(basename $(SRC)))
 OBJ_FILES = $(addsuffix .o, $(basename $(notdir $(SRC))))
 EXE = $(if $(ISWIN),spasm.exe,spasm)
 
-$(EXE): $(OBJ) Makefile
+$(EXE): version $(OBJ) Makefile
 	$(CC) -o $@ $(OBJ_FILES) $(LDFLAGS)
 	$(STRIP) $@
 
@@ -93,7 +93,7 @@ coverage: clean check
 clean:
 		rm -f $(OBJ) $(EXE) description-pak spasm-ng*.deb spasm-ng*.tar.gz
 		rm -f opt static prep-special-build
-		rm -f *.gcno *.gcda *.gcov
+		rm -f *.gcno *.gcda *.gcov version.h
 
 version:
 		@./version.sh set
