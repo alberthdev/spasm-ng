@@ -40,8 +40,7 @@ OBJ = $(addsuffix .o, $(basename $(SRC)))
 OBJ_FILES = $(addsuffix .o, $(basename $(notdir $(SRC))))
 EXE = $(if $(ISWIN),spasm.exe,spasm)
 
-$(EXE): $(OBJ) Makefile
-	$(MAKE) version
+$(EXE): version $(OBJ) Makefile
 	$(CC) -o $@ $(OBJ_FILES) $(LDFLAGS)
 	$(STRIP) $@
 
