@@ -341,7 +341,9 @@ char *handle_opcode_or_macro (char *ptr) {
 			if (parse_num(buf, &value)) {
 				cur_buf = value;
 			} else {
-				SetLastSPASMError(SPASM_ERR_INVALID_OPERANDS);
+				char *const name = strndup(name_start, name_end - name_start);
+				SetLastSPASMError(SPASM_ERR_INVALID_OPERANDS, name);
+				free(name);
 			}
 			ptr++;
 		} else if (!strncasecmp (name_start, "clr", name_end - name_start) && *ptr == '(') {
