@@ -1,8 +1,9 @@
 include(CTest)
 
 # A fixture that compiles the assembler so the test runner can run it
-add_test(test_build_assembler
-    "${CMAKE_COMMAND}"
+add_test(
+    NAME test_build_assembler
+    COMMAND "${CMAKE_COMMAND}"
     --build "${CMAKE_BINARY_DIR}"
     --config "$<CONFIG>"
     --target spasm
