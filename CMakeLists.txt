@@ -12,11 +12,8 @@ add_executable(
     hash.cpp list.cpp parser.cpp storage.cpp errors.cpp bitmap.cpp
     modp_ascii.cpp opcodes_ez80.cpp
 )
-# Unix only?
-#target_link_libraries(spasm m)
 
-# https://github.com/alberthdev/spasm-ng/issues/73
-set_property(TARGET spasm PROPERTY CXX_STANDARD 11)
+set_property(TARGET spasm PROPERTY CXX_STANDARD 17)
 
 set(ENABLE_APP_SIGNING ON CACHE BOOL "Enable support for signing applications")
 if (ENABLE_APP_SIGNING)
@@ -41,9 +38,6 @@ add_compile_definitions(
 )
 if (WIN32)
     add_compile_definitions(UNICODE _UNICODE)
-endif()
-if (NOT WIN32)
-    add_compile_definitions(UNIXVER)
 endif()
 
 # Version generation

@@ -1,3 +1,8 @@
+#include <cctype>
+#include <cstdlib>
+#include <cstdio>
+#include <cstring>
+
 #include "spasm.h"
 #include "utils.h"
 #include "storage.h"

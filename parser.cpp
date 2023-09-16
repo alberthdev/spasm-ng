@@ -1,4 +1,7 @@
-#include "stdafx.h"
+#include <array>
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
 
 #define __PARSER_C
 

@@ -1,4 +1,6 @@
-#include "stdafx.h"
+#include <cmath>
+#include <cstdio>
+#include <cstdlib>
 
 #include "spasm.h"
 #include "errors.h"

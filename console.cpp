@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include <cstdio>
 
 #include "console.h"
 #include "spasm.h"

@@ -1,4 +1,6 @@
-#include "stdafx.h"
+#include <cerrno>
+#include <cstdlib>
+#include <cstdio>
 
 #include "spasm.h"
 #include "storage.h"

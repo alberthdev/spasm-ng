@@ -1,6 +1,12 @@
-#include "stdafx.h"
-
+#include <cstdarg>
+#include <cstdio>
+#include <cstring>
 #include <string>
+
+#ifdef WIN32
+#else
+#include <unistd.h>
+#endif
 
 #include "preop.h"
 #include "spasm.h"

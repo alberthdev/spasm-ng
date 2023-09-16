@@ -1,4 +1,8 @@
-#include "stdafx.h"
+#include <array>
+#include <cassert>
+#include <cstdarg>
+#include <cstdio>
+#include <cstdlib>
 
 #define _ERRORS_CPP
 #include "errors.h"

@@ -2,8 +2,14 @@
 	by Spencer Putt and James Montelongo */
 
 /* Modified for use in SPASM by Don Straney */
-
-#include "stdafx.h"
+#include <array>
+#include <cctype>
+#include <cerrno>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <gmp.h>
+#include <openssl/md5.h>
 
 #include "spasm.h"
 #include "utils.h"

@@ -1,5 +1,16 @@
-#include "stdafx.h"
+#include <cassert>
+#include <chrono>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
+#ifdef WIN32
+#include <direct.h>
+#else
+#include <unistd.h>
+#endif
+
+// This defines assorted globals in spasm.h rather than just declaring them.
 #define __MAIN_C
 
 #include "pass_one.h"
@@ -10,12 +21,6 @@
 #include "utils.h"
 #include "console.h"
 #include "errors.h"
-
-#ifdef WIN32
-#include <direct.h>
-#else
-#include <unistd.h>
-#endif
 
 #define LISTING_BUF_SIZE 65536	//initial size of buffer for output listing
 
@@ -41,13 +46,7 @@ CSPASMModule _AtlModule;
 
 int run_assembly()
 {
-#ifdef _WIN32
-	struct _timeb time_start, time_end;
-	_ftime(&time_start);
-#else
-	struct timeb time_start, time_end;
-	ftime(&time_start);
-#endif
+	auto time_start = std::chrono::steady_clock::now();
 	exit_code = EXIT_NORMAL;
 	
 	/*extern int generic_map[256];
@@ -205,21 +204,9 @@ int run_assembly()
 				 get_num_labels (), get_num_defines (), stats_codesize, stats_datasize, stats_codesize + stats_datasize);
 	}
 	
-#ifdef _WIN32
-	_ftime(&time_end);
-#else
-	ftime(&time_end);
-#endif
-	int s_diff = (int) (time_end.time - time_start.time);
-	int ms_diff = time_end.millitm - time_start.millitm;
-	if (ms_diff < 0) {
-		ms_diff += 1000;
-		s_diff -= 1;
-	} else if (ms_diff > 1000) {
-		ms_diff -= 1000;
-		s_diff += 1;
-	}
-	printf("Assembly time: %0.3f seconds\n", (float) s_diff + ((float) ms_diff / 1000.0f));
+	auto elapsed = std::chrono::steady_clock::now() - time_start;
+	float seconds = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed).count() / 1000;
+	printf("Assembly time: %0.3f seconds\n", seconds);
 	return exit_code;
 }
 void print_help_message(void){

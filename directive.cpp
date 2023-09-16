@@ -1,4 +1,7 @@
-#include "stdafx.h"
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 #include "spasm.h"
 #include "directive.h"

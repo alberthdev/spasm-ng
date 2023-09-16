@@ -1,4 +1,6 @@
-#include "stdafx.h"
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 #include "spasm.h"
 #include "pass_one.h"

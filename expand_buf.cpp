@@ -1,4 +1,5 @@
-#include "stdafx.h"
+#include <cstdio>
+#include <cstdlib>
 
 #include "spasm.h"
 

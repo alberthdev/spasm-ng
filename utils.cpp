@@ -1,7 +1,8 @@
-#include "stdafx.h"
-
-//max depth of #defines
-#define RECURSION_LIMIT 20
+#include <cctype>
+#include <cstdarg>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 #include "storage.h"
 #include "parser.h"
@@ -11,6 +12,9 @@
 #include "console.h"
 #include "spasm.h"
 #include "errors.h"
+
+//max depth of #defines
+#define RECURSION_LIMIT 20
 
 
 static void destroy_char_value (label_t *label) {
