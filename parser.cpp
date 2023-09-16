@@ -408,7 +408,7 @@ static const char *parse_single_num (const char *expr, int *value) {
 
 						if (GetSPASMErrorSessionErrorCount(session) > 0)
 						{
-							AddSPASMErrorSessionAnnotation(session, _T("Error during evaluation of macro '%s'"), define->name);
+							AddSPASMErrorSessionAnnotation(session, "Error during evaluation of macro '%s'", define->name);
 							ReplaySPASMErrorSession(session);
 							fHasError = true;
 						}
@@ -603,7 +603,7 @@ static const char *parse_num_full (const char *expr, int *value, int depth) {
 		}
 
 		last_op = M_NONE;
-		for (int i = 0; i < ARRAYSIZE(MathDefs); i++)
+		for (int i = 0; i < std::size(MathDefs); i++)
 		{
 			if (strncmp(expr, MathDefs[i].szDef, strlen(MathDefs[i].szDef)) == 0)
 			{
@@ -657,7 +657,7 @@ static const char *parse_num_full (const char *expr, int *value, int depth) {
 static bool conv_generic(const char *str, const char *end, int *output_num,
                   int base, int error_code) {
 	char *ep;
-	long long value = _strtoi64(str, &ep, base);
+	long long value = strtoll(str, &ep, base);
 
 	if (ep < end) {
 		char *number = strndup(str, end - str);

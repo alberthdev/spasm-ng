@@ -1,9 +1,11 @@
 #pragma once
 
+#include <stdint.h>
+
 typedef struct tagSPASMERROR
 {
-	DWORD dwCode;
-	LPCTSTR lpszDescription;
+	uint32_t dwCode;
+	const char *lpszDescription;
 }
 SPASMERROR, *LPSPASMERROR;
 
@@ -80,76 +82,76 @@ SPASMERROR g_ErrorCodes[]
 #ifdef _ERRORS_CPP
 =
 {
-	{SPASM_ERR_FILE_NOT_FOUND,			_T("Could not find the file '%s'")},
-	{SPASM_ERR_NO_ACCESS,				_T("Could not access the file '%s'")},
+	{SPASM_ERR_FILE_NOT_FOUND,			"Could not find the file '%s'"},
+	{SPASM_ERR_NO_ACCESS,				"Could not access the file '%s'"},
 
-	{SPASM_ERR_LOCAL_LABEL_SYNTAX,		_T("Error in local label's syntax (had leading +/- but no _)")},
-	{SPASM_ERR_LOCAL_LABEL_FORWARD_REF,	_T("Reference to local label which doesn't exist")},
-	{SPASM_ERR_ARG_USED_WITHOUT_VALUE,	_T("Argument '%s' used without value")},
-	{SPASM_ERR_OPERATOR_EXPECTED,		_T("Expecting an operator, found '%c' instead")},
-	{SPASM_ERR_VALUE_EXPECTED,			_T("Expecting a value, expression ended early")},
-	{SPASM_ERR_LABEL_NOT_FOUND,			_T("Could not find label or macro '%s'")},
-	{SPASM_ERR_BAD_VALUE_PREFIX,		_T("Unrecognized value prefix '%c'")},
-	{SPASM_ERR_INVALID_ADDRESS,			_T("The value '%s' is not a valid Z80 address")},
-	{SPASM_ERR_SIZE_MUST_BE_POSITIVE,	_T("The value '%s' is a size and must be positive")},
-	{SPASM_ERR_FILENAME_EXPECTED,		_T("Expecting a filename, none was provided")},
-	{SPASM_ERR_INVALID_OPERANDS,		_T("The opcode %s was given invalid operands")},
-	{SPASM_ERR_INVALID_RST_OPERANDS,	_T("The opcode rst was given invalid operands")},
-	{SPASM_ERR_UNKNOWN_PREOP,			_T("Unknown preprocessor command '#%s'")},
-	{SPASM_ERR_UNKNOWN_DIRECTIVE,		_T("Unknown assembler directive '.%s'")},
-	{SPASM_ERR_UNKNOWN_OPCODE,			_T("Unknown opcode '%s'")},
-	{SPASM_ERR_EQUATE_MISSING_LABEL,	_T("Equate is missing corresponding label")},
-	{SPASM_ERR_EXCEEDED_RECURSION_LIMIT,_T("Recursion depth limit exceeded")},
-	{SPASM_ERR_EXPRESSION_EXPECTED,		_T("Expecting an expression, statement ended early")},
-	{SPASM_ERR_SYNTAX,					_T("Unknown syntax")},
-	{SPASM_ERR_JUMP_EXCEEDED,			_T("Relative jump distance exceeded (distance %d)")},
-	{SPASM_ERR_INDEX_OFFSET_EXCEEDED,	_T("Index register offset exceeded (offset %d)")},
-	{SPASM_ERR_NAME_EXPECTED,			_T("Expecting a name, expression ended early")},
-	{SPASM_ERR_NO_PREVIOUS_DEFINE,		_T("No previous define to continue")},
-	{SPASM_ERR_ELIF_WITHOUT_IF,			_T("Use of #ELIF outside of an #IF expression")},
-	{SPASM_ERR_INVALID_OPTION,			_T("The option %s does not exist")},
-	{SPASM_ERR_INVALID_ADDINSTR,		_T("Required information for .ADDINSTR is missing or invalid")},
-	{SPASM_ERR_INVALID_RST_OPERANDS,	_T("Invalid operands for the RST command")},
-	{SPASM_ERR_DEFINE_HAS_NO_VALUE,		_T("The define '%s' has been used, but doesn't have a value")},
-	{SPASM_ERR_RECURSION_DEPTH,			_T("Expression is too deep (only %d levels allowed)")},
-	{SPASM_ERR_LABEL_CONFLICT,			_T("Conflicting definition of '%s' at %s:%d")},
-	{SPASM_ERR_INVALID_INDEX_OFFSET,	_T("Index offset is expected to begin with '+' or '-' or be missing")},
+	{SPASM_ERR_LOCAL_LABEL_SYNTAX,		"Error in local label's syntax (had leading +/- but no _)"},
+	{SPASM_ERR_LOCAL_LABEL_FORWARD_REF,	"Reference to local label which doesn't exist"},
+	{SPASM_ERR_ARG_USED_WITHOUT_VALUE,	"Argument '%s' used without value"},
+	{SPASM_ERR_OPERATOR_EXPECTED,		"Expecting an operator, found '%c' instead"},
+	{SPASM_ERR_VALUE_EXPECTED,			"Expecting a value, expression ended early"},
+	{SPASM_ERR_LABEL_NOT_FOUND,			"Could not find label or macro '%s'"},
+	{SPASM_ERR_BAD_VALUE_PREFIX,		"Unrecognized value prefix '%c'"},
+	{SPASM_ERR_INVALID_ADDRESS,			"The value '%s' is not a valid Z80 address"},
+	{SPASM_ERR_SIZE_MUST_BE_POSITIVE,	"The value '%s' is a size and must be positive"},
+	{SPASM_ERR_FILENAME_EXPECTED,		"Expecting a filename, none was provided"},
+	{SPASM_ERR_INVALID_OPERANDS,		"The opcode %s was given invalid operands"},
+	{SPASM_ERR_INVALID_RST_OPERANDS,	"The opcode rst was given invalid operands"},
+	{SPASM_ERR_UNKNOWN_PREOP,			"Unknown preprocessor command '#%s'"},
+	{SPASM_ERR_UNKNOWN_DIRECTIVE,		"Unknown assembler directive '.%s'"},
+	{SPASM_ERR_UNKNOWN_OPCODE,			"Unknown opcode '%s'"},
+	{SPASM_ERR_EQUATE_MISSING_LABEL,	"Equate is missing corresponding label"},
+	{SPASM_ERR_EXCEEDED_RECURSION_LIMIT,"Recursion depth limit exceeded"},
+	{SPASM_ERR_EXPRESSION_EXPECTED,		"Expecting an expression, statement ended early"},
+	{SPASM_ERR_SYNTAX,					"Unknown syntax"},
+	{SPASM_ERR_JUMP_EXCEEDED,			"Relative jump distance exceeded (distance %d)"},
+	{SPASM_ERR_INDEX_OFFSET_EXCEEDED,	"Index register offset exceeded (offset %d)"},
+	{SPASM_ERR_NAME_EXPECTED,			"Expecting a name, expression ended early"},
+	{SPASM_ERR_NO_PREVIOUS_DEFINE,		"No previous define to continue"},
+	{SPASM_ERR_ELIF_WITHOUT_IF,			"Use of #ELIF outside of an #IF expression"},
+	{SPASM_ERR_INVALID_OPTION,			"The option %s does not exist"},
+	{SPASM_ERR_INVALID_ADDINSTR,		"Required information for .ADDINSTR is missing or invalid"},
+	{SPASM_ERR_INVALID_RST_OPERANDS,	"Invalid operands for the RST command"},
+	{SPASM_ERR_DEFINE_HAS_NO_VALUE,		"The define '%s' has been used, but doesn't have a value"},
+	{SPASM_ERR_RECURSION_DEPTH,			"Expression is too deep (only %d levels allowed)"},
+	{SPASM_ERR_LABEL_CONFLICT,			"Conflicting definition of '%s' at %s:%d"},
+	{SPASM_ERR_INVALID_INDEX_OFFSET,	"Index offset is expected to begin with '+' or '-' or be missing"},
 
-	{SPASM_ERR_INVALID_DECIMAL_DIGIT,	_T("Invalid digit '%c' in the decimal number '%s'")},
-	{SPASM_ERR_INVALID_HEX_DIGIT,		_T("Invalid digit '%c' in the hexadecimal number '%s'")},
-	{SPASM_ERR_INVALID_BINARY_DIGIT,	_T("Invalid digit '%c' in the binary number '%s'")},
-	{SPASM_ERR_DIVIDE_BY_ZERO,			_T("Division by zero in evaluation of expression '%s'")},
-	{SPASM_ERR_INTEGER_OVERFLOW,		_T("Magnitude of literal value '%s' is too large")},
-	{SPASM_ERR_DIVIDE_IMIN1,			_T("Division of INT_MIN by -1 in expression '%s' is unrepresentable")},
+	{SPASM_ERR_INVALID_DECIMAL_DIGIT,	"Invalid digit '%c' in the decimal number '%s'"},
+	{SPASM_ERR_INVALID_HEX_DIGIT,		"Invalid digit '%c' in the hexadecimal number '%s'"},
+	{SPASM_ERR_INVALID_BINARY_DIGIT,	"Invalid digit '%c' in the binary number '%s'"},
+	{SPASM_ERR_DIVIDE_BY_ZERO,			"Division by zero in evaluation of expression '%s'"},
+	{SPASM_ERR_INTEGER_OVERFLOW,		"Magnitude of literal value '%s' is too large"},
+	{SPASM_ERR_DIVIDE_IMIN1,			"Division of INT_MIN by -1 in expression '%s' is unrepresentable"},
 
-	{SPASM_ERR_FCREATE_NOFILE,			_T("No buffer was selected for the fcreate call")},
-	{SPASM_ERR_UNMATCHED_IF,			_T("Unbalanced #IF/#ENDIF")},
-	{SPASM_ERR_STRAY_PREOP,				_T("Stray #%s")},
+	{SPASM_ERR_FCREATE_NOFILE,			"No buffer was selected for the fcreate call"},
+	{SPASM_ERR_UNMATCHED_IF,			"Unbalanced #IF/#ENDIF"},
+	{SPASM_ERR_STRAY_PREOP,				"Stray #%s"},
 
-	{SPASM_ERR_SIGNER_MISSING_LENGTH,	_T("Length field missing")},
-	{SPASM_ERR_SIGNER_PRGM_TYPE,		_T("Program type field missing or incorrect")},
-	{SPASM_ERR_SIGNER_MISSING_PAGES,	_T("Page count field missing")},
-	{SPASM_ERR_SIGNER_MISSING_NAME,		_T("Name field missing")},
-	{SPASM_ERR_SIGNER_ROOM_FOR_SIG,		_T("Not enough room for signature on last page")},
+	{SPASM_ERR_SIGNER_MISSING_LENGTH,	"Length field missing"},
+	{SPASM_ERR_SIGNER_PRGM_TYPE,		"Program type field missing or incorrect"},
+	{SPASM_ERR_SIGNER_MISSING_PAGES,	"Page count field missing"},
+	{SPASM_ERR_SIGNER_MISSING_NAME,		"Name field missing"},
+	{SPASM_ERR_SIGNER_ROOM_FOR_SIG,		"Not enough room for signature on last page"},
 
-	{SPASM_ERR_CUSTOM,					_T("%s")},
+	{SPASM_ERR_CUSTOM,					"%s"},
 
-	{SPASM_WARN_TRUNCATING_8,			_T("Value too large for 8-bits, truncation required")},
-	{SPASM_WARN_TRUNCATING_16,			_T("Value too large for 16-bits, truncation required")},
-	{SPASM_WARN_SMALL_LAST_PAGE,		_T("Only %d bytes are used on the last APP page")},
-	{SPASM_WARN_UNKNOWN_EXTENSION,		_T("Unrecognized file extension, assuming binary")},
-	{SPASM_WARN_MACRO_TOO_MANY_ARGS,	_T("Macro '%s' was given too many arguments, ignoring extras")},
-	{SPASM_WARN_LABEL_OVER_DEFINE,		_T("Label %s was used instead define %s")},
+	{SPASM_WARN_TRUNCATING_8,			"Value too large for 8-bits, truncation required"},
+	{SPASM_WARN_TRUNCATING_16,			"Value too large for 16-bits, truncation required"},
+	{SPASM_WARN_SMALL_LAST_PAGE,		"Only %d bytes are used on the last APP page"},
+	{SPASM_WARN_UNKNOWN_EXTENSION,		"Unrecognized file extension, assuming binary"},
+	{SPASM_WARN_MACRO_TOO_MANY_ARGS,	"Macro '%s' was given too many arguments, ignoring extras"},
+	{SPASM_WARN_LABEL_OVER_DEFINE,		"Label %s was used instead define %s"},
 
-	{SPASM_WARN_SIGNER_FILE_SIZE_24KB,	_T("The output file is larger than 24KB")},
-	{SPASM_WARN_SIGNER_FILE_SIZE_64KB,	_T("The output file is larger than 64KB")},
+	{SPASM_WARN_SIGNER_FILE_SIZE_24KB,	"The output file is larger than 24KB"},
+	{SPASM_WARN_SIGNER_FILE_SIZE_64KB,	"The output file is larger than 64KB"},
 }
 #endif
 ;
 
-void SetLastSPASMError(DWORD dwErrorCode, ...);
-void SetLastSPASMWarning(DWORD dwErrorCode, ...);
-//DWORD GetLastSPASMError();
+void SetLastSPASMError(int32_t dwErrorCode, ...);
+void SetLastSPASMWarning(int32_t dwErrorCode, ...);
+//int32_t GetLastSPASMError();
 int StartSPASMErrorSession(void);
 int GetSPASMErrorSessionErrorCount(int nSession);
 bool IsSPASMErrorSessionFatal(int nSession);
@@ -158,10 +160,10 @@ void ReplayFatalSPASMErrorSession(int nSession);
 void EndSPASMErrorSession(int errors);
 void ClearSPASMErrorSessions();
 int CleanupSPASMErrorSession(int nSession);
-void AddSPASMErrorSessionAnnotation(int nSession, LPCTSTR lpszFormat, ...);
-bool IsErrorInSPASMErrorSession(int nSession, DWORD dwErrorCode);
+void AddSPASMErrorSessionAnnotation(int nSession, const char *lpszFormat, ...);
+bool IsErrorInSPASMErrorSession(int nSession, int32_t dwErrorCode);
 void FreeSPASMErrorSessions(void);
 #ifdef _TEST
-DWORD GetLastSPASMError();
+int32_t GetLastSPASMError();
 int GetLastSPASMErrorLine();
 #endif

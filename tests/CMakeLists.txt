@@ -19,7 +19,7 @@ foreach(asm_file ${asm_files})
     )
     add_test(
         NAME autotest_${asm_file_relpath}
-        COMMAND ${CMAKE_SOURCE_DIR}/tests/test-runner.py $<TARGET_FILE:spasm> ${asm_file}
+        COMMAND python ${CMAKE_SOURCE_DIR}/tests/test-runner.py $<TARGET_FILE:spasm> ${asm_file}
     )
     SET_TESTS_PROPERTIES(autotest_${asm_file_relpath}
         PROPERTIES

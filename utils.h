@@ -25,7 +25,7 @@ bool is_arg (char test);
 char *next_code_line (char *);
 char *next_expr (const char *ptr, const char *delims);
 #define read_expr(ptr, word, delims) (read_expr_impl((const char ** const) ptr, word, delims))
-bool read_expr_impl(__inout const char ** const ptr, char word[256], const char *delims);
+bool read_expr_impl(const char ** const ptr, char word[256], const char *delims);
 char *extract_arg_string(const char ** const ptr, arg_context_t *context);
 char *parse_args (const char *ptr, define_t *define, list_t **arg_local_labels);
 char *replace_literal_args (const char *ptr, define_t *define, list_t **curr_arg_set);

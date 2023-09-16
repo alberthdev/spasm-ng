@@ -9,15 +9,15 @@
 
 typedef struct tagERRORINSTANCE
 {
-	LPSTR lpszFileName;
+	char *lpszFileName;
 	int line_num;					//-1 for no line
-	DWORD dwErrorCode;
+	int32_t dwErrorCode;
 	int nSession;
 	bool fSuppressErrors;
 	bool fIsWarning;
 	int nPrintSession;
-	LPTSTR lpszErrorText;
-	LPTSTR lpszAnnotation;
+	char *lpszErrorText;
+	char *lpszAnnotation;
 } ERRORINSTANCE, *LPERRORINSTANCE;
 
 typedef struct _errorlist {
@@ -46,10 +46,6 @@ static void PrintSPASMError(const LPERRORINSTANCE lpError)
 		}
 
 		printf("%s\n", lpError->lpszErrorText);
-#ifdef WINVER
-		OutputDebugString(lpError->lpszErrorText);
-		OutputDebugString(_T("\n"));
-#endif
 		restore_console_attributes(orig_attributes);
 	}
 }
@@ -107,7 +103,7 @@ int GetSPASMErrorSessionErrorCount(int nSession)
 	return nCount;
 }
 
-bool IsSPASMErrorFatal(DWORD dwError)
+bool IsSPASMErrorFatal(int32_t dwError)
 {
 	return !(dwError == SPASM_ERR_LOCAL_LABEL_FORWARD_REF ||
 			  dwError == SPASM_ERR_LABEL_NOT_FOUND ||
@@ -122,7 +118,7 @@ bool IsSPASMErrorSessionFatal(int nSession)
 	while ((pList != NULL) && ((LPERRORINSTANCE) pList->data)->nSession == nSession)
 	{
 		LPERRORINSTANCE lpError = (LPERRORINSTANCE) pList->data;
-		DWORD dwError = lpError->dwErrorCode;
+		int32_t dwError = lpError->dwErrorCode;
 		if (IsSPASMErrorFatal(dwError))
 		{
 			fIsFatal = true;
@@ -178,7 +174,7 @@ void ReplayFatalSPASMErrorSession(int nSession)
 	ReplaySPASMErrorSession(nSession, true);
 }
 
-bool IsErrorInSPASMErrorSession(int nSession, DWORD dwErrorCode)
+bool IsErrorInSPASMErrorSession(int nSession, int32_t dwErrorCode)
 {
 	list_t *pList = (list_t *) g_ErrorList;
 	while ((pList != NULL) && ((LPERRORINSTANCE) pList->data)->nSession == nSession)
@@ -193,16 +189,16 @@ bool IsErrorInSPASMErrorSession(int nSession, DWORD dwErrorCode)
 	return false;
 }
 
-void AddSPASMErrorSessionAnnotation(int nSession, LPCTSTR lpszFormat, ...)
+void AddSPASMErrorSessionAnnotation(int nSession, const char *lpszFormat, ...)
 {
 	va_list valist;
 	va_start(valist, lpszFormat);
 
-	TCHAR szBuffer[256];
-	TCHAR szDescription[128] = _T("An error occurred");
+	char szBuffer[256] = {};
+	char szDescription[128] = "An error occurred";
 
-	StringCchVPrintf(szDescription, ARRAYSIZE(szDescription), lpszFormat, valist);
-	StringCchPrintf(szBuffer, ARRAYSIZE(szBuffer), _T("%s:%d: %s"),
+	vsnprintf(szDescription, std::size(szDescription) - 1, lpszFormat, valist);
+	snprintf(szBuffer, std::size(szBuffer) - 1, "%s:%d: %s",
 		curr_input_file, line_num, szDescription);
 
 	va_end(valist);
@@ -217,7 +213,7 @@ void AddSPASMErrorSessionAnnotation(int nSession, LPCTSTR lpszFormat, ...)
 			{
 				free(lpErr->lpszAnnotation);
 			}
-			lpErr->lpszAnnotation = _tcsdup(szBuffer);
+			lpErr->lpszAnnotation = strdup(szBuffer);
 		}
 		pList = pList->next;
 	}
@@ -295,7 +291,7 @@ void FreeSPASMErrorSessions(void)
 }
 
 #ifdef _TEST
-DWORD GetLastSPASMError()
+int32_t GetLastSPASMError()
 {
 	list_t *pList = (list_t *) g_ErrorList;
 	while (pList != NULL)
@@ -327,7 +323,7 @@ int GetLastSPASMErrorLine()
 #endif
 
 
-static void SetLastSPASMProblem(DWORD dwErrorCode, bool fIsWarning, va_list valist)
+static void SetLastSPASMProblem(int32_t dwErrorCode, bool fIsWarning, va_list valist)
 {
 	if (dwErrorCode == SPASM_ERR_SUCCESS)
 	{
@@ -337,47 +333,47 @@ static void SetLastSPASMProblem(DWORD dwErrorCode, bool fIsWarning, va_list vali
 	LPERRORINSTANCE lpErr = AllocErrorInstance();
 	lpErr->dwErrorCode = dwErrorCode;
 	lpErr->line_num = line_num;
-	lpErr->lpszFileName = _strdup(curr_input_file);
+	lpErr->lpszFileName = strdup(curr_input_file);
 	//lpErr->fSuppressErrors = suppress_errors;
 	lpErr->fIsWarning = fIsWarning;
 	
-	TCHAR szBuffer[256];
-	TCHAR szDescription[128] = _T("An error occurred");
+	char szBuffer[256];
+	char szDescription[128] = "An error occurred";
 
-	for (int i = 0; i < ARRAYSIZE(g_ErrorCodes); i++)
+	for (int i = 0; i < std::size(g_ErrorCodes); i++)
 	{
 		if (g_ErrorCodes[i].dwCode == lpErr->dwErrorCode)
 		{
-			StringCchVPrintf(szDescription, ARRAYSIZE(szDescription),
+			vsnprintf(szDescription, std::size(szDescription) - 1,
 				g_ErrorCodes[i].lpszDescription, valist);
 			break;
 		}
 	}
 
-	LPCTSTR lpszProblemType = (fIsWarning) ? _T("warning") : _T("error");
-	LPCTSTR lpszProblemCode = (fIsWarning) ? _T("SW") : _T("SE");
+	const char *lpszProblemType = (fIsWarning) ? "warning" : "error";
+	const char *lpszProblemCode = (fIsWarning) ? "SW" : "SE";
 
 	if (lpErr->line_num != -1)
 	{
-		StringCchPrintf(szBuffer, ARRAYSIZE(szBuffer), _T("%s:%d: %s %s%03X: %s"),
+		snprintf(szBuffer, std::size(szBuffer) - 1, "%s:%d: %s %s%03X: %s",
 			lpErr->lpszFileName, lpErr->line_num, lpszProblemType, lpszProblemCode, lpErr->dwErrorCode, szDescription);
 	}
 	else
 	{
-		StringCchPrintf(szBuffer, ARRAYSIZE(szBuffer), _T("%s: %s %s%03X: %s"),
+		snprintf(szBuffer, std::size(szBuffer) - 1, "%s: %s %s%03X: %s",
 			lpErr->lpszFileName, lpszProblemType, lpszProblemCode, lpErr->dwErrorCode, szDescription);
 	}
 
-	lpErr->lpszErrorText = _strdup(szBuffer);
+	lpErr->lpszErrorText = strdup(szBuffer);
 
-	g_ErrorList = (errorlist_t *) list_prepend((list_t *) g_ErrorList, (LPVOID) lpErr);
+	g_ErrorList = (errorlist_t *) list_prepend((list_t *) g_ErrorList, lpErr);
 	//if (suppress_errors == false)
 	//{
 		//PrintSPASMError(lpErr);
 	//}
 }
 
-void SetLastSPASMWarning(DWORD dwErrorCode, ...)
+void SetLastSPASMWarning(int32_t dwErrorCode, ...)
 {
 	va_list valist;
 	va_start(valist, dwErrorCode);
@@ -387,7 +383,7 @@ void SetLastSPASMWarning(DWORD dwErrorCode, ...)
 	va_end(valist);
 }
 
-void SetLastSPASMError(DWORD dwErrorCode, ...)
+void SetLastSPASMError(int32_t dwErrorCode, ...)
 {
 	va_list valist;
 	va_start(valist, dwErrorCode);

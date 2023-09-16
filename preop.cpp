@@ -1,5 +1,7 @@
 #include "stdafx.h"
 
+#include <string>
+
 #include "preop.h"
 #include "spasm.h"
 #include "utils.h"
@@ -9,6 +11,7 @@
 #include "expand_buf.h"
 #include "errors.h"
 #include "bitmap.h"
+#include "winutf8.hpp"
 
 char *do_if (char *ptr, int condition);
 char *do_elif (char *ptr, int condition);
@@ -158,7 +161,7 @@ char *handle_preop (char *ptr) {
 			}
 			else
 			{
-				SetLastSPASMError(SPASM_ERR_STRAY_PREOP, _T("ENDIF"));
+				SetLastSPASMError(SPASM_ERR_STRAY_PREOP, "ENDIF");
 			}
 			break;
 		}
@@ -400,7 +403,7 @@ char *full_path (const char *filename) {
 	list_t *dir;
 	char *full_path;
 #ifdef WIN32
-	if (is_abs_path(filename) && (GetFileAttributes(filename) != 0xFFFFFFFF))
+	if (is_abs_path(filename) && (GetFileAttributesW(widen(filename).c_str()) != INVALID_FILE_ATTRIBUTES))
 #else
 	if (is_abs_path(filename) && (access (filename, R_OK) == 0))
 #endif
@@ -420,13 +423,13 @@ char *full_path (const char *filename) {
 		eb_free (eb);
 		dir = dir->next;
 #ifdef WIN32
-	} while (GetFileAttributes(full_path) == 0xFFFFFFFF && dir);
+	} while (GetFileAttributes(widen(full_path).c_str()) == INVALID_FILE_ATTRIBUTES && dir);
 #else
 	} while (access (full_path, R_OK) && dir);
 #endif
 
 #ifdef WIN32
-	if (GetFileAttributes(full_path) != 0xFFFFFFFF)
+	if (GetFileAttributes(widen(full_path).c_str()) != INVALID_FILE_ATTRIBUTES)
 #else
 	if (access (full_path, R_OK) == 0)
 #endif
@@ -657,11 +660,11 @@ char *do_if (char *ptr, int condition)
 	else
 	{
 		char *result = skip_until (ptr, &line_num, 3, "#else", "#elif", "#endif");
-		if (line_has_word(result, _T("#else"), 5))
+		if (line_has_word(result, "#else", 5))
 		{
 			result = next_code_line(result) - 1;
 		}
-		else if (line_has_word(result, _T("#elif"), 5))
+		else if (line_has_word(result, "#elif", 5))
 		{
 			result = handle_preop_if(skip_whitespace(result) + 5);
 		}

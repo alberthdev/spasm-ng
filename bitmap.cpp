@@ -14,7 +14,7 @@ typedef uint16_t UINT;
 typedef uint8_t BYTE;
 typedef uint16_t WORD;
 // Defined in stdafx.h
-//typedef uint32_t DWORD;
+//typedef uint32_t int32_t;
 #define LOBYTE(w)	((BYTE)(w))
 #define HIBYTE(w)	((BYTE)(((WORD)(w)>>8)&0xFF))
 #define BI_RGB 0
@@ -33,24 +33,24 @@ typedef struct tagRGBQUAD {
 
 typedef struct tagBITMAPFILEHEADER {
 	WORD	bfType;
-	DWORD	bfSize;
+	int32_t	bfSize;
 	WORD	bfReserved1;
 	WORD	bfReserved2;
-	DWORD	bfOffBits;
+	int32_t	bfOffBits;
 } __attribute__((packed)) BITMAPFILEHEADER,*LPBITMAPFILEHEADER,*PBITMAPFILEHEADER;
 
 typedef struct tagBITMAPINFOHEADER{
-	DWORD	biSize;
+	int32_t	biSize;
 	LONG	biWidth;
 	LONG	biHeight;
 	WORD	biPlanes;
 	WORD	biBitCount;
-	DWORD	biCompression;
-	DWORD	biSizeImage;
+	int32_t	biCompression;
+	int32_t	biSizeImage;
 	LONG	biXPelsPerMeter;
 	LONG	biYPelsPerMeter;
-	DWORD	biClrUsed;
-	DWORD	biClrImportant;
+	int32_t	biClrUsed;
+	int32_t	biClrImportant;
 } __attribute__((packed)) BITMAPINFOHEADER,*LPBITMAPINFOHEADER,*PBITMAPINFOHEADER;
 #endif
 
@@ -163,7 +163,7 @@ static void handle_bitmap_internal(FILE *file, const RECT *r, const BITMAPFILEHE
 	
 	// Bytes, padded to the nearest 32-bit
 	const LONG biScanWidth = ((_ZL(bi->biWidth) * _W(bi->biBitCount)) + 31) / 32 * 4;
-	const DWORD biImageSize = (_DW(bf->bfSize) - _DW(bf->bfOffBits));
+	const int32_t biImageSize = (_DW(bf->bfSize) - _DW(bf->bfOffBits));
 //	if (biImageSize % biScanWidth != 0) {
 //		printf("Scan width calculation incorrect! (image size: %ld, scan: %ld)\n", biImageSize, biScanWidth);
 //		return;
@@ -178,8 +178,8 @@ static void handle_bitmap_internal(FILE *file, const RECT *r, const BITMAPFILEHE
 	fread ((BYTE *) pBits, biScanWidth * (r->bottom - r->top), 1, file);
 
 	// Create the mask buffer
-	const DWORD biOutputRowSize = ((max(r->right - r->left, min_w) + 7) / 8) * 8;
-	const DWORD biByteSize = (r->bottom - r->top) * biOutputRowSize;
+	const int32_t biOutputRowSize = ((max(r->right - r->left, min_w) + 7) / 8) * 8;
+	const int32_t biByteSize = (r->bottom - r->top) * biOutputRowSize;
 	
 #define OUTPUT_ACCESS(zr, zc) pOutput[((zr) * biOutputRowSize) + (zc)]
 	//BYTE (*pOutput)[biOutputRowSize] = malloc(biByteSize);
@@ -192,7 +192,7 @@ static void handle_bitmap_internal(FILE *file, const RECT *r, const BITMAPFILEHE
 	memset (pMask, 1, biByteSize);
 	
 	RGBQUAD rgbMask = {0, 255, 0, 0};
-	DWORD value = parse_f ("__BM_MSK_RGB");
+	int32_t value = parse_f ("__BM_MSK_RGB");
 	
 	rgbMask.rgbRed 		= (value >> 16) & 0xFF;
 	rgbMask.rgbGreen 	= (value >> 8) & 0xFF;
@@ -236,7 +236,7 @@ static void handle_bitmap_internal(FILE *file, const RECT *r, const BITMAPFILEHE
 				rgb = bmiColors[iColor];
 			} else {
 				WORD biCmBitCount = _W(bi->biBitCount) / 3;
-				DWORD dwData = 0;
+				int32_t dwData = 0;
 				int i;
 				for (i = 0; i < (_W(bi->biBitCount) / 8); i++) {
 					dwData <<= 8;
@@ -284,7 +284,7 @@ static void handle_bitmap_internal(FILE *file, const RECT *r, const BITMAPFILEHE
 			for (i = log2(biOutputShades) - 1; i >= 0; i--) {
 				int row;
 				for (row = 0; row < r->bottom - r->top; row++) {
-					DWORD col;
+					int32_t col;
 					int db_out = 0;
 					for (col = 0; col < biOutputRowSize; col++) {
 						//db_out |= ((pOutput[row][col] >> i) & 1) << (7 - (col % 8));
@@ -307,7 +307,7 @@ static void handle_bitmap_internal(FILE *file, const RECT *r, const BITMAPFILEHE
 			if (define_with_value ("__BM_MSK", 1)) {
 				int row;
 				for (row = 0; row < r->bottom - r->top; row++) {
-					DWORD col;
+					int32_t col;
 					BYTE db_out = 0;
 					for (col = 0; col < biOutputRowSize; col++) {
 						//db_out |= (pMask[row][col] & 1) << (7 - (col % 8));
@@ -340,7 +340,7 @@ void handle_bitmap(FILE *file)
 	char *base_name = NULL, *suffix = NULL;
 	BITMAPINFOHEADER bi;
 	RGBQUAD *bmiColors;
-	DWORD nColors = 0;
+	int32_t nColors = 0;
 	RECT r;
 	LONG padding = parse_f("__BM_PAD");
 	define_t *img_map = search_defines("__BM_MAP");

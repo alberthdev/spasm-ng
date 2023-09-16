@@ -10,7 +10,12 @@
 #include "utils.h"
 #include "console.h"
 #include "errors.h"
-#include "Module.h"
+
+#ifdef WIN32
+#include <direct.h>
+#else
+#include <unistd.h>
+#endif
 
 #define LISTING_BUF_SIZE 65536	//initial size of buffer for output listing
 

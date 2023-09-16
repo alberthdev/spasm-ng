@@ -1,5 +1,3 @@
-#include "stdafx.h"
-
 #include "spasm.h"
 #include "utils.h"
 #include "storage.h"
@@ -337,7 +335,7 @@ char *handle_opcode_or_macro (char *ptr) {
 			char buf[256];
 			int value;
 			ptr++;
-			read_expr(&ptr, buf, _T(")"));
+			read_expr(&ptr, buf, ")");
 			if (parse_num(buf, &value)) {
 				cur_buf = value;
 			} else {
@@ -771,7 +769,3 @@ int write_instruction_data (instr *curr_instr, char **arg_ptrs, char **arg_end_p
 
 	return size;
 }
-
-
-
-

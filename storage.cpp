@@ -132,14 +132,6 @@ void write_defines_callback(void *data, void *data_list) {
 
 void dump_defines_callback(void *data, void *reserved) {
 	define_t *define = (define_t *)data;
-#ifdef WIN32
-	OutputDebugString(define->name);
-	OutputDebugString("---------\n");
-	OutputDebugString(define->contents);
-	OutputDebugString("\n---------\n\n");
-#else
-
-#endif
 }
 
 void dump_defines() {

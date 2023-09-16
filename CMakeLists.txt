@@ -12,7 +12,8 @@ add_executable(
     hash.cpp list.cpp parser.cpp storage.cpp errors.cpp bitmap.cpp
     modp_ascii.cpp opcodes_ez80.cpp
 )
-target_link_libraries(spasm m)
+# Unix only?
+#target_link_libraries(spasm m)
 
 # https://github.com/alberthdev/spasm-ng/issues/73
 set_property(TARGET spasm PROPERTY CXX_STANDARD 11)
@@ -38,6 +39,9 @@ add_compile_definitions(
     USE_REUSABLES
     USE_BUILTIN_FCREATE
 )
+if (WIN32)
+    add_compile_definitions(UNICODE _UNICODE)
+endif()
 if (NOT WIN32)
     add_compile_definitions(UNIXVER)
 endif()
