@@ -1,0 +1,1 @@
+#define SPASM_NG_VERSION "@GIT_TREE_DESC@"
