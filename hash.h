@@ -10,7 +10,6 @@ typedef struct {
 } store_t;
 
 struct comparator
-    : public std::binary_function<const char *, const char *, bool>
 {
     bool operator()(const char * _Left, const char *_Right) const
     {
