@@ -3,6 +3,11 @@ project(spasm-ng
     HOMEPAGE_URL https://github.com/alberthdev/spasm-ng
 )
 
+set(
+    CMAKE_TOOLCHAIN_FILE "${CMAKE_CURRENT_SOURCE_DIR}/vcpkg/scripts/buildsystems/vcpkg.cmake"
+    CACHE STRING "vcpkg toolchain file"
+)
+
 add_compile_options(-Wall)
 
 add_executable(
