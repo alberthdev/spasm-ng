@@ -1,7 +1,9 @@
 #include <cstdarg>
 #include <cstdio>
 #include <cstring>
+#include <filesystem>
 #include <string>
+#include <system_error>
 
 #ifdef WIN32
 #else
@@ -17,7 +19,6 @@
 #include "expand_buf.h"
 #include "errors.h"
 #include "bitmap.h"
-#include "winutf8.hpp"
 
 char *do_if (char *ptr, int condition);
 char *do_elif (char *ptr, int condition);
@@ -405,43 +406,21 @@ char *handle_preop_define (const char *ptr) {
  * return NULL if there's no matching path
  */
 
-char *full_path (const char *filename) {
-	list_t *dir;
-	char *full_path;
-#ifdef WIN32
-	if (is_abs_path(filename) && (GetFileAttributesW(widen(filename).c_str()) != INVALID_FILE_ATTRIBUTES))
-#else
-	if (is_abs_path(filename) && (access (filename, R_OK) == 0))
-#endif
-		return strdup (filename);
-	
-	dir = include_dirs;
-	full_path = NULL;
-	do if (dir) {
-		expand_buf_t *eb = eb_init (-1);
-		
-		eb_append (eb, (char *) dir->data, -1);
-		eb_append (eb, "/", 1);
-		eb_append (eb, filename, -1);
-		free (full_path);
-		full_path = eb_extract (eb);
-		fix_filename (full_path);
-		eb_free (eb);
-		dir = dir->next;
-#ifdef WIN32
-	} while (GetFileAttributes(widen(full_path).c_str()) == INVALID_FILE_ATTRIBUTES && dir);
-#else
-	} while (access (full_path, R_OK) && dir);
-#endif
+char *full_path (const char *filename_bytes) {
+	std::error_code fs_err;
+	const std::filesystem::path filename(filename_bytes);
 
-#ifdef WIN32
-	if (GetFileAttributes(widen(full_path).c_str()) != INVALID_FILE_ATTRIBUTES)
-#else
-	if (access (full_path, R_OK) == 0)
-#endif
-		return full_path;
+	if (filename.is_absolute() && std::filesystem::exists(filename, fs_err))
+		return strdup(filename.string().c_str());
 	
-	free (full_path);
+	for (const list_t *dir = include_dirs; dir != nullptr; dir = dir->next) {
+		auto path = std::filesystem::path((const char *)dir->data) / filename;
+
+		if (std::filesystem::exists(path, fs_err)) {
+			return strdup(filename.string().c_str());
+		}
+	}
+
 	return NULL;
 }
 
