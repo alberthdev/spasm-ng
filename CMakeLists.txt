@@ -18,7 +18,7 @@ add_executable(
     main.cpp opcodes.cpp pass_one.cpp pass_two.cpp utils.cpp
     export.cpp preop.cpp directive.cpp console.cpp expand_buf.cpp
     hash.cpp list.cpp parser.cpp storage.cpp errors.cpp bitmap.cpp
-    modp_ascii.cpp opcodes_ez80.cpp
+    modp_ascii.cpp opcodes_ez80.cpp md5.c
 )
 
 set_property(TARGET spasm PROPERTY CXX_STANDARD 17)
@@ -27,10 +27,7 @@ set(ENABLE_APP_SIGNING ON CACHE BOOL "Enable support for signing applications")
 if (ENABLE_APP_SIGNING)
     find_package(PkgConfig REQUIRED)
     pkg_check_modules(gmp REQUIRED IMPORTED_TARGET gmp)
-    find_package(OpenSSL
-        REQUIRED
-        COMPONENTS Crypto)
-    target_link_libraries(spasm OpenSSL::Crypto PkgConfig::gmp)
+    target_link_libraries(spasm PkgConfig::gmp)
 else()
     add_compile_definitions(NO_APPSIGN)
 endif()

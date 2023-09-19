@@ -9,8 +9,8 @@
 #include <cstdlib>
 #include <cstring>
 #include <gmp.h>
-#include <openssl/md5.h>
 
+#include "md5.h"
 #include "spasm.h"
 #include "utils.h"
 #include "errors.h"
@@ -293,19 +293,11 @@ void makeapp (const unsigned char *output_contents, int32_t size, FILE *outfile,
 
 #ifndef NO_APPSIGN
 /* Calculate MD5 */
-#ifdef WIN32
-	unsigned char hashbuf[64];
-	HCRYPTPROV hCryptProv; 
-	HCRYPTHASH hCryptHash;
-	int32_t sizebuf = std::size(hashbuf);
-	CryptAcquireContext(&hCryptProv, NULL, NULL, PROV_RSA_FULL, CRYPT_VERIFYCONTEXT | CRYPT_MACHINE_KEYSET);
-	CryptCreateHash(hCryptProv, CALG_MD5, 0, 0, &hCryptHash);
-	CryptHashData(hCryptHash, buffer, size, 0);
-	CryptGetHashParam(hCryptHash, HP_HASHVAL, hashbuf, &sizebuf, 0);
-#else
 	unsigned char hashbuf[16];
-	MD5 (buffer, size, hashbuf);  //This uses ssl but any good md5 should work fine.
-#endif
+	MD5_CTX ctx;
+	MD5_Init(&ctx);
+	MD5_Update(&ctx, buffer, size);
+	MD5_Final(hashbuf, &ctx);
 
 /* Generate the signature to the buffer */
 	siglength = siggen(hashbuf, buffer+size+3, &f );
@@ -344,18 +336,6 @@ void makeapp (const unsigned char *output_contents, int32_t size, FILE *outfile,
 /* Convert to 8xk */
 	intelhex(outfile, buffer, total_size);
 
-#ifndef NO_APPSIGN
-#ifdef WIN32
-	if (hCryptHash) {
-		CryptDestroyHash(hCryptHash);
-		hCryptHash = NULL;
-	}
-	if (hCryptProv) {
-		CryptReleaseContext(hCryptProv,0);
-		hCryptProv = NULL;
-	}
-#endif
-#endif
 	free(buffer);
 //    if (pages==1) printf("%s (%d page",filename,pages);
 //    else printf("%s (%d pages",filename,pages);
