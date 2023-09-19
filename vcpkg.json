@@ -1,5 +1,6 @@
 {
-    "dependencies": [
-        "gmp"
-    ]
+  "dependencies" : [
+    "gmp",
+    "pkgconf"
+  ]
 }
