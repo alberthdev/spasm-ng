@@ -54,6 +54,8 @@ typedef int BOOL;
 //#define OUTPUT_BUF_SIZE 8000000
 const static unsigned int output_buf_size = 8000000;	//size of output buffer for assembled code
 
+// TODO: all users of MAX_PATH should instead not do that, and the Windows
+// application manifest declare that it's longPathAware
 #ifndef MAX_PATH
 #ifdef _MSC_VER
 #define MAX_PATH 260

@@ -20,6 +20,9 @@ add_executable(
     hash.cpp list.cpp parser.cpp storage.cpp errors.cpp bitmap.cpp
     modp_ascii.cpp opcodes_ez80.cpp md5.c
 )
+if(WIN32 OR MINGW OR MSYS)
+target_sources(spasm PRIVATE spasm.exe.manifest)
+endif()
 
 set_property(TARGET spasm PROPERTY CXX_STANDARD 17)
 
