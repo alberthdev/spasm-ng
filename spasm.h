@@ -32,15 +32,11 @@ typedef enum {
 } EXIT_STATUS;
 
 #ifdef _WINDOWS
-#include <windows.h>
 #define NEWLINE "\r\n"
 #define PATH_SEPARATOR '\\'
 #define WRONG_PATH_SEPARATOR '/'
 #define strcasecmp _stricmp
 #define strncasecmp _strnicmp
-#define snprintf sprintf_s
-#define strdup _strdup
-
 #else
 #define NEWLINE "\n"
 #define PATH_SEPARATOR '/'
@@ -58,11 +54,14 @@ typedef int BOOL;
 //#define OUTPUT_BUF_SIZE 8000000
 const static unsigned int output_buf_size = 8000000;	//size of output buffer for assembled code
 
-//make sure that MAX_PATH is max path length on *nix and Windows
-#if !defined(MAX_PATH) || defined(UNIX_VER)
-	#include <limits.h>
-	#define MAX_PATH PATH_MAX
+#ifndef MAX_PATH
+#ifdef _MSC_VER
+#define MAX_PATH 260
+#else
+#include <climits>
+#define MAX_PATH PATH_MAX
 #endif
+#endif /* MAX_PATH */
 
 GLOBAL unsigned int mode;
 GLOBAL list_t *include_dirs, *input_files;

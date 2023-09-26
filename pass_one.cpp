@@ -606,7 +606,7 @@ char *match_opcode_args (char *ptr, char **arg_ptrs, char **arg_end_ptrs, opcode
 					break;
 
 				arg_ptrs[curr_arg_num] = curr_arg_file;
-				BOOL test = read_expr (&curr_arg_file, trash_buf, ",");
+				bool test = read_expr (&curr_arg_file, trash_buf, ",");
 				if (*(curr_arg_file - 1) == ',')
 					curr_arg_file--;
 				arg_end_ptrs[curr_arg_num] = curr_arg_file;

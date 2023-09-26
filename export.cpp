@@ -104,9 +104,9 @@ int findfield_flex( unsigned char prefix_byte, const unsigned char* buffer, int 
 int siggen (const unsigned char* hashbuf, unsigned char* sigbuf, int* outf);
 void intelhex (FILE * outfile , const unsigned char* buffer, int size, unsigned int address = 0x4000);
 void alphanumeric (char* namestring, bool allow_lower);
-void makerom (const unsigned char *output_contents, int32_t output_len, FILE *outfile);
-void makehex (const unsigned char *output_contents, int32_t output_len, FILE *outfile);
-void makeapp (const unsigned char *output_contents, int32_t output_len, FILE *outfile, const char *prgmname);
+void makerom (const unsigned char *output_contents, uint32_t output_len, FILE *outfile);
+void makehex (const unsigned char *output_contents, uint32_t output_len, FILE *outfile);
+void makeapp (const unsigned char *output_contents, uint32_t output_len, FILE *outfile, const char *prgmname);
 void makeprgm (const unsigned char *output_contents, int size, FILE *outfile, const char *prgmname, calc_type calc);
 void make83 (const unsigned char *output_contents, int size, FILE *outfile, const char *prgmname);
 
@@ -213,7 +213,7 @@ void write_file (const unsigned char *output_contents, int output_len, const cha
 	curr_input_file = NULL;
 }
 
-void makerom (const unsigned char *output_contents, int32_t size, FILE *outfile) {
+void makerom (const unsigned char *output_contents, uint32_t size, FILE *outfile) {
 	unsigned int i;
 	const int final_size = 512*1024;
 	for(i = 0; i < size; i++)
@@ -222,11 +222,11 @@ void makerom (const unsigned char *output_contents, int32_t size, FILE *outfile)
 		fputc(0xFF, outfile);
 }
 
-void makehex (const unsigned char *output_contents, int32_t size, FILE *outfile) {
+void makehex (const unsigned char *output_contents, uint32_t size, FILE *outfile) {
 	intelhex(outfile, output_contents, size);
 }
 
-void makeapp (const unsigned char *output_contents, int32_t size, FILE *outfile, const char* prgmname) {
+void makeapp (const unsigned char *output_contents, uint32_t size, FILE *outfile, const char* prgmname) {
 	unsigned char *buffer;
 	int i,pnt,siglength,tempnum,f,pages,field_sz;
 	unsigned int total_size;

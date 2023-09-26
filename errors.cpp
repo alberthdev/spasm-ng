@@ -15,7 +15,7 @@ typedef struct tagERRORINSTANCE
 {
 	char *lpszFileName;
 	int line_num;					//-1 for no line
-	int32_t dwErrorCode;
+	uint32_t dwErrorCode;
 	int nSession;
 	bool fSuppressErrors;
 	bool fIsWarning;
@@ -42,7 +42,7 @@ static void PrintSPASMError(const LPERRORINSTANCE lpError)
 	assert(lpError != NULL);
 	if ((lpError->dwErrorCode != SPASM_ERR_SUCCESS) || (lpError->lpszErrorText != NULL))
 	{
-		WORD orig_attributes = save_console_attributes();
+		uint16_t orig_attributes = save_console_attributes();
 		set_console_attributes(lpError->fIsWarning ? COLOR_YELLOW : COLOR_RED);
 		if (lpError->lpszAnnotation != NULL)
 		{
@@ -122,7 +122,7 @@ bool IsSPASMErrorSessionFatal(int nSession)
 	while ((pList != NULL) && ((LPERRORINSTANCE) pList->data)->nSession == nSession)
 	{
 		LPERRORINSTANCE lpError = (LPERRORINSTANCE) pList->data;
-		int32_t dwError = lpError->dwErrorCode;
+		uint32_t dwError = lpError->dwErrorCode;
 		if (IsSPASMErrorFatal(dwError))
 		{
 			fIsFatal = true;
@@ -178,7 +178,7 @@ void ReplayFatalSPASMErrorSession(int nSession)
 	ReplaySPASMErrorSession(nSession, true);
 }
 
-bool IsErrorInSPASMErrorSession(int nSession, int32_t dwErrorCode)
+bool IsErrorInSPASMErrorSession(int nSession, uint32_t dwErrorCode)
 {
 	list_t *pList = (list_t *) g_ErrorList;
 	while ((pList != NULL) && ((LPERRORINSTANCE) pList->data)->nSession == nSession)
@@ -295,7 +295,7 @@ void FreeSPASMErrorSessions(void)
 }
 
 #ifdef _TEST
-int32_t GetLastSPASMError()
+uint32_t GetLastSPASMError()
 {
 	list_t *pList = (list_t *) g_ErrorList;
 	while (pList != NULL)

@@ -161,9 +161,9 @@ void EndSPASMErrorSession(int errors);
 void ClearSPASMErrorSessions();
 int CleanupSPASMErrorSession(int nSession);
 void AddSPASMErrorSessionAnnotation(int nSession, const char *lpszFormat, ...);
-bool IsErrorInSPASMErrorSession(int nSession, int32_t dwErrorCode);
+bool IsErrorInSPASMErrorSession(int nSession, uint32_t dwErrorCode);
 void FreeSPASMErrorSessions(void);
 #ifdef _TEST
-int32_t GetLastSPASMError();
+uint32_t GetLastSPASMError();
 int GetLastSPASMErrorLine();
 #endif

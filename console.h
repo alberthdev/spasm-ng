@@ -4,6 +4,7 @@
 #include "spasm.h"
 
 #ifdef WIN32
+#include <Windows.h>
 # define COLOR_RED			FOREGROUND_RED | FOREGROUND_INTENSITY
 # define COLOR_YELLOW		FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_INTENSITY
 # define COLOR_WHITE		FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_INTENSITY
@@ -17,10 +18,10 @@
 # define COLOR_GREEN		32
 #endif
 
-WORD save_console_attributes ();
+uint16_t save_console_attributes ();
 void restore_console_attributes_at_exit ();
-void restore_console_attributes (WORD orig_attributes);
-BOOL set_console_attributes (unsigned short);
+void restore_console_attributes (uint16_t orig_attributes);
+bool set_console_attributes (uint16_t);
 
 #endif
 
