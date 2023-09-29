@@ -197,13 +197,17 @@ def run_assembler(assembler: str, infile: str, opts: str) -> Tuple[int, ByteStri
     proc = subprocess.Popen(
             [assembler] + shlex.split(opts) + [infile, outfile_name],
             stdin=DEVNULL, stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT, universal_newlines=True)
+            stderr=subprocess.STDOUT)
     pout, perr = proc.communicate()
+    try:
+        output = pout.decode('utf-8')
+    except UnicodeDecodeError as e:
+        raise ValueError('assembler output cannot be decoded as text: %s', pout) from e
     
     outfile = os.fdopen(outfile_fd, "rb")
     binary = outfile.read()
     outfile.close()
-    return (proc.returncode, binary, pout.split('\n'))
+    return (proc.returncode, binary, output.split('\n'))
 
 
 def filter_whitespace(s: str) -> str:
