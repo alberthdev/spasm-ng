@@ -58,6 +58,17 @@
                 { "type": "test",
                   "name": "vcpkg" }
             ]
+        },
+        {
+            "name": "macos-ci",
+            "steps": [
+                { "type": "configure",
+                    "name": "default" },
+                { "type": "build",
+                    "name": "default" },
+                { "type": "test",
+                    "name": "default" }
+            ]
         }
     ]
 }
