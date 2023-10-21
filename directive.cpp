@@ -1,4 +1,7 @@
-#include "stdafx.h"
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 #include "spasm.h"
 #include "directive.h"
@@ -507,15 +510,6 @@ void show_define (define_t *define) {
 	}
 	putchar ('\n');
 	restore_console_attributes(console_attrib);
-
-#ifdef WIN32
-	if (define->contents != NULL)
-	{
-		OutputDebugString(define->contents);
-		OutputDebugString("\n");
-	}
-#endif
-
 }
 
 
@@ -586,7 +580,7 @@ char *parse_emit_string (const char *ptr, ES_TYPE type, void *echo_target) {
 					case ES_FCREATE:
 					{
 						char buffer[256];
-						sprintf_s(buffer, "%d", value);
+						sprintf(buffer, "%d", value);
 						eb_append((expand_buf_t *) echo_target, buffer, -1);
 						break;
 					}
@@ -702,7 +696,7 @@ char *parse_emit_string (const char *ptr, ES_TYPE type, void *echo_target) {
 								if (IsSPASMErrorSessionFatal(inner_session))
 								{
 									EndSPASMErrorSession(inner_session);
-									AddSPASMErrorSessionAnnotation(session, _T("Error during evaluation of macro '%s'"), define->name);
+									AddSPASMErrorSessionAnnotation(session, "Error during evaluation of macro '%s'", define->name);
 
 									ReplaySPASMErrorSession(session);
 								}

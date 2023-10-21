@@ -1,5 +1,6 @@
 /* -*- mode: c; c-basic-offset: 4; indent-tabs-mode: nil; tab-width: 4 -*- */
 /* vi: set expandtab shiftwidth=4 tabstop=4: */
+#include <cstdlib>
 
 /**
  * \file modp_ascii.c
@@ -41,7 +42,7 @@
  * http://www.opensource.org/licenses/bsd-license.php
  * </PRE>
  */
-#include "stdafx.h"
+
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
 	typedef unsigned char uint8_t;
 	typedef unsigned int uint32_t;

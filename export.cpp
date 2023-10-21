@@ -2,9 +2,15 @@
 	by Spencer Putt and James Montelongo */
 
 /* Modified for use in SPASM by Don Straney */
+#include <array>
+#include <cctype>
+#include <cerrno>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <gmp.h>
 
-#include "stdafx.h"
-
+#include "md5.h"
 #include "spasm.h"
 #include "utils.h"
 #include "errors.h"
@@ -98,12 +104,21 @@ int findfield_flex( unsigned char prefix_byte, const unsigned char* buffer, int 
 int siggen (const unsigned char* hashbuf, unsigned char* sigbuf, int* outf);
 void intelhex (FILE * outfile , const unsigned char* buffer, int size, unsigned int address = 0x4000);
 void alphanumeric (char* namestring, bool allow_lower);
-void makerom (const unsigned char *output_contents, DWORD output_len, FILE *outfile);
-void makehex (const unsigned char *output_contents, DWORD output_len, FILE *outfile);
-void makeapp (const unsigned char *output_contents, DWORD output_len, FILE *outfile, const char *prgmname);
+void makerom (const unsigned char *output_contents, uint32_t output_len, FILE *outfile);
+void makehex (const unsigned char *output_contents, uint32_t output_len, FILE *outfile);
+void makeapp (const unsigned char *output_contents, uint32_t output_len, FILE *outfile, const char *prgmname);
 void makeprgm (const unsigned char *output_contents, int size, FILE *outfile, const char *prgmname, calc_type calc);
 void make83 (const unsigned char *output_contents, int size, FILE *outfile, const char *prgmname);
 
+static bool compareCaseInsensitive(const char *s1, const char *s2) {
+    while (*s1 != 0 && *s2 != 0) {
+        if (std::tolower(*s1++) != std::tolower(*s2++)) {
+            return false;
+        }
+    }
+
+    return *s1 == 0 && *s2 == 0;
+}
 
 void write_file (const unsigned char *output_contents, int output_len, const char *output_filename) {
 	FILE *outfile;
@@ -112,7 +127,7 @@ void write_file (const unsigned char *output_contents, int output_len, const cha
 
 	free(curr_input_file);
 
-	curr_input_file = strdup(_T("exporter"));
+	curr_input_file = strdup("exporter");
 	line_num = -1;
 
 
@@ -122,14 +137,14 @@ void write_file (const unsigned char *output_contents, int output_len, const cha
 		const char *ext = output_filename + i + 1;
 
 		int type;
-		for (type = 0; type < ARRAYSIZE(extensions); type++) {
-			if (!_stricmp (ext, extensions[type]))
+		for (type = 0; type < std::size(extensions); type++) {
+			if (compareCaseInsensitive(ext, extensions[type]))
 				break;
 		}
 
-		if (type == ARRAYSIZE(extensions)) {
+		if (type == std::size(extensions)) {
 			SetLastSPASMWarning(SPASM_WARN_UNKNOWN_EXTENSION);
-			type = ARRAYSIZE(extensions) - 1;
+			type = std::size(extensions) - 1;
 		}
 
 		calc = (calc_type)type;
@@ -175,16 +190,16 @@ void write_file (const unsigned char *output_contents, int output_len, const cha
 	case TYPE_85S:
 	case TYPE_86P:
 	case TYPE_86S:
-		makeprgm (output_contents, (DWORD) output_len, outfile, prgmname, calc);
+		makeprgm (output_contents, (int32_t) output_len, outfile, prgmname, calc);
 		break;
 	case TYPE_8XK:
-		makeapp (output_contents, (DWORD) output_len, outfile, prgmname);
+		makeapp (output_contents, (int32_t) output_len, outfile, prgmname);
 		break;
 	case TYPE_ROM:
-		makerom(output_contents, (DWORD) output_len, outfile);
+		makerom(output_contents, (int32_t) output_len, outfile);
 		break;
 	case TYPE_HEX:
-		makehex(output_contents, (DWORD) output_len, outfile);
+		makehex(output_contents, (int32_t) output_len, outfile);
 		break;
 	//bin
 	default:
@@ -198,7 +213,7 @@ void write_file (const unsigned char *output_contents, int output_len, const cha
 	curr_input_file = NULL;
 }
 
-void makerom (const unsigned char *output_contents, DWORD size, FILE *outfile) {
+void makerom (const unsigned char *output_contents, uint32_t size, FILE *outfile) {
 	unsigned int i;
 	const int final_size = 512*1024;
 	for(i = 0; i < size; i++)
@@ -207,11 +222,11 @@ void makerom (const unsigned char *output_contents, DWORD size, FILE *outfile) {
 		fputc(0xFF, outfile);
 }
 
-void makehex (const unsigned char *output_contents, DWORD size, FILE *outfile) {
+void makehex (const unsigned char *output_contents, uint32_t size, FILE *outfile) {
 	intelhex(outfile, output_contents, size);
 }
 
-void makeapp (const unsigned char *output_contents, DWORD size, FILE *outfile, const char* prgmname) {
+void makeapp (const unsigned char *output_contents, uint32_t size, FILE *outfile, const char* prgmname) {
 	unsigned char *buffer;
 	int i,pnt,siglength,tempnum,f,pages,field_sz;
 	unsigned int total_size;
@@ -278,19 +293,11 @@ void makeapp (const unsigned char *output_contents, DWORD size, FILE *outfile, c
 
 #ifndef NO_APPSIGN
 /* Calculate MD5 */
-#ifdef WIN32
-	unsigned char hashbuf[64];
-	HCRYPTPROV hCryptProv; 
-	HCRYPTHASH hCryptHash;
-	DWORD sizebuf = ARRAYSIZE(hashbuf);
-	CryptAcquireContext(&hCryptProv, NULL, NULL, PROV_RSA_FULL, CRYPT_VERIFYCONTEXT | CRYPT_MACHINE_KEYSET);
-	CryptCreateHash(hCryptProv, CALG_MD5, 0, 0, &hCryptHash);
-	CryptHashData(hCryptHash, buffer, size, 0);
-	CryptGetHashParam(hCryptHash, HP_HASHVAL, hashbuf, &sizebuf, 0);
-#else
 	unsigned char hashbuf[16];
-	MD5 (buffer, size, hashbuf);  //This uses ssl but any good md5 should work fine.
-#endif
+	MD5_CTX ctx;
+	MD5_Init(&ctx);
+	MD5_Update(&ctx, buffer, size);
+	MD5_Final(hashbuf, &ctx);
 
 /* Generate the signature to the buffer */
 	siglength = siggen(hashbuf, buffer+size+3, &f );
@@ -329,18 +336,6 @@ void makeapp (const unsigned char *output_contents, DWORD size, FILE *outfile, c
 /* Convert to 8xk */
 	intelhex(outfile, buffer, total_size);
 
-#ifndef NO_APPSIGN
-#ifdef WIN32
-	if (hCryptHash) {
-		CryptDestroyHash(hCryptHash);
-		hCryptHash = NULL;
-	}
-	if (hCryptProv) {
-		CryptReleaseContext(hCryptProv,0);
-		hCryptProv = NULL;
-	}
-#endif
-#endif
 	free(buffer);
 //    if (pages==1) printf("%s (%d page",filename,pages);
 //    else printf("%s (%d pages",filename,pages);

@@ -1,7 +1,8 @@
-#include "stdafx.h"
-
-//max depth of #defines
-#define RECURSION_LIMIT 20
+#include <cctype>
+#include <cstdarg>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 #include "storage.h"
 #include "parser.h"
@@ -11,6 +12,9 @@
 #include "console.h"
 #include "spasm.h"
 #include "errors.h"
+
+//max depth of #defines
+#define RECURSION_LIMIT 20
 
 
 static void destroy_char_value (label_t *label) {
@@ -474,7 +478,7 @@ finish_read_expr:
 
 char *extract_arg_string(const char ** const ptr, arg_context_t *context)
 {	
-	bool fReadResult = read_expr((char **) ptr, context->arg, _T(","));
+	bool fReadResult = read_expr((char **) ptr, context->arg, ",");
 	if (fReadResult == true)
 	{
 		if (**ptr == ',')
@@ -904,7 +908,7 @@ void show_error_prefix(const char *zcif, const int zln) {
 	//this is temporary till everything is rolled into errors.cpp
 	WORD attr = save_console_attributes();
 #ifdef _WIN32
-	//TCHAR szPrefix[256];
+	//char szPrefix[256];
 	//sprintf(szPrefix, "%s:%d: error: ", zcif, zln);
 	//OutputDebugString(szPrefix);
 #endif
@@ -935,10 +939,6 @@ void show_fatal_error(const char *text, ...) {
 	if (exit_code < EXIT_FATAL_ERROR) exit_code = EXIT_FATAL_ERROR;
 
 	show_error_prefix(curr_input_file, line_num);
-#ifdef WIN32
-	OutputDebugString(text);
-	OutputDebugString(TEXT("\n"));
-#endif
 
 	set_console_attributes (COLOR_RED);
 	va_start(args, text);
@@ -964,10 +964,6 @@ void show_warning(const char *text, ...) {
 	if (exit_code < EXIT_WARNINGS) exit_code = EXIT_WARNINGS;
 
 	show_warning_prefix(curr_input_file, line_num);
-#ifdef WIN32
-	OutputDebugString(text);
-	OutputDebugString(TEXT("\n"));
-#endif
 
 	set_console_attributes (COLOR_YELLOW);
 	va_start(args, text);

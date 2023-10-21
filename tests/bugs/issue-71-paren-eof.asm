@@ -1,0 +1,3 @@
+; CHECK-NFERR: 104
+; CHECK-NFERR: 110
+b(

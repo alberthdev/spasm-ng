@@ -1,7 +1,8 @@
 #ifndef HASH_H_
 #define HASH_H_
 
-#include <stdint.h>
+#include <cstring>
+#include <cstdint>
 #include <map>
 #include "list.h"
 
@@ -10,7 +11,6 @@ typedef struct {
 } store_t;
 
 struct comparator
-    : public std::binary_function<const char *, const char *, bool>
 {
     bool operator()(const char * _Left, const char *_Right) const
     {

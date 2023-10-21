@@ -1,0 +1,74 @@
+{
+    "version": 6,
+    "configurePresets": [
+        {
+            "name": "default",
+            "binaryDir": "${sourceDir}/build/default/"
+        },
+        {
+            "name": "vcpkg",
+            "binaryDir": "${sourceDir}/build/vcpkg/",
+            "toolchainFile": "${sourceDir}/vcpkg/scripts/buildsystems/vcpkg.cmake"
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "default",
+            "configurePreset": "default"
+        },
+        {
+            "name": "vcpkg",
+            "configurePreset": "vcpkg"
+        }
+    ],
+    "testPresets": [
+        {
+            "name": "default",
+            "configurePreset": "default",
+            "configuration": "Debug",
+            "output": {
+                "outputOnFailure": true
+            }
+        },
+        {
+            "name": "vcpkg",
+            "configurePreset": "vcpkg",
+            "inherits": "default"
+        }
+    ],
+    "workflowPresets": [
+        {
+            "name": "ubuntu-ci",
+            "steps": [
+                { "type": "configure",
+                  "name": "default" },
+                { "type": "build",
+                  "name": "default" },
+                { "type": "test",
+                  "name": "default" }
+            ]
+        },
+        {
+            "name": "windows-ci",
+            "steps": [
+                { "type": "configure",
+                  "name": "vcpkg" },
+                { "type": "build",
+                  "name": "vcpkg" },
+                { "type": "test",
+                  "name": "vcpkg" }
+            ]
+        },
+        {
+            "name": "macos-ci",
+            "steps": [
+                { "type": "configure",
+                    "name": "default" },
+                { "type": "build",
+                    "name": "default" },
+                { "type": "test",
+                    "name": "default" }
+            ]
+        }
+    ]
+}

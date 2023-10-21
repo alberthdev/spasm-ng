@@ -1,4 +1,7 @@
-#include "stdafx.h"
+#include <cctype>
+#include <cstdlib>
+#include <cstdio>
+#include <cstring>
 
 #include "spasm.h"
 #include "utils.h"
@@ -337,11 +340,13 @@ char *handle_opcode_or_macro (char *ptr) {
 			char buf[256];
 			int value;
 			ptr++;
-			read_expr(&ptr, buf, _T(")"));
+			read_expr(&ptr, buf, ")");
 			if (parse_num(buf, &value)) {
 				cur_buf = value;
 			} else {
-				SetLastSPASMError(SPASM_ERR_INVALID_OPERANDS);
+				char *const name = strndup(name_start, name_end - name_start);
+				SetLastSPASMError(SPASM_ERR_INVALID_OPERANDS, name);
+				free(name);
 			}
 			ptr++;
 		} else if (!strncasecmp (name_start, "clr", name_end - name_start) && *ptr == '(') {
@@ -601,7 +606,7 @@ char *match_opcode_args (char *ptr, char **arg_ptrs, char **arg_end_ptrs, opcode
 					break;
 
 				arg_ptrs[curr_arg_num] = curr_arg_file;
-				BOOL test = read_expr (&curr_arg_file, trash_buf, ",");
+				bool test = read_expr (&curr_arg_file, trash_buf, ",");
 				if (*(curr_arg_file - 1) == ',')
 					curr_arg_file--;
 				arg_end_ptrs[curr_arg_num] = curr_arg_file;
@@ -769,7 +774,3 @@ int write_instruction_data (instr *curr_instr, char **arg_ptrs, char **arg_end_p
 
 	return size;
 }
-
-
-
-
